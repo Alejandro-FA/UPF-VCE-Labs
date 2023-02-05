@@ -24,7 +24,7 @@ class MyServer {
 
 
     //Server connection
-    on_connection(WebSocketClient, req) {
+    on_connection = (WebSocketClient, req) => {
         console.log("Connected");
         WebSocketClient.send('{"connection": "ok"}');
 
