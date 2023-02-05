@@ -2,7 +2,8 @@
 <html lang="en-US">
     <head>
         <!-- Webpage metadata goes here -->
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>My WebChat</title>
         <link type="text/css" rel="stylesheet" media="all" href="style.css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
@@ -10,7 +11,7 @@
 
     <!-- All the visible part of the webpage goes here -->
     <body class="size100">
-        <div id="mychat" class="size100">
+        <div id="myapp" class="size100">
             <!-- New user connection dialog -->
             <dialog id="welcome_dialog" class="scrollable">
                 <form method="dialog" id="dialog_form">
@@ -44,8 +45,8 @@
                     <button id="canvas_button" type="button" autocomplete="off">C</button>
                 </div>
 
-                <!-- Chat grid -->
-                <div id="app_grid" class="size100">
+                <!-- App grid: chat -->
+                <div id="mychat" class="app_grid size100">
                     <div id="grid_sidebar_header" class="flex_column">
                         <p>CHANNEL SELECTED</p>
                         <p id="channel_selected"><span style="color: rgb(64, 68, 75)">...</span></p>
@@ -64,15 +65,26 @@
                         <button id="send_message" type="button" disabled autocomplete="off">SEND</button>
                     </div>
         
-                    <div id="grid_conversation" class="scrollable flex_column">
-                    </div>
+                    <div id="grid_conversation" class="scrollable flex_column"></div>
+
+                </div>
+
+                <!-- Canvas -->
+                <div id="mycanvas" class="app_grid size100">
+                    <canvas>The canvas cannot be displayed</canvas>
                 </div>
             </div>
-
-            <script type="text/javascript" src="MyChat.js"></script>
-            <script type="text/javascript" src="HtmlFactory.js"></script>
-            <script src="sillyclient.js"></script>
-            <script type="text/javascript">new MyChat().init()</script>
+            
+            <!-- Load scripts -->
+            <script type="text/javascript" src="src/MyApp.js"></script>
+            <script type="text/javascript" src="src/chat/MyChat.js"></script>
+            <script type="text/javascript" src="src/chat/HtmlFactory.js"></script>
+            <script type="text/javascript" src="src/chat/Message.js"></script>
+            <script type="text/javascript" src="src/server/sillyclient.js"></script>
+            <script type="text/javascript" src="src/canvas/MyCanvas.js"></script>
+            
+            <!-- Start javascript -->
+            <script type="text/javascript">new MyApp()</script>
         </div>
     </body>
 </html>

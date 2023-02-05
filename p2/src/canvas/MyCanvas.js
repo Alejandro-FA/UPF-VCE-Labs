@@ -3,12 +3,10 @@ class MyCanvas {
     keys = {};
     mouse_pos = [0,0];
     mouse_buttons = 0;
+    canvas = document.querySelector("canvas");
 
-
+    
     constructor() {
-        // Get required DOM elements
-        this.canvas = document.getElementById("canvas");
-
         // Add event listeners
         document.body.addEventListener("mousedown", this.onMouse);
         document.body.addEventListener("mouseup", this.onMouse);

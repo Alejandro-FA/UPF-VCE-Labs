@@ -25,13 +25,13 @@ class CanvasTransform {
 
 
     // Transform from canvas coordinates to webpage coordinates
-    fromCanvas(x, y) {
+    canvasToWorld(x, y) {
         // TODO: do somehting here
     }
 
 
     // Transform from webpage coordinates to Canvas coordinates
-    toCanvas(x, y) {
+    worldToCanvas(x, y) {
         // TODO: do something here
     }
 }

@@ -260,6 +260,7 @@ select:focus {
 
 button {
   background-color: var(--purple);
+  font-size: 1.3rem;
 }
 
 /* *********************************************************************** */
@@ -309,8 +310,11 @@ html {
 /* *********************************************************************** */
 /*                             Application grid                            */
 /* *********************************************************************** */
-#app_grid {
+.app_grid {
   grid-area: app;
+}
+
+.app_grid#mychat {
   display: grid;
   grid-template-columns: max-content 1fr;
   grid-template-rows: var(--sidebar-header-height) 1fr var(--toolbar-height);
