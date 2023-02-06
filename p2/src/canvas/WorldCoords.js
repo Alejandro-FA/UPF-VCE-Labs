@@ -1,4 +1,4 @@
-class CanvasTransform {
+class WorldCoords {
     constructor(canvasCtx, originX=0, originY=0, scaleX = 0, scaleY = 0) {
         this.ctx = canvasCtx;
         this.origin = [originX, originY];
