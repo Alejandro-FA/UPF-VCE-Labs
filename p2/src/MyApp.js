@@ -4,7 +4,7 @@ class MyApp {
     roomsMenuButton = document.getElementById("rooms_button");
     canvasMenuButton = document.getElementById("canvas_button");
 
-    // Applications
+    // Embedded applications divs
     chatDiv = document.getElementById("mychat");
     canvasDiv = document.getElementById("mycanvas");
 

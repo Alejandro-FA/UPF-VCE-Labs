@@ -1,6 +1,7 @@
 class WorldCoords {
-    constructor(canvasCtx, originX=0, originY=0, scaleX = 0, scaleY = 0) {
-        this.ctx = canvasCtx;
+    constructor(canvas, originX=0, originY=0, scaleX = 0, scaleY = 0) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
         this.origin = [originX, originY];
         this.scaling = [scaleX, scaleY];
     }
@@ -25,8 +26,9 @@ class WorldCoords {
 
 
     // Transform from canvas coordinates to webpage coordinates
-    canvasToWorld(x, y) {
-        // TODO: do somehting here
+    canvasToWorld([x, y]) {
+        let rect = this.canvas.getBoundingClientRect();
+        return [x - rect.left, y - rect.top];
     }
 
 

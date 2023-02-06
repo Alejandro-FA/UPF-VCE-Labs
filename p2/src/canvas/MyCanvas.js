@@ -1,9 +1,10 @@
 class MyCanvas {
     canvas = document.querySelector("canvas");
+    ctx = this.canvas.getContext('2d');
 
     
-    constructor(inputState = null) {
-        this.world = new MyWorld(this.canvas, inputState);
+    constructor() {
+        this.world = new MyWorld(this.canvas);
 
         // Start the render loop
         this.lastFrameTime = performance.now(); // Time at which we draw the last frame
@@ -28,11 +29,8 @@ class MyCanvas {
 
     draw = () => {
         this.resize();
-        let ctx = this.canvas.getContext('2d');
-
-        // Clear canvas and draw world
-        ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
-        this.world.draw(ctx);
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+        this.world.draw(this.ctx);
     }
 
 

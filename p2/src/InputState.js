@@ -1,12 +1,8 @@
 class InputState {
     // Mouse and keyboard state
-    keys = {};
-    mouse_pos = [0,0];
-    mouse_buttons = 0;
-
-    // Functions to execute in case that an event is triggered
-    _onMouseActions = [];
-    _onKeyActions = [];
+    _keys = {};
+    _mouse_pos = [0,0];
+    _mouse_buttons = 0;
 
 
     constructor() {
@@ -19,28 +15,42 @@ class InputState {
     }
 
 
+    // Getters
+    get keys() {
+        return this._keys;
+    }
+
+
+    get mousePos() {
+        return this._mouse_pos;
+    }
+
+
+    get mouseButtons() {
+        return this._mouse_buttons;
+    }
+
+
     /**
      * Callback actions setters.
      * @param action must a function that receives an event as a parameter;
      */
     set onMouse(action) {
-        this._onMouseActions.push(action);
+        this._onMouseAction = action;
     }
 
 
     set onKey(action) {
-        this._onKeyActions.push(action);
+        this._onKeyAction = action;
     }
 
 
     // Private methods, do not modify them
     _onMouse = (event) => {
-        this.mouse_pos[0] = event.clientX;
-        this.mouse_pos[1] = event.clientY;
-        this.mouse_buttons = event.buttons;
-        for (let action of this._onMouseActions) {
-            action(event);
-        }
+        this._mouse_pos[0] = event.clientX;
+        this._mouse_pos[1] = event.clientY;
+        this._mouse_buttons = event.buttons;
+        this._onMouseAction?.(event); // Call this only if it exists
     }
 
 
@@ -55,8 +65,6 @@ class InputState {
             default:
                 break;
         }
-        for (let action of this._onKeyActions) {
-            action(event);
-        }
+        this._onKeyAction?.(event); // Call this only if it exists
     }
 }
