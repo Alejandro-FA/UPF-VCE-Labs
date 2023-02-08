@@ -9,7 +9,7 @@ class MyChat {
     openChannels = document.querySelector("#channel_selection");
 
     factory = new HtmlFactory();
-    server = new SillyClient();
+    server = new MyClient() //new SillyClient();
 
     username;
     userID;
@@ -43,7 +43,7 @@ class MyChat {
         this.connectToServer(channelSelected);
     }
 
-    onServerReady = (id) => {
+    onServerReady = (id, user_name) => {
         // From this point on it is possible to send messages
         this.userID = Number(id);
         this.connectNotification.close();
@@ -146,8 +146,8 @@ class MyChat {
 
         // Connect to server
         this.connectNotification.showModal();
-        this.server.close();
-        this.server.connect("wss://ecv-etic.upf.edu/node/9000/ws", channelName);
+        //this.server.close();
+        this.server.connect(channelName);
     }
 
     sendMessage(msg, userID) {

@@ -96,8 +96,12 @@ class MyServer {
         
         message = JSON.parse(message)
 
+        if(this.on_message){
+            this.on_message()
+        }
+
         switch (message.type) {
-            case "":
+            case "text":
                 break;
         
             default:

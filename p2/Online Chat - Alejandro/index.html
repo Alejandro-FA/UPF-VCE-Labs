@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <!-- Webpage metadata goes here -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="utf-8">
+        <title>My WebChat</title>
+        <link type="text/css" rel="stylesheet" media="all" href="style.css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    </head>
+
+    <!-- All the visible part of the webpage goes here -->
+    <body class="size100">
+        <div id="mychat" class="size100">
+            <!-- New user connection dialog -->
+            <dialog id="welcome_dialog" class="scrollable">
+                <form method="dialog" id="dialog_form">
+                    <h2 id="dialog_title" class="h2">Choose a username and a channel</h2>
+                    <p id="dialog_description">
+                        In order to chat, you first need to specify a nickname to display to other users and the name of the channel where you want to start talking.
+                    </p>
+                    <div class="dialog_form_field">
+                        <label for="name">Your nickname: </label>
+                        <input type="text" name="name" maxlength="20" required>
+                    </div>
+                    <div class="dialog_form_field">
+                        <label for="channel">Channel (you can change this later): </label>
+                        <input type="text" name="channel" maxlength="20" required>
+                    </div>
+                    <div class="dialog_form_field">
+                        <button id="submit_form" class="cta">CONFIRM</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog id="connecting_server">
+                <p>Connecting to SillyServer...</p>
+            </dialog>
+    
+            <div id="main_grid" class="size100">
+                <!-- Menu bar grid -->
+                <div id="menu_bar" class="size100 flex_column">
+                    <button id="private_messages_button" type="button" autocomplete="off">M</button>
+                    <button id="rooms_button" type="button" autocomplete="off">R</button>
+                    <button id="canvas_button" type="button" autocomplete="off">C</button>
+                </div>
+
+                <!-- Chat grid -->
+                <div id="app_grid" class="size100">
+                    <div id="grid_sidebar_header" class="flex_column">
+                        <p>CHANNEL SELECTED</p>
+                        <p id="channel_selected"><span style="color: rgb(64, 68, 75)">...</span></p>
+                        <input type="text" id="write_new_channel" placeholder="Create new channel" maxlength="20" autocomplete="off">
+                        <p id="sidebar_items_title">OPEN CHANNELS</p>
+                    </div>
+    
+                    <div id="grid_sidebar" class="scrollable">
+                        <div id="channel_selection" class="flex_column">
+                        </div>
+                    </div>
+    
+                    <div id="grid_toolbar" class="flex_row">
+                        <!-- Input to type new messages -->
+                        <input type="text" placeholder="Type a message" id="write_message" disabled autocomplete="off"> <!-- TODO: Make it multiline -->
+                        <button id="send_message" type="button" disabled autocomplete="off">SEND</button>
+                    </div>
+        
+                    <div id="grid_conversation" class="scrollable flex_column">
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript" src="MyChat.js"></script>
+            <script type="text/javascript" src="HtmlFactory.js"></script>
+            <script src="sillyclient.js"></script>
+            <script src="MyClient.js"></script>
+            <script type="text/javascript">new MyChat().init()</script>
+            <!--IMPORT THE NEW CLIENT-->
+        </div>
+    </body>
+</html>

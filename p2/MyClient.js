@@ -73,7 +73,7 @@ class MyClient
                 this.clients[this.user_id] = {id: this.user_id, name: this.user_name}
 
                 if(this.on_ready){
-                    this.on_ready()
+                    this.on_ready(this.user_id, this.user_name)
                 }
                 break;
         
@@ -91,12 +91,31 @@ class MyClient
                 }
                 break;
 
+            case "MSG":
+
+                if(this.on_message){
+                    this.on_message(message.userID, message)
+                }
+                break;
+
             default:
                 break;
         }
     }
+
+    //Sends a JSON message to everyone or just the specified targets
+    sendMessage(message, targets){
+        if (!message){
+            console.log("Message not defined");
+            return
+        }
+
+        if(targets){
+            //If we have targets we want to add them to the message
+            message["targets"] = targets
+        }
+
+
+        this.socket.send(JSON.stringify(message))
+    }
 }
-
-let client = new MyClient()
-
-client.connect("hello", "world")

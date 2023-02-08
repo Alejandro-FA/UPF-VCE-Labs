@@ -1,80 +1,73 @@
 <!DOCTYPE html>
-<html lang="en-US">
-    <head>
-        <!-- Webpage metadata goes here -->
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="utf-8">
-        <title>My WebChat</title>
-        <link type="text/css" rel="stylesheet" media="all" href="style.css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
-    </head>
-
-    <!-- All the visible part of the webpage goes here -->
-    <body class="size100">
-        <div id="mychat" class="size100">
-            <!-- New user connection dialog -->
-            <dialog id="welcome_dialog" class="scrollable">
-                <form method="dialog" id="dialog_form">
-                    <h2 id="dialog_title" class="h2">Choose a username and a channel</h2>
-                    <p id="dialog_description">
-                        In order to chat, you first need to specify a nickname to display to other users and the name of the channel where you want to start talking.
-                    </p>
-                    <div class="dialog_form_field">
-                        <label for="name">Your nickname: </label>
-                        <input type="text" name="name" maxlength="20" required>
-                    </div>
-                    <div class="dialog_form_field">
-                        <label for="channel">Channel (you can change this later): </label>
-                        <input type="text" name="channel" maxlength="20" required>
-                    </div>
-                    <div class="dialog_form_field">
-                        <button id="submit_form" class="cta">CONFIRM</button>
-                    </div>
-                </form>
-            </dialog>
-
-            <dialog id="connecting_server">
-                <p>Connecting to SillyServer...</p>
-            </dialog>
-    
-            <div id="main_grid" class="size100">
-                <!-- Menu bar grid -->
-                <div id="menu_bar" class="size100 flex_column">
-                    <button id="private_messages_button" type="button" autocomplete="off">M</button>
-                    <button id="rooms_button" type="button" autocomplete="off">R</button>
-                    <button id="canvas_button" type="button" autocomplete="off">C</button>
-                </div>
-
-                <!-- Chat grid -->
-                <div id="app_grid" class="size100">
-                    <div id="grid_sidebar_header" class="flex_column">
-                        <p>CHANNEL SELECTED</p>
-                        <p id="channel_selected"><span style="color: rgb(64, 68, 75)">...</span></p>
-                        <input type="text" id="write_new_channel" placeholder="Create new channel" maxlength="20" autocomplete="off">
-                        <p id="sidebar_items_title">OPEN CHANNELS</p>
-                    </div>
-    
-                    <div id="grid_sidebar" class="scrollable">
-                        <div id="channel_selection" class="flex_column">
-                        </div>
-                    </div>
-    
-                    <div id="grid_toolbar" class="flex_row">
-                        <!-- Input to type new messages -->
-                        <input type="text" placeholder="Type a message" id="write_message" disabled autocomplete="off"> <!-- TODO: Make it multiline -->
-                        <button id="send_message" type="button" disabled autocomplete="off">SEND</button>
-                    </div>
-        
-                    <div id="grid_conversation" class="scrollable flex_column">
-                    </div>
-                </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mychat">
+        <!--This is the screen where you choose the romm and user-->
+        <!--TODO: Add choosable avatars-->
+        <div class="connecting">
+            <h1>Welcome to my chat!</h1>
+            <h2>Choose between the following avatars:</h2>
+            <div class="avatars-container">
+                <img id="avatar1" class="avatar selected" src="img/Profile 1.png"></img>
+                <img id="avatar2" class="avatar" src="img/Profile 2.png"></img>
+                <img id="avatar3" class="avatar" src="img/Profile 3.png"></img>
             </div>
-
-            <script type="text/javascript" src="MyChat.js"></script>
-            <script type="text/javascript" src="HtmlFactory.js"></script>
-            <script src="sillyclient.js"></script>
-            <script type="text/javascript">new MyChat().init()</script>
-            <!--IMPORT THE NEW CLIENT-->
-            <script src="MyClient.js"></script>
+            <div class="input-container">
+                <div class="input-name">Room name:</div>
+                <input type="text" id="Room">
+                <div class="input-name">User Name:</div>
+                <input type="text" id="User">
+            </div>
+            <button onclick="MYCHAT.firstConnection()" id="connect-button">Connect</button>
         </div>
-    </body>
-</html>
+
+        <!--Chatting HTML-->
+        <div class="chatting" style="display: none;">
+            <div class="options-container">
+                <input id="new-room" name="New Room" placeholder="Add New Room"></input>
+                <img src="img/add_circle.svg" class="add-chat" onclick="MYCHAT.connectNewChat()">
+            </div>
+            <nav>
+                <li id="0" class="chat selected">
+                    <img src="img/group.svg" alt="User icon" class="room-icon">
+                    <div class="chat-container">
+                        <text class="chat-name">Chat 0</text>
+                        <text class="last-message">No messages yet!</text>
+                    </div>
+                </li>
+            </nav>
+            <header>
+                <!--TODO: change this with a room icon-->
+                <img src="img/group.svg" alt="User icon" class="room-icon">
+                <div class="chat-title">Chat 0</div>
+            </header>
+            <main>
+                <!--In there will be all the messages-->
+                <!--
+                    <div class="message system">Message from system</div>
+                    TODO: Avatars next to message
+                    <div class="message me">Message from me</div>
+                    <div class="message it">Message from them</div>
+
+                -->
+            </main>
+            
+            <div id="input">
+                <input type="text" id="message">
+                <button onclick="MYCHAT.sendMessage(MYCHAT.user, document.getElementById('message').value)" id="message-button">Send</button>
+            </div>
+        </div>
+    </div>    
+    <script src="MyClient.js"></script>
+    <script src="sillyclient.js"></script>
+    <script src="code.js"></script>
+    <script>MYCHAT.init()</script>
+</body>
+</html
