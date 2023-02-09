@@ -87,7 +87,7 @@ const MYCHAT = {
 
     if (this.connection(room_name, user_name)) {
       let conScreen = document.querySelector(".mychat .connecting");
-      let msgScreen = document.querySelector(".mychat .chatting");
+      let msgScreen = document.querySelector(".mychat .logged-in");
 
       conScreen.style.display = "none";
       msgScreen.style.display = "grid";
