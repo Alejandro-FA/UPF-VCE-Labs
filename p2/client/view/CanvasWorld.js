@@ -11,7 +11,7 @@ class MyWorld {
         let canvas = ctx.canvas;
 
         // Fill canvas with specified color
-        ctx.fillStyle = "#FFFFFF";
+        ctx.fillStyle = "#caffd8";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Draw rectangle with specified color
