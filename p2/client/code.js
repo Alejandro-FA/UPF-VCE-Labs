@@ -43,7 +43,6 @@ const MYCHAT = {
     elem.addEventListener("keydown", (event) => {
       if (event.code == "Enter") {
         let message = document.getElementById("message").value;
-        console.log(this.server.user);
         this.sendMessage(this.server.user, message);
       }
     });
@@ -145,13 +144,14 @@ const MYCHAT = {
         user: sender,
         avatar: this.avatar,
         content: message,
-				id: this.server.user_id
+				userID: this.server.user_id
       };
 
       console.log(this.history[room]);
       this.history[room].content.push(msg);
 
-      this.server.sendMessage(JSON.stringify(msg));
+      console.log(JSON.stringify(msg));
+      this.server.sendMessage(msg);
 
       this.displayMessage(sender, message, this.avatar, false, this.server.user_id);
 
@@ -182,7 +182,7 @@ const MYCHAT = {
           content: message,
 					id: this.server.user_id
         };
-        this.server.sendMessage(JSON.stringify(msg), userID);
+        this.server.sendMessage(msg, userID);
       }
     }
   },
@@ -419,14 +419,6 @@ const MYCHAT = {
 
 					this.id_user[message.id] = message.user
 
-          let msg = {
-            type: "connect",
-            room: this.server.room.name,
-            id: this.server.user_id,
-            user: this.user_name,
-          };
-          this.server.sendMessage(JSON.stringify(msg));
-
           break;
 
         case "private":
@@ -438,12 +430,6 @@ const MYCHAT = {
           );
           break;
 
-        case "connect":
-					this.id_user[message.id] = message.user		
-          this.systemMessage(
-            `${message.user}#${message.id} has landed on the server`
-          );
-          break;
       }
     }
   },
@@ -451,20 +437,22 @@ const MYCHAT = {
   //this methods is called when a new user is connected
   on_user_connected: function (user_id, user_name) {
     //new user!
+    this.id_user[user_id] = user_name		
+    this.systemMessage(`${user_name}#${user_id} has landed on the server`);
+
     if (this.server.user_id === Object.keys(this.server.clients)[0]) {
 			let history = this.history[this.server.room.name]
 			history.id = this.server.user_id
-      let message = JSON.stringify(history);
-      this.server.sendMessage(message, user_id);
+      this.server.sendMessage(history, user_id);
       console.log("Message sent");
     }
   },
 
   //this methods is called when a user leaves the room
-  on_user_disconnected: function (user_id) {
+  on_user_disconnected: function (user_id, user_name) {
     //user is gone
 
-		this.systemMessage(`${this.id_user[user_id]}#${user_id} has left the server`)
+		this.systemMessage(`${user_name}#${user_id} has left the server`)
   },
 
   //this methods is called when the server gets closed (it shutdowns)

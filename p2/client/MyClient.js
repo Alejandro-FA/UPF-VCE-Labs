@@ -24,6 +24,7 @@ class MyClient
 
         room_name = room_name || ""
         user_name = user_name || "Default"
+        this.user_name = user_name
 
         if (this.socket){
             this.socket.close()
@@ -57,8 +58,7 @@ class MyClient
         }
 
         this.socket.onmessage = (msg) => {
-            let message = JSON.parse(msg.data)
-            this.manageServerMessage(message)
+            this.manageServerMessage(msg)
         }
 
     }
@@ -66,6 +66,7 @@ class MyClient
     manageServerMessage( message ) {
         //TODO: manage different server events
 
+        message = JSON.parse(message.data)
         switch (message.type) {
             case "ID":
                 console.log("ID received");
@@ -83,18 +84,35 @@ class MyClient
                     this.num_clients += 1;
                 }
 
-                if(message.content != this.user_id){
+                if(message.userID != this.user_id){
                     console.log("User connected");
                     if (this.on_user_connected) {
-                        this.on_user_connected(message.userID)
+                        this.on_user_connected(message.userID, message.username)
                     }
                 }
                 break;
 
-            case "MSG":
+            case "LOGOUT":
+                //CHANGE: erase the logout user in the client
+                if(!this.clients[ message.userID ]) {
+                    this.clients[ message.userID ] = { id: message.userID, name: this.user_name };
+                    this.num_clients += 1;
+                }
 
-                if(this.on_message){
-                    this.on_message(message.userID, message)
+                console.log("User disconnected");
+                if (this.on_user_disconnected) {
+                    this.on_user_disconnected(message.userID, message.username)
+                }
+                
+                break;
+
+            case "text":
+
+                if(message.userID != this.user_id){
+                    console.log("Message received!");
+                    if(this.on_message){
+                        this.on_message(message.userID, JSON.stringify(message))
+                    }
                 }
                 break;
 
@@ -114,8 +132,7 @@ class MyClient
             //If we have targets we want to add them to the message
             message["targets"] = targets
         }
-
-
+        console.log(JSON.stringify(message));
         this.socket.send(JSON.stringify(message))
     }
 }
