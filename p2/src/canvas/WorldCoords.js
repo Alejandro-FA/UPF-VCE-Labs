@@ -26,7 +26,7 @@ class WorldCoords {
 
 
     // Transform from canvas coordinates to webpage coordinates
-    canvasToWorld([x, y]) {
+    canvasToWorld(x, y) {
         let rect = this.canvas.getBoundingClientRect();
         return [x - rect.left, y - rect.top];
     }
@@ -34,6 +34,7 @@ class WorldCoords {
 
     // Transform from webpage coordinates to Canvas coordinates
     worldToCanvas(x, y) {
-        // TODO: do something here
+        let rect = this.canvas.getBoundingClientRect();
+        return [x + rect.left, y + rect.top];
     }
 }
