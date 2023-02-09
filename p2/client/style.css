@@ -57,11 +57,12 @@ body {
   height: 150px;
   width: 150px;
   border-radius: 50%;
-  border: solid #caffd8;
+  border: solid #caffd8 3px;
+  background-color: darkseagreen;
 }
 
 .mychat .avatar:hover, .mychat .avatar.selected{
-  border: solid white ;
+  border: solid white 3px;
   cursor: pointer;
 }
 

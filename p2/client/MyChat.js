@@ -53,7 +53,6 @@ const MYCHAT = {
     let avatars = document.querySelectorAll(".mychat .avatar");
     avatars.forEach((elem) => {
       elem.addEventListener("click", (event) => {
-        console.log(event);
         this.selectAvatar(event.target);
       });
     });
@@ -482,6 +481,10 @@ const MYCHAT = {
 
       case "avatar3":
         id = 3;
+        break;
+
+      case "avatar4":
+        id = 4
         break;
     }
     this.avatar = Number(id);

@@ -1,11 +1,11 @@
 class MyCanvas {
     canvas = document.querySelector("canvas");
     ctx = this.canvas.getContext('2d');
-
     
     constructor() {
         this.world = new MyWorld(this.canvas);
-
+        
+        this.ctx.imageSmoothingEnabled = false;
         // Start the render loop
         this.lastFrameTime = performance.now(); // Time at which we draw the last frame
         this.loop();
