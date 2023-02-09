@@ -39,6 +39,7 @@ class MyServer {
 
         let path = url.parse(req.url)
         let user_name = qs.parse(path.query).username
+        ws.username = user_name
 
         let room_name = path.pathname
         ws.room = room_name.substr(1, room_name.length)
@@ -55,6 +56,23 @@ class MyServer {
         this.usernameToClient[user_name] = ws
         this.clients.push(ws)
         this.rooms[ws.room].clients.push(ws)
+
+        console.log(this.rooms);
+
+        let clients = {}
+
+        for (let client of this.rooms[ws.room].clients) {
+            clients[client.id] = {id: client.id, name: client.username}
+        }
+
+        let room = {
+            type: "ROOM",
+            name: ws.room,
+            clients: clients,
+            length: clients.length
+        }
+
+        this.sendToRoom(ws.room, JSON.stringify(room), ws.id)
         
         //Tell everyone that a user has connected
 
@@ -75,8 +93,19 @@ class MyServer {
 
         let connection_close = () => {
 
-            //TODO: erase the client from the server
+            //TODO: erase the client from the room and server
 
+            let room = this.rooms[ws.room]
+            let index = room.clients.indexOf(ws)
+
+            room.clients.splice(index, 1)
+            this.clients.splice(this.clients.indexOf(ws), 1)
+
+            if(room.clients.length == 0){
+                delete this.rooms[ws.room]
+            }
+
+            //Send logout message to all the clients
             let msg = {
                 userID: ws.id,
                 username: user_name,
@@ -126,14 +155,16 @@ class MyServer {
         if ( !room ){
             return
         }
-        console.log(room.clients.length);
+
         for(let client of room.clients){
-            if (target && !(client.user_id in target)) {
+
+            if (target && client.id !== target) {
                 continue
             }
             if(client.readyState != WebSocket.OPEN){
                 continue;
             }
+
             client.send(msg)
         }
     }
@@ -144,12 +175,12 @@ class MyServer {
         let msg = JSON.parse(message)
 
 
-        console.log(msg);
-
+        
         if(this.on_message){
             this.on_message()
         }
-
+        
+        console.log(msg);
         this.sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
     }
 

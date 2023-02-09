@@ -118,10 +118,6 @@ body {
   box-shadow: #414051 0px 5px 20px;
 }
 
-.mychat header:hover{
-  cursor: grab;
-}
-
 .mychat .chat-title {
   display: flex;
   height: 100%;

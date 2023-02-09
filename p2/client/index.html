@@ -61,12 +61,11 @@
             
             <div id="input">
                 <input type="text" id="message">
-                <button onclick="MYCHAT.sendMessage(MYCHAT.user, document.getElementById('message').value)" id="message-button">Send</button>
+                <button onclick="MYCHAT.sendMessage(MYCHAT.user_name, document.getElementById('message').value)" id="message-button">Send</button>
             </div>
         </div>
     </div>    
     <script src="MyClient.js"></script>
-    <script src="sillyclient.js"></script>
     <script src="code.js"></script>
     <script>MYCHAT.init()</script>
 </body>

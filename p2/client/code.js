@@ -147,10 +147,8 @@ const MYCHAT = {
 				userID: this.server.user_id
       };
 
-      console.log(this.history[room]);
       this.history[room].content.push(msg);
 
-      console.log(JSON.stringify(msg));
       this.server.sendMessage(msg);
 
       this.displayMessage(sender, message, this.avatar, false, this.server.user_id);
@@ -274,7 +272,7 @@ const MYCHAT = {
 
         MYCHAT.history[MYCHAT.ROOM_PREFIX + chatName].content.forEach(
           (elem) => {
-            MYCHAT.displayMessage(elem.user, elem.content, elem.avatar,false, elem.id);
+            MYCHAT.displayMessage(elem.user, elem.content, elem.avatar,false, elem.userID);
           }
         );
 
@@ -407,17 +405,17 @@ const MYCHAT = {
         case "text":
           this.history[message.room].content.push(message);
           if (!this.private) {
-            this.displayMessage(message.user, message.content, message.avatar, false, message.id);
+            this.displayMessage(message.user, message.content, message.avatar, false, message.userID);
           }
           break;
 
         case "history":
           this.history[message.room].content = message.content;
           this.history[message.room].content.forEach((elem) => {
-            this.displayMessage(elem.user, elem.content, elem.avatar);
+            this.displayMessage(elem.user, elem.content, elem.avatar, false, elem.userID);
           });
 
-					this.id_user[message.id] = message.user
+					this.id_user[message.userID] = message.user
 
           break;
 
@@ -440,9 +438,9 @@ const MYCHAT = {
     this.id_user[user_id] = user_name		
     this.systemMessage(`${user_name}#${user_id} has landed on the server`);
 
-    if (this.server.user_id === Object.keys(this.server.clients)[0]) {
+    if (this.server.user_id === Number(Object.keys(this.server.clients)[0])) {
 			let history = this.history[this.server.room.name]
-			history.id = this.server.user_id
+			history.userID = this.server.user_id
       this.server.sendMessage(history, user_id);
       console.log("Message sent");
     }

@@ -5,7 +5,7 @@ class MyClient
 {
     socket = null
     is_connected = null
-    room = { name:"", clients:[] }
+    room = { name:"", clients:{} }
     clients = {}
     num_clients = 0
 
@@ -30,31 +30,34 @@ class MyClient
             this.socket.close()
         }
 
-        this.clients = {}
-
         let url = `ws://localhost:9016/${room_name}?username=${user_name}`
         this.socket = new WebSocket(url)
 
         this.socket.onopen = () => {
+
+            this.clients = {}
+            if(!this.room ){
+                this.room = {name: "", clients: []}
+            }
             this.is_connected = true
+
             this.room.name = room_name
-            console.log("Socket opened succesfully");
 
             if (this.on_connect){
                 this.on_connect()
             }
         }
 
-        this.socket.onclose = () => {
-            this.is_connected = false 
+        let that = this
+        this.socket.onclose = function () {
 
-            if(this.on_close){
-                this.on_close()
+            if(that.socket != this){
+                return
             }
 
+            this.is_connected = false 
             this.socket = null
             this.room = null
-            console.log("Socket has been closed");
         }
 
         this.socket.onmessage = (msg) => {
@@ -69,7 +72,6 @@ class MyClient
         message = JSON.parse(message.data)
         switch (message.type) {
             case "ID":
-                console.log("ID received");
                 this.user_id = message.userID
                 this.clients[this.user_id] = {id: this.user_id, name: this.user_name}
 
@@ -80,12 +82,13 @@ class MyClient
         
             case "LOGIN":
                 if(!this.clients[ message.userID ]) {
-                    this.clients[ message.userID ] = { id: message.userID, name: this.user_name };
+                    this.clients[ message.userID ] = { id: message.userID, name: message.user_name };
+                    this.room.clients[ message.userID ] = { id: message.userID, name: this.user_name }
                     this.num_clients += 1;
+                    console.log("Clients are " + this.room.clients + " and in total there are " + this.num_clients + " clients");
                 }
 
                 if(message.userID != this.user_id){
-                    console.log("User connected");
                     if (this.on_user_connected) {
                         this.on_user_connected(message.userID, message.username)
                     }
@@ -93,31 +96,31 @@ class MyClient
                 break;
 
             case "LOGOUT":
-                //CHANGE: erase the logout user in the client
-                if(!this.clients[ message.userID ]) {
-                    this.clients[ message.userID ] = { id: message.userID, name: this.user_name };
-                    this.num_clients += 1;
-                }
-
-                console.log("User disconnected");
+                delete this.clients[ message.userID ];
+                delete this.room.clients[ message.userID ];
+                this.num_clients -= 1;
+                console.log("Clients are " + this.room.clients + " and in total there are " + this.num_clients + " clients");
                 if (this.on_user_disconnected) {
                     this.on_user_disconnected(message.userID, message.username)
                 }
                 
                 break;
 
-            case "text":
+            case "ROOM":
+                this.clients = message.clients
+                this.num_clients == message.length
+                console.log(message);
+                break;
+
+            default:
 
                 if(message.userID != this.user_id){
-                    console.log("Message received!");
                     if(this.on_message){
                         this.on_message(message.userID, JSON.stringify(message))
                     }
                 }
                 break;
 
-            default:
-                break;
         }
     }
 
@@ -135,4 +138,5 @@ class MyClient
         console.log(JSON.stringify(message));
         this.socket.send(JSON.stringify(message))
     }
+
 }
