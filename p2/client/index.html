@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mychat">
+        <!--This is the screen where you choose the romm and user-->
+        <!--TODO: Add choosable avatars-->
+        <div class="connecting">
+            <h1>Welcome to my chat!</h1>
+            <h2>Choose between the following avatars:</h2>
+            <div class="avatars-container">
+                <img id="avatar1" class="avatar selected" src="img/Profile 1.png"></img>
+                <img id="avatar2" class="avatar" src="img/Profile 2.png"></img>
+                <img id="avatar3" class="avatar" src="img/Profile 3.png"></img>
+            </div>
+            <div class="input-container">
+                <div class="input-name">Room name:</div>
+                <input type="text" id="Room">
+                <div class="input-name">User Name:</div>
+                <input type="text" id="User">
+            </div>
+            <button onclick="MYCHAT.firstConnection()" id="connect-button">Connect</button>
+        </div>
+
+        <!--Chatting HTML-->
+        <div class="chatting" style="display: none;">
+            <div class="options-container">
+                <input id="new-room" name="New Room" placeholder="Add New Room"></input>
+                <img src="img/add_circle.svg" class="add-chat" onclick="MYCHAT.connectNewChat()">
+            </div>
+            <nav>
+                <li id="0" class="chat selected">
+                    <img src="img/group.svg" alt="User icon" class="room-icon">
+                    <div class="chat-container">
+                        <text class="chat-name">Chat 0</text>
+                        <text class="last-message">No messages yet!</text>
+                    </div>
+                </li>
+            </nav>
+            <header>
+                <!--TODO: change this with a room icon-->
+                <img src="img/group.svg" alt="User icon" class="room-icon">
+                <div class="chat-title">Chat 0</div>
+            </header>
+            <main>
+                <!--In there will be all the messages-->
+                <!--
+                    <div class="message system">Message from system</div>
+                    TODO: Avatars next to message
+                    <div class="message me">Message from me</div>
+                    <div class="message it">Message from them</div>
+
+                -->
+            </main>
+            
+            <div id="input">
+                <input type="text" id="message">
+                <button onclick="MYCHAT.sendMessage(MYCHAT.user_name, document.getElementById('message').value)" id="message-button">Send</button>
+            </div>
+        </div>
+    </div>    
+    <script src="MyClient.js"></script>
+    <script src="code.js"></script>
+    <script>MYCHAT.init()</script>
+</body>
+</html
