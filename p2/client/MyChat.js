@@ -210,6 +210,9 @@ const MYCHAT = {
       case 3:
         img.src = "img/Profile 3.png";
         break;
+      case 4:
+        img.src = "img/Profile 4.png";
+        break;
     }
 
     elem.appendChild(img);

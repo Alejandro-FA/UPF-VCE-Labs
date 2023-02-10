@@ -26,14 +26,14 @@ class WorldCoords {
 
 
     // Transform from canvas coordinates to webpage coordinates
-    canvasToWorld(x, y) {
+    canvasToWorld([x, y]) {
         let rect = this.canvas.getBoundingClientRect();
         return [x - rect.left, y - rect.top];
     }
 
 
     // Transform from webpage coordinates to Canvas coordinates
-    worldToCanvas(x, y) {
+    worldToCanvas([x, y]) {
         let rect = this.canvas.getBoundingClientRect();
         return [x + rect.left, y + rect.top];
     }

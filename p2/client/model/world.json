@@ -1,0 +1,30 @@
+{
+    "room1": {
+        "url": "img/room1.avif",
+        "users": {}
+    },
+
+    "room2": {
+        "url": "img/room2.avif",
+        "users": {
+            "username": {
+                "url": "img/spritesheet_1.png",
+                "pos": [50, 230],
+                "target": [50, 230],
+                "anim": [0]
+            }
+        }
+    }, 
+
+    "room3": {
+        "url": "img/room3.avif",
+        "users": {
+            "username": {
+                "url": "img/spritesheet_1.png",
+                "pos": [50, 230],
+                "target": [50, 230],
+                "anim": [0]
+            }
+        }
+    }
+}

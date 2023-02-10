@@ -25,7 +25,7 @@
                 <div class="input-name">User Name:</div>
                 <input type="text" id="User">
             </div>
-            <button onclick="MYCHAT.firstConnection()" id="connect-button">Connect</button>
+            <button onclick="MYAPP.firstConnection()" id="connect-button">Connect</button>
         </div>
 
         <div class="logged-in" style="display: none;">
@@ -39,7 +39,7 @@
             <div class="chatting">
                 <div class="options-container">
                     <input id="new-room" name="New Room" placeholder="Add New Room"></input>
-                    <img src="img/add_circle.svg" class="add-chat" onclick="MYCHAT.connectNewChat()">
+                    <img src="img/add_circle.svg" class="add-chat" onclick="MYAPP.chat.connectNewChat()">
                 </div>
                 <nav>
                     <li id="0" class="chat selected">
@@ -60,7 +60,7 @@
                 
                 <div id="input">
                     <input type="text" id="message">
-                    <button onclick="MYCHAT.sendMessage(MYCHAT.user_name, document.getElementById('message').value)" id="message-button">Send</button>
+                    <button onclick="MYAPP.chat.sendMessage(MYAPP.chat.user_name, document.getElementById('message').value)" id="message-button">Send</button>
                 </div>
             </div>
         </div>
@@ -75,6 +75,6 @@
     <script src="view/ImageManager.js"></script>
     <script src="model/WorldCoords.js"></script>
     <script src="controller/InputState.js"></script>
-    <script>new MyApp()</script>
+    <script>let MYAPP = new MyApp()</script>
 </body>
 </html
