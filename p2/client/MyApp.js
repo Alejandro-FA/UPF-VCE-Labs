@@ -8,7 +8,7 @@ class MyApp {
     	this.chat.firstConnection();
 		
 		let user_name = this.chat.user_name
-		this.canvas = new MyCanvas("room1", user_name);
+		this.canvas = new MyCanvas("living_room", user_name);
 		
 		let url
    		switch (this.chat.avatar) {

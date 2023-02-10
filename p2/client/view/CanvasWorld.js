@@ -1,3 +1,8 @@
+const RIGHT = 0;
+const FRONT = 64;
+const LEFT = 128;
+const BACK = 192;
+
 class MyWorld {
     constructor(canvas, room, username) {
         this.coords = new WorldCoords(canvas);
@@ -8,6 +13,7 @@ class MyWorld {
         this.mouseDown = false
 
         this.user_avatar = null
+        this.username = username
         
         this.world = null
         this.room = null
@@ -28,7 +34,8 @@ class MyWorld {
                     "url": "img/spritesheet_1.png",
                     "pos": [50, 230],
                     "target": [50, 230],
-                    "anim": [0]
+                    "anim": [0],
+                    "facing": FRONT
                 }
             }
 
@@ -56,7 +63,7 @@ class MyWorld {
         if(this.mouseDown){
             ctx.fillStyle = "red";
             let world_mouse = this.coords.canvasToWorld(this.inputState.mousePos)
-            ctx.fillRect(world_mouse[0] - 25, world_mouse[1] - 25, 50, 50);
+            ctx.fillRect(world_mouse[0] - 10, world_mouse[1] - 10, 20, 20);
         }
     }
 
@@ -82,18 +89,49 @@ class MyWorld {
         for(let name in this.users){
             let user = this.users[name]
             let img = this.imageManager.getImage(user.url)
-            this.renderAnimation(ctx, img, user.anim, user.pos[0], user.pos[1], 3)
+            this.renderAnimation(ctx, img, user.anim, user.pos[0], user.pos[1], 3, 0, user.facing)
         }
     }
 
+    //Update the data of the model
     update(elapsed_time) {
-        // TODO:
+
+        for(let name in this.users){
+            let user = this.users[name]
+            if(!this.atTarget(user)) {
+                user.pos[0] = lerp( user.pos[0], user.target[0], elapsed_time );
+            }
+
+        }
+    }
+
+    //This function verifies if the user is at the range of it's target
+    atTarget(user){
+        if(user.pos[0] < user.target[0] -10 || user.pos[0] > user.target[0] +10) {
+            user.anim = this.walking
+            user.facing = user.pos[0] < user.target[0] ? RIGHT : LEFT
+            return false
+        }
+        user.anim = this.idle
+        user.facing = FRONT
+        return true
     }
 
     onMouse( event ) {
-        if (event.type === "mousedown") {
-            this.mouseDown = this.mouseDown ? false : true
-            
+        switch (event.type) {
+            case "mousedown":
+                this.mouseDown = true
+                console.log(this.inputState.mousePos[0]);
+                
+                let myuser = this.users[this.username]
+                myuser.target[0] = this.inputState.mousePos[0] - 48
+                break;
+        
+            case "mouseup":
+                this.mouseDown = false
+                break;
+            default:
+                break;
         }
     }
 
@@ -109,13 +147,13 @@ class MyWorld {
     walking = [2,3,4,5,6,7,8,9];
     talking = [0,1]
 
-    renderAnimation( ctx, image, anim, x, y, scale, offset, flip ) {
+    renderAnimation( ctx, image, anim, x, y, scale, offset, facing ) {
         offset = offset || 0;
         let t = Math.floor(performance.now() * 0.001 * 10); 
-        this.renderFrame( ctx, image, anim[ t % anim.length ] + offset,x,y,scale,flip);
+        this.renderFrame( ctx, image, anim[ t % anim.length ] + offset,x,y,scale, facing);
     }
 
-    renderFrame(ctx, image, frame, x, y, scale, flip) {
+    renderFrame(ctx, image, frame, x, y, scale, facing) {
         let w = 32; //sprite width
         let h = 64; //sprite height
         scale = scale || 1;
@@ -123,16 +161,14 @@ class MyWorld {
         let num_hframes = image.width / w;
         let xf = (frame * w) % image.width;
         let yf = Math.floor(frame / num_hframes) * h; 
+
         
         ctx.save();
 
         ctx.translate(x,y); 
-        if( flip ){
-            ctx.translate(w*scale,0);
-            ctx.scale(-1,1);
-        }
-        if(image){
-            ctx.drawImage( image, xf,yf,w,h, 0,0,w*scale,h*scale );
+
+        if( image ){
+            ctx.drawImage( image, xf,facing,w,h, 0,0,w*scale,h*scale );
         }
         ctx.restore();
     }
