@@ -120,11 +120,14 @@ class MyWorld {
     onMouse( event ) {
         switch (event.type) {
             case "mousedown":
-                this.mouseDown = true
-                console.log(this.inputState.mousePos[0]);
-                
-                let myuser = this.users[this.username]
-                myuser.target[0] = this.inputState.mousePos[0] - 48
+                //Check if the click is on the upper half of the screen
+                if(this.inputState.mousePos[1] <= 440){
+                    this.mouseDown = true
+                    console.log(this.inputState.mousePos[1]);
+                    
+                    let myuser = this.users[this.username]
+                    myuser.target[0] = this.inputState.mousePos[0] - 48
+                }
                 break;
         
             case "mouseup":
