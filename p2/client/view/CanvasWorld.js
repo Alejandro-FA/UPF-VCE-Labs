@@ -96,6 +96,14 @@ class MyWorld {
     //Update the data of the model
     update(elapsed_time) {
 
+        //Update the size of the canvas
+        let canvas = document.querySelector("canvas");
+        let parent = canvas.parentNode;
+        let rect = parent.getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
+
+        //Update the position of every user
         for(let name in this.users){
             let user = this.users[name]
             if(!this.atTarget(user)) {
@@ -103,6 +111,59 @@ class MyWorld {
             }
 
         }
+
+        //Check if a user exits the room
+        if(this.users){
+            let myuser = this.users[this.username]
+
+            let l_exit = this.room.l_exit ? 200 : null
+            let r_exit = this.room.r_exit ? this.width - 200 : null
+            
+            if(r_exit && myuser.pos[0] >= r_exit){
+                console.log("Exit on the right to room " + this.room.r_exit);
+                this.changeRoom(this.room.r_exit)
+            }
+
+            if(l_exit && myuser.pos[0] <= l_exit){
+                console.log("Exit on the left to room " + this.room.l_exit);
+                this.changeRoom(this.room.l_exit)
+            }
+
+        }
+    }
+
+    //Change all the necessary world data
+    changeRoom(room_name) {
+        //Delete the user from the old room
+        let myuser = this.users[this.username]
+
+        delete this.room.users[this.username]
+
+        //TODO: Send the message to the other users of the room
+
+        //Enter the new room
+        this.room = this.world[room_name]
+
+        //Load the new background
+        this.background = this.imageManager.getImage(this.room.url)
+
+        //Reset the position and target of the user
+
+        myuser.pos[0] = myuser.target[0] = 250
+
+        //Add the user to the new room
+        this.room.users[this.username] = myuser
+
+        //Update the users object
+        this.users = this.room.users
+
+        //Change the room in the chat
+        if(MYCHAT.visited_chats.includes(room_name)){
+            MYCHAT.changeChat(room_name).call(MYCHAT)
+        } else {
+            MYCHAT.connectNewChat(room_name)
+        }
+
     }
 
     //This function verifies if the user is at the range of it's target
@@ -123,7 +184,7 @@ class MyWorld {
                 //Check if the click is on the upper half of the screen
                 if(this.inputState.mousePos[1] <= 440){
                     this.mouseDown = true
-                    console.log(this.inputState.mousePos[1]);
+                    console.log(this.inputState.mousePos[0]);
                     
                     let myuser = this.users[this.username]
                     myuser.target[0] = this.inputState.mousePos[0] - 48

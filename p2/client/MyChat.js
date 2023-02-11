@@ -1,16 +1,14 @@
 //MYCHAT object
 const MYCHAT = {
-  //Room prefix so that only users of this chat can communicate
-  ROOM_PREFIX: "ACEITE_DE_IGUANA_",
 
-  //Current instance of SillyClient
+  //Current instance of MyClient
   server: undefined,
 
   //Variable that will indicate which avatar is selected (default 1)
   avatar: 1,
 
   //Variable to keep track of wich is the current chat
-  currentChat: 0,
+  currentChat: "living_room",
 
   //Variable to keep track of how many chats there are
   n_chats: 1,
@@ -25,6 +23,10 @@ const MYCHAT = {
   privateHistory: {},
 
   user_name: "anonymous",
+
+  //Visited chats
+
+  visited_chats: [],
 
   id_user: {},
 
@@ -61,7 +63,8 @@ const MYCHAT = {
     elem = document.getElementById("new-room");
     elem.addEventListener("keydown", (event) => {
       if (event.code == "Enter") {
-        this.connectNewChat();
+        let chatName = document.getElementById("new-room").value;
+        this.connectNewChat(chatName);
       }
     });
   },
@@ -78,11 +81,13 @@ const MYCHAT = {
   },
 
   //Connect for the first time (from the connection screen)
-  firstConnection: function () {
-    let room_name = document.getElementById("Room").value;
-    let user_name = document.getElementById("User").value;
+  firstConnection: function (username, roomname) {
+    let room_name = roomname || document.getElementById("Room").value;
+    let user_name = username || document.getElementById("User").value;
 
     this.user_name = user_name;
+
+    this.visited_chats.push(room_name)
 
     if (this.connection(room_name, user_name)) {
       let conScreen = document.querySelector(".mychat .connecting");
@@ -91,7 +96,7 @@ const MYCHAT = {
       conScreen.style.display = "none";
       msgScreen.style.display = "grid";
 
-      room_name = this.ROOM_PREFIX + room_name;
+
 
       this.history[room_name] = {
         room: room_name,
@@ -122,7 +127,7 @@ const MYCHAT = {
       alert("Empty user name");
       return false;
     }
-    room_name = this.ROOM_PREFIX + room_name;
+
     this.server.connect(room_name, user_name);
 
     return true;
@@ -186,7 +191,7 @@ const MYCHAT = {
 
   //Update the preview of the last message that there is under the name
   updatePreview: function (sender, message) {
-    let currentChat = document.getElementById(`${this.currentChat}`);
+    let currentChat = document.getElementById(this.currentChat);
     currentChat.querySelector(
       ".mychat .last-message"
     ).innerHTML = `${sender}: ${message}`;
@@ -246,17 +251,16 @@ const MYCHAT = {
   },
 
   //Returns a function that changes to the chat which ID is passed
-  changeChat: function (chatID) {
+  changeChat: function (chatName) {
     return function () {
-      console.log(`Current chat is ${chatID}`);
-      let chat = document.getElementById(`${chatID}`);
+      console.log(`Current chat is ${chatName}`);
+      let chat = document.getElementById(chatName);
       let oldChat = document.querySelector(".mychat li.selected");
-      let chatName = chat.querySelector(".mychat .chat-name").innerHTML;
 
       oldChat.classList.remove("selected");
       chat.classList.add("selected");
 
-      MYCHAT.currentChat = Number(chat.id);
+      MYCHAT.currentChat = chat.id;
 
       document.querySelector(".mychat .chat-title").innerHTML = chatName;
 
@@ -266,13 +270,13 @@ const MYCHAT = {
       let c = chatName.charAt(0);
 
       if (c != "_") {
-        if (MYCHAT.server.room.name != MYCHAT.ROOM_PREFIX + chatName) {
+        if (MYCHAT.server.room.name != chatName) {
           MYCHAT.connection(chatName, MYCHAT.server.user);
         }
 
 				MYCHAT.private = false;
 
-        MYCHAT.history[MYCHAT.ROOM_PREFIX + chatName].content.forEach(
+        MYCHAT.history[chatName].content.forEach(
           (elem) => {
             MYCHAT.displayMessage(elem.user, elem.content, elem.avatar,false, elem.userID);
           }
@@ -288,9 +292,16 @@ const MYCHAT = {
     };
   },
 
-  //Creates a new Sillyclient for a new room
-  connectNewChat: function () {
-    let chatName = document.getElementById("new-room").value;
+  //Creates a new Client for a new room
+  connectNewChat: function (chatName) {
+
+    if (chatName in this.visited_chats) {
+      console.error("Room " + chatName + " already exists")
+      return
+    } else {
+      this.visited_chats.push(chatName)
+    }
+
     document.getElementById("new-room").value = "";
 
     if (chatName == "") {
@@ -298,16 +309,14 @@ const MYCHAT = {
       return;
     }
 
-    let id = this.n_chats;
     this.n_chats += 1;
     let c = chatName.charAt(0);
     if (c === "_") {
-      this.privateChat(id, chatName);
+      this.privateChat(chatName);
     } else {
-      this.createNewChat(id, chatName);
+      this.createNewChat(chatName);
     }
 
-    chatName = this.ROOM_PREFIX + chatName;
     console.log(chatName);
     this.history[chatName] = {
       room: chatName,
@@ -317,14 +326,15 @@ const MYCHAT = {
 			id: this.server.user_id
     };
 
-    document.getElementById(`${id}`).onclick = this.changeChat(id).bind(MYCHAT);
+    let newchat = document.getElementById(chatName);
+    newchat.onclick = this.changeChat(chatName).bind(MYCHAT);
 
-    this.changeChat(id).call(this);
+    this.changeChat(chatName).call(this);
   },
 
   //Create a new private chat
-  privateChat: function (id, chatName) {
-    this.createNewChat(id, chatName);
+  privateChat: function (chatName) {
+    this.createNewChat(chatName);
     this.privateHistory[chatName] = [];
     let clients = this.server.clients;
 
@@ -335,11 +345,11 @@ const MYCHAT = {
   },
 
   //Create the HTML element with all the attributes
-  createNewChat: function (id, chatName) {
+  createNewChat: function (chatName) {
     let nav = document.querySelector(".mychat nav");
 
     let li = document.createElement("li");
-    li.id = id;
+    li.id = chatName;
     li.className = "chat selected";
     li = nav.appendChild(li);
     console.log(li);
@@ -382,7 +392,7 @@ const MYCHAT = {
   //this method is called when the server gives the user his ID (ready to start transmiting)
   on_connect: function () {
     this.systemMessage(
-      `Connected to the server at room ${this.server.room.name}`
+      `Entered the room ${this.server.room.name}`
     );
   },
 
@@ -438,7 +448,7 @@ const MYCHAT = {
   on_user_connected: function (user_id, user_name) {
     //new user!
     this.id_user[user_id] = user_name		
-    this.systemMessage(`${user_name}#${user_id} has landed on the server`);
+    this.systemMessage(`${user_name}#${user_id} has entered the room`);
 
     if (this.server.user_id === Number(Object.keys(this.server.clients)[0])) {
 			let history = this.history[this.server.room.name]
@@ -452,7 +462,7 @@ const MYCHAT = {
   on_user_disconnected: function (user_id, user_name) {
     //user is gone
 
-		this.systemMessage(`${user_name}#${user_id} has left the server`)
+		this.systemMessage(`${user_name}#${user_id} has left the room`)
   },
 
   //this methods is called when the server gets closed (it shutdowns)

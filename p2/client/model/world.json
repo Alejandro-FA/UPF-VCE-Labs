@@ -1,30 +1,36 @@
 {
     "living_room": {
         "url": "img/room1.avif",
-        "users": {}
+        "users": {},
+        "r_exit": "relax_room",
+        "l_exit": null
     },
 
-    "room2": {
+    "relax_room": {
         "url": "img/room2.avif",
         "users": {
             "username": {
                 "url": "img/spritesheet_1.png",
-                "pos": [50, 230],
-                "target": [50, 230],
+                "pos": [300, 230],
+                "target": [300, 230],
                 "anim": [0]
             }
-        }
+        },
+        "r_exit": "lounge_room",
+        "l_exit": "living_room"
     }, 
 
-    "room3": {
+    "lounge_room": {
         "url": "img/room3.avif",
         "users": {
             "username": {
                 "url": "img/spritesheet_1.png",
-                "pos": [50, 230],
-                "target": [50, 230],
+                "pos": [300, 230],
+                "target": [300, 230],
                 "anim": [0]
             }
-        }
+        },
+        "r_exit": null,
+        "l_exit": "relax_room"
     }
 }

@@ -4,11 +4,12 @@ class MyApp {
     this.chat.init();
   }
 
-	firstConnection() {
-    	this.chat.firstConnection();
+	firstConnection(username, room_name) {
+		document.getElementById(0).id = room_name
+    	this.chat.firstConnection(username, room_name);
 		
-		let user_name = this.chat.user_name
-		this.canvas = new MyCanvas("living_room", user_name);
+		let user_name = username || this.chat.user_name
+		this.canvas = new MyCanvas(room_name, user_name);
 		
 		let url
    		switch (this.chat.avatar) {
