@@ -57,7 +57,6 @@ class MyServer {
         this.clients.push(ws)
         this.rooms[ws.room].clients.push(ws)
 
-        console.log(this.rooms);
 
         let clients = {}
 
@@ -80,7 +79,12 @@ class MyServer {
             userID: ws.id,
             username: user_name,
             type: "LOGIN",
-            content: "",
+            content: {
+                url: "img/spritesheet_1.png",
+                pos: [300, 250],
+                target: [300, 250],
+                anim: [0]
+            },
             date: new Date()
         }
         this.sendToRoom(ws.room, JSON.stringify(msg))
@@ -157,14 +161,21 @@ class MyServer {
         }
 
         for(let client of room.clients){
+            let type = JSON.parse(msg).type
 
             if (target && client.id !== target) {
+                if(type == "WORLD"){
+                    console.log("have a problem with message " + msg + " target " + target + " client id " + client.id);
+                }
                 continue
             }
             if(client.readyState != WebSocket.OPEN){
                 continue;
             }
 
+            if(type == "WORLD"){
+                console.log("This is the message " + msg);
+            }
             client.send(msg)
         }
     }
@@ -173,14 +184,15 @@ class MyServer {
     on_message_received(message) {
         
         let msg = JSON.parse(message)
-
-
         
         if(this.on_message){
             this.on_message()
         }
+
+        if(msg.type == "WORLD"){
+            console.log("Sending the message " + JSON.stringify(msg));
+        }
         
-        console.log(msg);
         this.sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
     }
 

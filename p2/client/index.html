@@ -25,7 +25,7 @@
                 <div class="input-name">User Name:</div>
                 <input type="text" id="User">
             </div>
-            <button onclick="MYAPP.firstConnection()" id="connect-button">Connect</button>
+            <button onclick="MYAPP.firstConnection(null, 'living_room')" id="connect-button">Connect</button>
         </div>
 
         <div class="logged-in" style="display: none;">
@@ -77,7 +77,6 @@
     <script src="controller/InputState.js"></script>
     <script>
         let MYAPP = new MyApp();
-        MYAPP.firstConnection("Luka", "living_room");
     </script>   
 </body>
 </html

@@ -7,7 +7,6 @@ class ImageManager {
 
         // If we do not have the image cached, then we create it
         let img = this.cachedImgs[url] = new Image();
-        console.log(url);
         img.src = url;
         return img;
     }

@@ -8,28 +8,14 @@
 
     "relax_room": {
         "url": "img/room2.avif",
-        "users": {
-            "username": {
-                "url": "img/spritesheet_1.png",
-                "pos": [300, 230],
-                "target": [300, 230],
-                "anim": [0]
-            }
-        },
+        "users": {},
         "r_exit": "lounge_room",
         "l_exit": "living_room"
     }, 
 
     "lounge_room": {
         "url": "img/room3.avif",
-        "users": {
-            "username": {
-                "url": "img/spritesheet_1.png",
-                "pos": [300, 230],
-                "target": [300, 230],
-                "anim": [0]
-            }
-        },
+        "users": {},
         "r_exit": null,
         "l_exit": "relax_room"
     }

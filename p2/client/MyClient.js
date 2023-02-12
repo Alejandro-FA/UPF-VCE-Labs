@@ -19,6 +19,7 @@ class MyClient
 	on_user_connected = null; //new user connected
 	on_user_disconnected = null; //user leaves
 	on_error = null; //when cannot connect
+	on_world_info = null; //when a user moves
 
     connect(room_name, user_name) {
 
@@ -68,7 +69,6 @@ class MyClient
 
     manageServerMessage( message ) {
         //TODO: manage different server events
-
         message = JSON.parse(message.data)
         switch (message.type) {
             case "ID":
@@ -81,16 +81,20 @@ class MyClient
                 break;
         
             case "LOGIN":
+                
                 if(!this.clients[ message.userID ]) {
                     this.clients[ message.userID ] = { id: message.userID, name: message.user_name };
                     this.room.clients[ message.userID ] = { id: message.userID, name: this.user_name }
                     this.num_clients += 1;
                     console.log("Clients are " + this.room.clients + " and in total there are " + this.num_clients + " clients");
                 }
-
+                
                 if(message.userID != this.user_id){
                     if (this.on_user_connected) {
                         this.on_user_connected(message.userID, message.username)
+                    }
+                    if(this.on_world_info) {
+                        this.on_world_info(JSON.stringify(message))
                     }
                 }
                 break;
@@ -103,13 +107,31 @@ class MyClient
                 if (this.on_user_disconnected) {
                     this.on_user_disconnected(message.userID, message.username)
                 }
+                if(this.on_world_info) {
+                    this.on_world_info(JSON.stringify(message))
+                }
                 
                 break;
 
             case "ROOM":
                 this.clients = message.clients
                 this.num_clients == message.length
-                console.log(message);
+                break;
+
+            case "MOVE": 
+                if(message.userID != this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+            case "WORLD":
+                console.log("Received the message " + JSON.stringify(message));
+                if(message.userID != this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
                 break;
 
             default:
@@ -127,7 +149,7 @@ class MyClient
     //Sends a JSON message to everyone or just the specified targets
     sendMessage(message, targets){
         if (!message){
-            console.log("Message not defined");
+            console.error("Message not defined");
             return
         }
 
@@ -135,7 +157,6 @@ class MyClient
             //If we have targets we want to add them to the message
             message["targets"] = targets
         }
-        console.log(JSON.stringify(message));
         this.socket.send(JSON.stringify(message))
     }
 

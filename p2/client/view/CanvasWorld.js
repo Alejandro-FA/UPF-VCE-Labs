@@ -14,6 +14,8 @@ class MyWorld {
 
         this.user_avatar = null
         this.username = username
+        this.room_name = room
+        MYCHAT.server.on_world_info = this.on_world_info.bind(this)
         
         this.world = null
         this.room = null
@@ -32,8 +34,8 @@ class MyWorld {
             if(!this.users[username]) {
                 this.users[username] = {
                     "url": "img/spritesheet_1.png",
-                    "pos": [50, 230],
-                    "target": [50, 230],
+                    "pos": [300, 230],
+                    "target": [300, 230],
                     "anim": [0],
                     "facing": FRONT
                 }
@@ -43,6 +45,44 @@ class MyWorld {
         })
         .catch(error => {
             console.error('Error loading file:', error);
+            this.world = {
+                "living_room": {
+                    url: "img/room1.avif",
+                    users: {},
+                    r_exit: "relax_room",
+                    l_exit: null
+                },
+            
+                "relax_room": {
+                    url: "img/room2.avif",
+                    users: {},
+                    r_exit: "lounge_room",
+                    l_exit: "living_room"
+                }, 
+            
+                "lounge_room": {
+                    url: "img/room3.avif",
+                    users: {},
+                    r_exit: null,
+                    l_exit: "relax_room"
+                }
+            }
+
+            this.room = this.world[room]
+            this.users = this.room.users
+            this.background = this.imageManager.getImage(this.room.url)
+
+            if(!this.users[username]) {
+                this.users[username] = {
+                    "url": "img/spritesheet_1.png",
+                    "pos": [300, 230],
+                    "target": [300, 230],
+                    "anim": [0],
+                    "facing": FRONT
+                }
+            }
+
+            this.users[username].url = this.user_avatar
         });
     }
 
@@ -119,12 +159,12 @@ class MyWorld {
             let l_exit = this.room.l_exit ? 200 : null
             let r_exit = this.room.r_exit ? this.width - 200 : null
             
-            if(r_exit && myuser.pos[0] >= r_exit){
+            if(r_exit && myuser && myuser.pos[0] >= r_exit){
                 console.log("Exit on the right to room " + this.room.r_exit);
                 this.changeRoom(this.room.r_exit)
             }
 
-            if(l_exit && myuser.pos[0] <= l_exit){
+            if(l_exit && myuser && myuser.pos[0] <= l_exit){
                 console.log("Exit on the left to room " + this.room.l_exit);
                 this.changeRoom(this.room.l_exit)
             }
@@ -147,9 +187,13 @@ class MyWorld {
         //Load the new background
         this.background = this.imageManager.getImage(this.room.url)
 
+        //Change the current room name
+
+        this.room_name = room_name
+    
         //Reset the position and target of the user
 
-        myuser.pos[0] = myuser.target[0] = 250
+        myuser.pos[0] = myuser.target[0] = 300
 
         //Add the user to the new room
         this.room.users[this.username] = myuser
@@ -184,10 +228,20 @@ class MyWorld {
                 //Check if the click is on the upper half of the screen
                 if(this.inputState.mousePos[1] <= 440){
                     this.mouseDown = true
-                    console.log(this.inputState.mousePos[0]);
                     
                     let myuser = this.users[this.username]
                     myuser.target[0] = this.inputState.mousePos[0] - 48
+
+                    //TODO: Send the new target to all users in the room
+                    let msg = {
+                        room: this.room_name,
+                        type: "MOVE",
+                        username: this.username,
+                        content: myuser,
+                        userID: MYCHAT.server.user_id
+                    }
+
+                    MYCHAT.server.sendMessage(msg)
                 }
                 break;
         
@@ -201,6 +255,94 @@ class MyWorld {
 
     onKey( event ) {
 
+    }
+
+    //Callback that handles all the world synchronization
+    on_world_info( info ){
+        info = JSON.parse(info)
+        console.log("Received the world info " + JSON.stringify(info));
+
+        switch (info.type) {
+            case "LOGIN":
+                //LOGIN HANDLING
+                if (MYCHAT.server.user_id === Number(Object.keys(MYCHAT.server.clients)[0])) {
+                    let msg = {
+                        room: this.room_name,
+                        type: "WORLD",
+                        user: this.username,
+                        content: this.room,
+                        userID: MYCHAT.server.user_id
+                    }
+                    MYCHAT.server.sendMessage(msg, info.userID)
+                }
+
+                
+                this.room.users[info.username] = this.users[info.username] = info.content
+
+                break;
+            
+            case "LOGOUT":
+                //LOGOUT HANDLING
+                /*{
+                userID: ws.id,
+                username: user_name,
+                type: "LOGOUT",
+                content: "",
+                date: new Date()
+                }*/
+
+                delete this.users[info.username]
+                delete this.room.users[info.username]
+                break;
+            
+            case "MOVE":
+                //UPDATE POSITION
+                /*{
+                        room: this.room_name,
+                        type: "MOVE",
+                        username: this.username,
+                        content: myuser,
+                        userID: MYCHAT.server.user_id
+                    } 
+                */
+                let user = info.content
+
+                this.room.users[info.username] = this.users[info.username] = user
+                
+                break;
+
+            case "WORLD":
+                //LOAD THE WORLD
+                /*{
+                    room: this.room_name,
+                    type: "WORLD",
+                    user: this.username,
+                    content: this.room,
+                    userID: MYCHAT.server.user_id
+                }*/
+                let room = info.content
+                this.room = room
+                this.room_name = info.room
+                this.users = this.room.users
+
+                if(!this.users[this.username]) {
+                    this.users[this.username] = {
+                        "url": this.user_avatar,
+                        "pos": [300, 230],
+                        "target": [300, 230],
+                        "anim": [0],
+                        "facing": FRONT
+                    }
+                }
+                this.users[this.username].url = this.user_avatar
+    
+                this.background = this.imageManager.getImage(this.room.url) 
+                break;
+
+            default:
+                console.error("Something went wrong")
+                break;
+        }
     }
 
     /***************************************************** 

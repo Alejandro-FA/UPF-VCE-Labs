@@ -253,7 +253,7 @@ const MYCHAT = {
   //Returns a function that changes to the chat which ID is passed
   changeChat: function (chatName) {
     return function () {
-      console.log(`Current chat is ${chatName}`);
+
       let chat = document.getElementById(chatName);
       let oldChat = document.querySelector(".mychat li.selected");
 
@@ -317,7 +317,7 @@ const MYCHAT = {
       this.createNewChat(chatName);
     }
 
-    console.log(chatName);
+
     this.history[chatName] = {
       room: chatName,
       type: "history",
@@ -352,7 +352,7 @@ const MYCHAT = {
     li.id = chatName;
     li.className = "chat selected";
     li = nav.appendChild(li);
-    console.log(li);
+
 
     let img = document.createElement("img");
     img.src = "img/group.svg";
@@ -406,7 +406,6 @@ const MYCHAT = {
   //this methods receives messages from other users (author_id is an unique identifier per user)
   on_message: function (author_id, msg) {
     //data received
-    console.log(`User ${author_id} has sent the message ${msg}`);
 
     let message = JSON.parse(msg);
 
@@ -454,7 +453,6 @@ const MYCHAT = {
 			let history = this.history[this.server.room.name]
 			history.userID = this.server.user_id
       this.server.sendMessage(history, user_id);
-      console.log("Message sent");
     }
   },
 
