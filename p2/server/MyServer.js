@@ -3,13 +3,13 @@ const WebSocket = require('ws');
 const http = require('http');
 const url = require('url');
 const qs = require('querystring');
+const DB = require('./Database');
 
 class MyServer {
 
     rooms = {}
     clients = []
     usernameToClient = {}
-    db = {}
     lastID = 1
 
     constructor() {
