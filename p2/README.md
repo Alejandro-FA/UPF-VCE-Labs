@@ -1,17 +1,11 @@
-# Simple chat webpage
+#· Personal data
 
-This is a project of the Virtual Communication Environments course at Universitat Pompeu Fabra. It is my first time using HTML, CSS and JavaScript. The goal is to build a chat that connects to a simple server and is able to send and receive messages from other students.
+- **email**: `luka.chabaud@estudiant.upf.edu`
+- **NIA**: `241824`
 
-## Personal data
+## How does the chat work
 
-- **email**: `alejandro.fernandez07@estudiant.upf.edu`
-- **NIA**: `242349`
-
-## How does MyChat work
-
-First of all, I would like to remark that my main effort has been to learn as much as possible. This means that I've spent *A LOT* of time reading tutorials and manuals about the best modern practices of web development. I hope that this is reflected in my code.
-
-Second of all, I would like to add that I've prioritized having correct implementations of the desired functionalities instead of having as many features as possible.
+When entering the application, you will start on the login page. From here you can choose your avatar and enter into your account if it already exists. You can try with the User `Lego` and password `hello`. You can also register if you want. Once you are logged in, you will enter the room where you last were. You can move by clicking on the screen. When close enough to the left or right side of the room, you will change rooms.
 
 ### Features implemented
 

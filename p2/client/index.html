@@ -9,8 +9,19 @@
 </head>
 <body>
     <div class="mychat">
-        <!--This is the screen where you choose the romm and user-->
-        <div class="connecting">
+
+        <!--This is the screen where you register-->
+        <div class="register" style="display: none;">
+            <h1>Register</h1>
+            <h2>Username:</h2>
+            <input type="text" name="Username">
+            <h2>Password:</h2>
+            <input type="password" name="Password">
+            <button name="register">Register</button>
+        </div>
+
+        <!--This is the screen where you login and choose the avatar-->
+        <div class="connecting" style="display: flex;">
             <h1>Welcome to my chat!</h1>
             <h2>Choose between the following avatars:</h2>
             <div class="avatars-container">
@@ -20,12 +31,15 @@
                 <img id="avatar4" class="avatar" src="img/Profile 4.png"></img>
             </div>
             <div class="input-container">
-                <div class="input-name">Room name:</div>
-                <input type="text" id="Room">
                 <div class="input-name">User Name:</div>
                 <input type="text" id="User">
+                <div class="input-name">Password:</div>
+                <input type="password" id="Password">
             </div>
             <button onclick="MYAPP.firstConnection(null, 'living_room')" id="connect-button">Connect</button>
+
+            <p><b>Or register if you don't have an account</b></p>
+            <button name="register-page">Register</button>
         </div>
 
         <div class="logged-in" style="display: none;">

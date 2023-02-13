@@ -21,7 +21,7 @@ class MyClient
 	on_error = null; //when cannot connect
 	on_world_info = null; //when a user moves
 
-    connect(room_name, user_name) {
+    connect(room_name, user_name, password) {
 
         room_name = room_name || ""
         user_name = user_name || "Default"
@@ -31,7 +31,7 @@ class MyClient
             this.socket.close()
         }
 
-        let url = `ws://localhost:9016/${room_name}?username=${user_name}`
+        let url = `ws://localhost:9016/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
         this.socket.onopen = () => {
@@ -68,9 +68,23 @@ class MyClient
     }
 
     manageServerMessage( message ) {
-        //TODO: manage different server events
         message = JSON.parse(message.data)
         switch (message.type) {
+            case "REGISTER":
+
+                console.log(message);
+                //Close the register connection and go back to the LOGIN screen
+                this.socket.close()
+                if(message.exists){
+                    alert("Account already exists")
+                }
+                let connecting = document.querySelector(".connecting")
+                let register = document.querySelector(".register")
+
+                connecting.style.display = "flex"
+                register.style.display = "none"
+                break;
+
             case "ID":
                 this.user_id = message.userID
                 this.clients[this.user_id] = {id: this.user_id, name: this.user_name}
@@ -97,6 +111,14 @@ class MyClient
                         this.on_world_info(JSON.stringify(message))
                     }
                 }
+
+                break;
+
+            case "LOGINERROR":
+
+
+
+                this.socket.close()
                 break;
 
             case "LOGOUT":
@@ -116,6 +138,13 @@ class MyClient
             case "ROOM":
                 this.clients = message.clients
                 this.num_clients == message.length
+                
+                //Display the canvas
+                let conScreen = document.querySelector(".mychat .connecting");
+                let msgScreen = document.querySelector(".mychat .logged-in");
+          
+                conScreen.style.display = "none";
+                msgScreen.style.display = "grid";
                 break;
 
             case "MOVE": 
@@ -158,6 +187,17 @@ class MyClient
             message["targets"] = targets
         }
         this.socket.send(JSON.stringify(message))
+    }
+
+    //Connect to register url
+    register(username, password) {
+        //TODO: add password to url
+        let url = `ws://localhost:9016/register?username=${username}&password=${password}`
+     
+        this.socket = new WebSocket(url)
+        this.socket.onmessage = (msg) => {
+            this.manageServerMessage(msg)
+        }
     }
 
 }

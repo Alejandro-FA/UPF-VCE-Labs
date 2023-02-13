@@ -39,10 +39,39 @@ class MyServer {
 
         let path = url.parse(req.url)
         let user_name = qs.parse(path.query).username
+        let password = qs.parse(path.query).password
         ws.username = user_name
+
+        if(!(user_name in this.usernameToClient)){
+            //No password needed
+            if(DB.getPassword(user_name) != password) {
+                let msg = {
+                    type: "LOGINERROR"
+                }
+                ws.send(JSON.stringify(msg))
+                return
+            }
+        }
 
         let room_name = path.pathname
         ws.room = room_name.substr(1, room_name.length)
+
+        if(ws.room == "register") {
+            //TODO: send register response
+            console.log("Someone is registering");
+            let msg = {
+                type: "REGISTER",
+                exists: false
+            }
+
+            if(DB.getPassword(user_name)) {
+                msg.exists = true
+            } else {
+                DB.addUser(user_name, password)
+            }
+            ws.send(JSON.stringify(msg))
+            return
+        }
 
         
         //Accept the new client and give it it's ID
@@ -96,8 +125,6 @@ class MyServer {
         //TODO
 
         let connection_close = () => {
-
-            //TODO: erase the client from the room and server
 
             let room = this.rooms[ws.room]
             let index = room.clients.indexOf(ws)

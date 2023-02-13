@@ -22,6 +22,7 @@ class MyWorld {
         this.users = null
         this.background = null
 
+        //TODO: change this to the new path
         fetch('model/world.json')
         .then(response => response.json())
         .then(data => {
@@ -179,8 +180,6 @@ class MyWorld {
 
         delete this.room.users[this.username]
 
-        //TODO: Send the message to the other users of the room
-
         //Enter the new room
         this.room = this.world[room_name]
 
@@ -232,7 +231,6 @@ class MyWorld {
                     let myuser = this.users[this.username]
                     myuser.target[0] = this.inputState.mousePos[0] - 48
 
-                    //TODO: Send the new target to all users in the room
                     let msg = {
                         room: this.room_name,
                         type: "MOVE",

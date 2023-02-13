@@ -27,6 +27,16 @@ body {
   z-index: -5;
 }
 
+/***Register CSS***/
+
+.mychat .register {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /***Connecting CSS***/
 .mychat .connecting{
   height: 100%;
@@ -79,7 +89,7 @@ body {
   font-weight: bold;
 }
 
-.mychat #Room, .mychat #User{
+.mychat #Password, .mychat #User{
   margin: 7px 15px;
   padding: 0px 10px;
   border-radius: 50px;
@@ -87,7 +97,7 @@ body {
   height: 100%;
 }
 
-.mychat #connect-button{
+.mychat #connect-button, .mychat button[name="register-page"], .mychat button[name="register"]{
   width: 20%;
   height: 5%;
   border-radius: 50px;

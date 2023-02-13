@@ -81,25 +81,18 @@ const MYCHAT = {
   },
 
   //Connect for the first time (from the connection screen)
-  firstConnection: function (username, roomname) {
-    let room_name = roomname || document.getElementById("Room").value;
+  firstConnection: function (username, roomname, password) {
+    password = password || document.getElementById("Password").value;
     let user_name = username || document.getElementById("User").value;
 
     this.user_name = user_name;
 
-    this.visited_chats.push(room_name)
+    this.visited_chats.push(roomname)
 
-    if (this.connection(room_name, user_name)) {
-      let conScreen = document.querySelector(".mychat .connecting");
-      let msgScreen = document.querySelector(".mychat .logged-in");
-
-      conScreen.style.display = "none";
-      msgScreen.style.display = "grid";
-
-
-
-      this.history[room_name] = {
-        room: room_name,
+    if (this.connection(roomname, user_name, password)) {
+    
+      this.history[roomname] = {
+        room: roomname,
         type: "history",
         content: [],
 				user: this.user_name,
@@ -109,7 +102,7 @@ const MYCHAT = {
   },
 
   //Given a room name and a user name, connects to the server
-  connection: function (room_name, user_name) {
+  connection: function (room_name, user_name, password) {
     this.server.user = user_name;
 
     let chatTitle = document.querySelector(".mychat .chat-title");
@@ -128,7 +121,7 @@ const MYCHAT = {
       return false;
     }
 
-    this.server.connect(room_name, user_name);
+    this.server.connect(room_name, user_name, password);
 
     return true;
   },
