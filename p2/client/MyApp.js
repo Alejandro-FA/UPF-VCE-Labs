@@ -23,7 +23,7 @@ class MyApp {
 		}
     	this.chat.firstConnection(username, room_name);
 		
-		let user_name = username || this.chat.user_name
+		let user_name = username || this.chat.user_name
 		this.canvas = new MyCanvas(room_name, user_name);
 		
 		let url

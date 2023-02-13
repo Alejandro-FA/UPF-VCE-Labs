@@ -42,6 +42,26 @@ class MyServer {
         let password = qs.parse(path.query).password
         ws.username = user_name
 
+
+        let room_name = path.pathname
+        ws.room = room_name.substr(1, room_name.length)
+
+        if(ws.room == "register") {
+            console.log("Someone is registering");
+            let msg = {
+                type: "REGISTER",
+                exists: false
+            }
+
+            if(DB.getPassword(user_name)) {
+                msg.exists = true
+            } else {
+                DB.setUser(user_name, password)
+            }
+            ws.send(JSON.stringify(msg))
+            return
+        }
+
         if(!(user_name in this.usernameToClient)){
             //No password needed
             if(DB.getPassword(user_name) != password) {
@@ -52,27 +72,6 @@ class MyServer {
                 return
             }
         }
-
-        let room_name = path.pathname
-        ws.room = room_name.substr(1, room_name.length)
-
-        if(ws.room == "register") {
-            //TODO: send register response
-            console.log("Someone is registering");
-            let msg = {
-                type: "REGISTER",
-                exists: false
-            }
-
-            if(DB.getPassword(user_name)) {
-                msg.exists = true
-            } else {
-                DB.addUser(user_name, password)
-            }
-            ws.send(JSON.stringify(msg))
-            return
-        }
-
         
         //Accept the new client and give it it's ID
         this.get_new_id(ws)
@@ -146,6 +145,7 @@ class MyServer {
             }
 
             this.sendToRoom(ws.room, JSON.stringify(msg));
+            delete this.usernameToClient[user_name]
 
             if(this.on_user_disconnected){
                 this.on_user_disconnected()
@@ -200,9 +200,6 @@ class MyServer {
                 continue;
             }
 
-            if(type == "WORLD"){
-                console.log("This is the message " + msg);
-            }
             client.send(msg)
         }
     }

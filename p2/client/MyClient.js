@@ -44,9 +44,6 @@ class MyClient
 
             this.room.name = room_name
 
-            if (this.on_connect){
-                this.on_connect()
-            }
         }
 
         let that = this
@@ -116,7 +113,7 @@ class MyClient
 
             case "LOGINERROR":
 
-
+                alert("Username or password is incorrect")
 
                 this.socket.close()
                 break;
@@ -145,6 +142,10 @@ class MyClient
           
                 conScreen.style.display = "none";
                 msgScreen.style.display = "grid";
+
+                if (this.on_connect){
+                    this.on_connect()
+                }
                 break;
 
             case "MOVE": 

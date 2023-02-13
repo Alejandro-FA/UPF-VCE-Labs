@@ -23,13 +23,13 @@ function writeToDatabaseFile(data) {
 	fs.writeFileSync(databaseFile, JSON.stringify(data));
 }
 
-function addUser(username, password, room, position) {
+function setUser(username, password) {
 	if (!doesFileExist()) {
     	createDatabase();
   	}
 
   	let data = readData();
-  	data[username] = { password, room, position };
+  	data[username] = password;
   	writeToDatabaseFile(data);
 }
 
@@ -39,25 +39,7 @@ function getPassword(username) {
   	}
 
   	let data = readData();
-  	return data[username] ? data[username].password : null;
+  	return data[username] ? data[username] : null;
 }
 
-function getRoom(username) {
-  	if (!doesFileExist()) {
-    	return null;
-  	}
-
-  	let data = readData();
-  	return data[username] ? data[username].room : null;
-}
-
-function getPosition(username) {
-  	if (!doesFileExist()) {
-    	return null;
-  	}
-
-  	let data = readData();
-  	return data[username] ? data[username].position : null;
-}
-
-module.exports = { addUser, getPassword, getRoom, getPosition };
+module.exports = { setUser, getPassword };

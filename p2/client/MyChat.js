@@ -30,6 +30,8 @@ const MYCHAT = {
 
   id_user: {},
 
+  password: "undefined",
+
   //Initial code to be run when loading the Script
   init: function () {
     this.server = new MyClient();
@@ -49,7 +51,7 @@ const MYCHAT = {
       }
     });
 
-    document.querySelector(".mychat li").onclick = this.changeChat(0);
+    //document.querySelector(".mychat li").onclick = this.changeChat(0);
 
     //Event listener for the avatar selection
     let avatars = document.querySelectorAll(".mychat .avatar");
@@ -85,11 +87,13 @@ const MYCHAT = {
     password = password || document.getElementById("Password").value;
     let user_name = username || document.getElementById("User").value;
 
+    this.password = password
+
     this.user_name = user_name;
 
     this.visited_chats.push(roomname)
 
-    if (this.connection(roomname, user_name, password)) {
+    if (this.connection(roomname, user_name, this.password)) {
     
       this.history[roomname] = {
         room: roomname,
@@ -264,7 +268,7 @@ const MYCHAT = {
 
       if (c != "_") {
         if (MYCHAT.server.room.name != chatName) {
-          MYCHAT.connection(chatName, MYCHAT.server.user);
+          MYCHAT.connection(chatName, MYCHAT.server.user, this.password);
         }
 
 				MYCHAT.private = false;
@@ -320,7 +324,7 @@ const MYCHAT = {
     };
 
     let newchat = document.getElementById(chatName);
-    newchat.onclick = this.changeChat(chatName).bind(MYCHAT);
+    //newchat.onclick = this.changeChat(chatName).bind(MYCHAT);
 
     this.changeChat(chatName).call(this);
   },

@@ -158,6 +158,9 @@ class MyWorld {
             let myuser = this.users[this.username]
 
             let l_exit = this.room.l_exit ? 200 : null
+            if(this.width == 0) {
+                this.width = 99999
+            }
             let r_exit = this.room.r_exit ? this.width - 200 : null
             
             if(r_exit && myuser && myuser.pos[0] >= r_exit){
