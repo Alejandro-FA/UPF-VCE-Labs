@@ -44,47 +44,6 @@ class MyWorld {
 
             this.users[username].url = this.user_avatar
         })
-        .catch(error => {
-            console.error('Error loading file:', error);
-            this.world = {
-                "living_room": {
-                    url: "img/room1.avif",
-                    users: {},
-                    r_exit: "relax_room",
-                    l_exit: null
-                },
-            
-                "relax_room": {
-                    url: "img/room2.avif",
-                    users: {},
-                    r_exit: "lounge_room",
-                    l_exit: "living_room"
-                }, 
-            
-                "lounge_room": {
-                    url: "img/room3.avif",
-                    users: {},
-                    r_exit: null,
-                    l_exit: "relax_room"
-                }
-            }
-
-            this.room = this.world[room]
-            this.users = this.room.users
-            this.background = this.imageManager.getImage(this.room.url)
-
-            if(!this.users[username]) {
-                this.users[username] = {
-                    "url": "img/spritesheet_1.png",
-                    "pos": [300, 230],
-                    "target": [300, 230],
-                    "anim": [0],
-                    "facing": FRONT
-                }
-            }
-
-            this.users[username].url = this.user_avatar
-        });
     }
 
 
@@ -181,7 +140,7 @@ class MyWorld {
         //Delete the user from the old room
         let myuser = this.users[this.username]
 
-        delete this.room.users[this.username]
+        this.room.users = {}
 
         //Enter the new room
         this.room = this.world[room_name]
