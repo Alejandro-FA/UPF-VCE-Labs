@@ -14,6 +14,15 @@ class MyApp {
 		connecting.style.display = "none"
 		register.style.display = "flex"
 	})
+
+	button = document.querySelector("button[name='login-page']")
+	button.addEventListener("click", ( event ) => {
+		let connecting = document.querySelector(".connecting")
+		let register = document.querySelector(".register")
+
+		connecting.style.display = "flex"
+		register.style.display = "none"
+	})
   }
 
 	firstConnection(username, room_name) {

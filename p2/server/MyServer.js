@@ -1,5 +1,5 @@
 const express = require('express');
-const WebSocket = require('ws');
+const WebSocketServer = require('websocket').server;
 const http = require('http');
 const url = require('url');
 const qs = require('querystring');
@@ -19,9 +19,9 @@ class MyServer {
         app.use(express.static('public'));
 
         this.server = http.createServer( app );
-        this.wss = new WebSocket.Server({ server: this.server });
+        this.wss = new WebSocketServer({ httpServer: this.server });
         
-        this.wss.on("connection", this.on_connection.bind(this));
+        this.wss.on("request", this.on_connection.bind(this));
 
         this.on_user_connected = null
         this.on_message = null
@@ -32,12 +32,14 @@ class MyServer {
 
 
     //Server connection
-    on_connection (ws, req) {
+    on_connection (req) {
         console.log("Connected");
 
         //Parse the url
 
-        let path = url.parse(req.url)
+        let ws = req.accept()
+
+        let path = url.parse(req.resource)
         let user_name = qs.parse(path.query).username
         let password = qs.parse(path.query).password
         ws.username = user_name
@@ -126,6 +128,9 @@ class MyServer {
         let connection_close = () => {
 
             let room = this.rooms[ws.room]
+            if(!room) {
+                return
+            }
             let index = room.clients.indexOf(ws)
 
             room.clients.splice(index, 1)
@@ -196,7 +201,7 @@ class MyServer {
                 }
                 continue
             }
-            if(client.readyState != WebSocket.OPEN){
+            if(!client.connected){
                 continue;
             }
 
@@ -206,8 +211,8 @@ class MyServer {
     
     //Message received
     on_message_received(message) {
-        
-        let msg = JSON.parse(message)
+        console.log(message);
+        let msg = JSON.parse(message.utf8Data)
         
         if(this.on_message){
             this.on_message()

@@ -34,7 +34,23 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
+}
+
+.mychat input[name="Username"], .mychat input[name="Password"]{
+  margin: 7px 15px;
+  padding: 0px 10px;
+  border-radius: 50px;
+  width: 75%;
+  height: 50%;
+}
+
+.mychat button[name="register"], .mychat button[name="login-page"] {
+  width: 20%;
+  height: 5%;
+  border-radius: 50px;
+  background-color: #008585;
+  font-weight: bold;
 }
 
 /***Connecting CSS***/
@@ -97,7 +113,7 @@ body {
   height: 100%;
 }
 
-.mychat #connect-button, .mychat button[name="register-page"], .mychat button[name="register"]{
+.mychat #connect-button, .mychat button[name="register-page"] {
   width: 20%;
   height: 5%;
   border-radius: 50px;

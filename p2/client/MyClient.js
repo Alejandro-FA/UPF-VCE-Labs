@@ -193,7 +193,7 @@ class MyClient
     //Connect to register url
     register(username, password) {
         //TODO: add password to url
-        let url = `ws://localhost:9016/register?username=${username}&password=${password}`
+        let url = `wss://ecv-etic.upf.edu/node/9016/ws/register?username=${username}&password=${password}`
      
         this.socket = new WebSocket(url)
         this.socket.onmessage = (msg) => {
