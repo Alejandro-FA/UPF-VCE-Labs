@@ -22,11 +22,9 @@ class MyWorld {
         this.users = null
         this.background = null
 
-        //TODO: change this to the new path
-        fetch('model/world.json')
+        fetch('https://ecv-etic.upf.edu/node/9016/world')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             this.world = data
             this.room = data[room]
             this.users = this.room.users
@@ -35,8 +33,8 @@ class MyWorld {
             if(!this.users[username]) {
                 this.users[username] = {
                     "url": "img/spritesheet_1.png",
-                    "pos": [300, 230],
-                    "target": [300, 230],
+                    "pos": [300, 250],
+                    "target": [300, 250],
                     "anim": [0],
                     "facing": FRONT
                 }
@@ -58,13 +56,6 @@ class MyWorld {
         //Draw the current world
         this.drawWorld(ctx)
 
-        // Draw rectangle with specified color
-
-        if(this.mouseDown){
-            ctx.fillStyle = "red";
-            let world_mouse = this.coords.canvasToWorld(this.inputState.mousePos)
-            ctx.fillRect(world_mouse[0] - 10, world_mouse[1] - 10, 20, 20);
-        }
     }
 
     //From the world object draws the frame
@@ -123,12 +114,10 @@ class MyWorld {
             let r_exit = this.room.r_exit ? this.width - 200 : null
             
             if(r_exit && myuser && myuser.pos[0] >= r_exit){
-                console.log("Exit on the right to room " + this.room.r_exit);
                 this.changeRoom(this.room.r_exit)
             }
 
             if(l_exit && myuser && myuser.pos[0] <= l_exit){
-                console.log("Exit on the left to room " + this.room.l_exit);
                 this.changeRoom(this.room.l_exit)
             }
 
@@ -220,7 +209,6 @@ class MyWorld {
     //Callback that handles all the world synchronization
     on_world_info( info ){
         info = JSON.parse(info)
-        console.log("Received the world info " + JSON.stringify(info));
 
         switch (info.type) {
             case "LOGIN":
