@@ -336,9 +336,6 @@ const MYCHAT = {
     let clients = this.server.clients;
 
     let userID = chatName.slice(1);
-    if (userID in clients) {
-      console.log("I am private");
-    }
   },
 
   //Create the HTML element with all the attributes

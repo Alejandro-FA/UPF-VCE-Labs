@@ -123,7 +123,6 @@ class MyServer {
         ws.on('message', this.on_message_received.bind(this));
 
         //Configure on close and on error callback
-        //TODO
 
         let connection_close = () => {
 
@@ -177,7 +176,6 @@ class MyServer {
             date: new Date()
         }
         ws.send(JSON.stringify(msg))
-        console.log("Sent the new id " + ws.id);
         return ws.id
     }
     
@@ -196,9 +194,6 @@ class MyServer {
             let type = JSON.parse(msg).type
 
             if (target && client.id !== target) {
-                if(type == "WORLD"){
-                    console.log("have a problem with message " + msg + " target " + target + " client id " + client.id);
-                }
                 continue
             }
             if(!client.connected){
@@ -211,15 +206,10 @@ class MyServer {
     
     //Message received
     on_message_received(message) {
-        console.log(message);
         let msg = JSON.parse(message.utf8Data)
         
         if(this.on_message){
             this.on_message()
-        }
-
-        if(msg.type == "WORLD"){
-            console.log("Sending the message " + JSON.stringify(msg));
         }
         
         this.sendToRoom(msg.room, JSON.stringify(msg), msg.targets)

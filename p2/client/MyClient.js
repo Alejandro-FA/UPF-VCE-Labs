@@ -69,7 +69,6 @@ class MyClient
         switch (message.type) {
             case "REGISTER":
 
-                console.log(message);
                 //Close the register connection and go back to the LOGIN screen
                 this.socket.close()
                 if(message.exists){
@@ -97,7 +96,6 @@ class MyClient
                     this.clients[ message.userID ] = { id: message.userID, name: message.user_name };
                     this.room.clients[ message.userID ] = { id: message.userID, name: this.user_name }
                     this.num_clients += 1;
-                    console.log("Clients are " + this.room.clients + " and in total there are " + this.num_clients + " clients");
                 }
                 
                 if(message.userID != this.user_id){
@@ -122,7 +120,6 @@ class MyClient
                 delete this.clients[ message.userID ];
                 delete this.room.clients[ message.userID ];
                 this.num_clients -= 1;
-                console.log("Clients are " + this.room.clients + " and in total there are " + this.num_clients + " clients");
                 if (this.on_user_disconnected) {
                     this.on_user_disconnected(message.userID, message.username)
                 }
@@ -156,7 +153,6 @@ class MyClient
                 }
                 break;
             case "WORLD":
-                console.log("Received the message " + JSON.stringify(message));
                 if(message.userID != this.user_id){
                     if(this.on_world_info){
                         this.on_world_info(JSON.stringify(message))
@@ -192,7 +188,6 @@ class MyClient
 
     //Connect to register url
     register(username, password) {
-        //TODO: add password to url
         let url = `wss://ecv-etic.upf.edu/node/9016/ws/register?username=${username}&password=${password}`
      
         this.socket = new WebSocket(url)

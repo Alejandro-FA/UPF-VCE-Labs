@@ -186,23 +186,6 @@ body {
   z-index: 10;
 }
 
-.mychat #new-room {
-  padding: 5px 10px ;
-  border-radius: 50px;
-  width: 70%;
-}
-
-.mychat .add-chat{
-  width: 40px;
-  height: 40px;
-  margin-left: 5px;
-}
-
-.mychat .add-chat:hover{
-  transform: scale(1.05);
-  cursor: pointer;
-}
-
 /*Navbar section*/
 .mychat nav {
   grid-column: 1;
