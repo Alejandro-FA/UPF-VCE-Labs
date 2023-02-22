@@ -276,8 +276,8 @@ class MyWorld {
                 if(!this.users[this.username]) {
                     this.users[this.username] = {
                         "url": this.user_avatar,
-                        "pos": [300, 230],
-                        "target": [300, 230],
+                        "pos": [300, 250],
+                        "target": [300, 250],
                         "anim": [0],
                         "facing": FRONT
                     }

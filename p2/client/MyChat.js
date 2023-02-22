@@ -61,14 +61,6 @@ const MYCHAT = {
       });
     });
 
-    //Event listener of the input for new rooms
-    elem = document.getElementById("new-room");
-    elem.addEventListener("keydown", (event) => {
-      if (event.code == "Enter") {
-        let chatName = document.getElementById("new-room").value;
-        this.connectNewChat(chatName);
-      }
-    });
   },
 
   //Configure all the server callbacks

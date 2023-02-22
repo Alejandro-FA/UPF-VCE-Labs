@@ -18,6 +18,12 @@ class MyServer {
 
         app.use(express.static('public'));
 
+        app.get("/world", (req, res) => {
+            let worldData = fs.readFileSync("./world.json")
+            console.log("It arrives here");
+            res.send(worldData);
+        })
+
         this.server = http.createServer( app );
         this.wss = new WebSocketServer({ httpServer: this.server });
         

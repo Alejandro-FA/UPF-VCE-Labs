@@ -1,6 +1,7 @@
 const fs = require("fs");
+const crypto = require("crypto")
 
-const databaseFile = "./database.json";
+const databaseFile = "database.json";
 
 function createDatabase() {
 	fs.writeFileSync(databaseFile, JSON.stringify({}), { flag: "wx" });
@@ -16,7 +17,8 @@ function doesFileExist() {
 }
 
 function readData() {
-	return JSON.parse(fs.readFileSync(databaseFile, "utf-8"));
+	let data = fs.readFileSync(databaseFile, "utf-8")
+	return JSON.parse(data);
 }
 
 function writeToDatabaseFile(data) {
@@ -29,7 +31,8 @@ function setUser(username, password) {
   	}
 
   	let data = readData();
-  	data[username] = password;
+	let encodedPassword = encrypt(password);
+  	data[username] = encodedPassword;
   	writeToDatabaseFile(data);
 }
 
@@ -38,8 +41,22 @@ function getPassword(username) {
     	return null;
   	}
 
-  	let data = readData();
-  	return data[username] ? data[username] : null;
+	let data = readData();
+  	return data[username] ? decrypt(data[username]) : null;
+}
+
+function encrypt(text){
+	var cipher = crypto.createCipher('aes-256-cbc','d6F3Efeq');
+	var crypted = cipher.update(text,'utf8','hex');
+	crypted += cipher.final('hex');
+	return crypted;
+}
+  
+function decrypt(text){
+	var decipher = crypto.createDecipher('aes-256-cbc','d6F3Efeq');
+	var dec = decipher.update(text,'hex','utf8');
+	dec += decipher.final('utf8');
+	return dec;
 }
 
 module.exports = { setUser, getPassword };
