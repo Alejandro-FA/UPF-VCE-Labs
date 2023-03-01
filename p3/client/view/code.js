@@ -6,14 +6,14 @@ var character = null;
 var animations = {};
 var animation = null;
 
-function init()
+function init(username)
 {
 	//create the rendering context
 	var context = GL.create({width: window.innerWidth, height:window.innerHeight});
 
 	//setup renderer
 	renderer = new RD.Renderer(context);
-	renderer.setDataFolder("data");
+	renderer.setDataFolder("view/data");
 	renderer.autoload_assets = true;
 
 	//attach canvas to DOM
@@ -33,7 +33,7 @@ function init()
 	//create material for the girl
 	var mat = new RD.Material({
 		textures: {
-		 color: "girl/girl.png" }
+			color: "girl/girl.png" }
 		});
 	mat.register("girl");
 
@@ -50,6 +50,7 @@ function init()
 	});
 	girl_pivot.addChild(girl);
 	girl.skeleton = new RD.Skeleton();
+	world.setUserSceneNode(username, girl_pivot);
 	scene.root.addChild( girl_pivot );
 
 
@@ -62,13 +63,13 @@ function init()
 		anim.load(url);
 		return anim;
 	}
-	loadAnimation("idle","data/girl/idle.skanim");
-	loadAnimation("walking","data/girl/walking.skanim");
-	loadAnimation("dance","data/girl/dance.skanim");
+	loadAnimation("idle","view/data/girl/idle.skanim");
+	loadAnimation("walking","view/data/girl/walking.skanim");
+	loadAnimation("dance","view/data/girl/dance.skanim");
 
 	//load a GLTF for the room
 	var room = new RD.SceneNode({scaling:40});
-	room.loadGLTF("data/room.gltf");
+	room.loadGLTF("view/data/room.gltf");
 	scene.root.addChild( room );
 
 	// main loop ***********************
@@ -79,6 +80,7 @@ function init()
 		gl.canvas.height = document.body.offsetHeight;
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
+		//camera.lookAt( camera.position, character_pivot.localToGlobal(), [0, 1, 0])
 		//clear
 		renderer.clear(bg_color);
 		//render scene
@@ -91,22 +93,40 @@ function init()
 		//not necessary but just in case...
 		scene.update(dt);
 
+		world.update(dt);
 		var t = getTime();
 		var anim = animations.idle;
 		var time_factor = 1;
 
 		//control with keys
-		manageKeys(gl, character, animations, time_factor, dt);
+		if(gl.keys["UP"])
+		{
+			character.moveLocal([0,0,1]);
+			anim = animations.walking;
+		}
+		else if(gl.keys["DOWN"])
+		{
+			character.moveLocal([0,0,-1]);
+			anim = animations.walking;
+			time_factor = -1;
+		}
+		if(gl.keys["LEFT"])
+			character.rotate(90*DEG2RAD*dt,[0,1,0]);
+		else if(gl.keys["RIGHT"])
+			character.rotate(-90*DEG2RAD*dt,[0,1,0]);
+
+
+		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 0.1, 1000 );
 
 		//move bones in the skeleton based on animation
-		anim.assignTime( t * 0.001 * time_factor );
+		//anim.assignTime( t * 0.001 * time_factor );
 		//copy the skeleton in the animation to the character
-		character.skeleton.copyFrom( anim.skeleton );
+		//character.skeleton.copyFrom( anim.skeleton );
 	}
 
 	//user input ***********************
 
-	configureInputs(context)
+	configureInputs(context, girl_pivot)
 
 	//launch loop
 	context.animate();
