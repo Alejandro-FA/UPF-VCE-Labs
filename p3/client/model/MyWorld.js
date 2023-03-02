@@ -3,6 +3,7 @@ const FRONT = 64;
 const LEFT = 128;
 const BACK = 192;
 
+const SCENE_NODES = {};
 class MyWorld {
     constructor(room, username) {
         this.user_avatar = null
@@ -13,7 +14,6 @@ class MyWorld {
         this.world = null
         this.room = null
         this.users = null
-        this.sceneNode = null
         this.background = null
 
         //TODO: Change when using in server
@@ -26,23 +26,21 @@ class MyWorld {
 
             if(!this.users[username]) {
                 this.users[username] = {
-                    "sceneNode": this.sceneNode,
+                    "position": vec3.create([-40, 0, 0]),
                     "target": vec3.create([-40, 0, 0]),
-                    "anim": "idle",
+                    "anim": "girl_idle",
                 }
             }
 
-            this.users[username].url = this.user_avatar
         })
     }
 
 
     setUserSceneNode(username, SceneNode) {
         if(this.users){
-            this.users[username].sceneNode = SceneNode;
-        } else {
-            this.sceneNode = SceneNode
-        }
+            this.users[username].position = SceneNode.position;
+        } 
+        SCENE_NODES[username] = SceneNode
     }
 
     setThisUserSceneNode(SceneNode) {
@@ -52,13 +50,24 @@ class MyWorld {
     setUserTarget(username, target) {
         if(this.users) {
             this.users[username].target = target;
-            this.users[username].anim = "walking"
+            this.setThisUserAnim(username, `${SCENE_NODES[username]}_walking`)
         }
     }
-
+    
     setThisUserTarget(target) {
         this.setUserTarget(this.username, target);
     }
+
+    setThisUserAnim(anim) {
+        this.setUserAnim(this.username, anim);
+    }
+
+    setUserAnim(username, anim) {
+        if(this.users) {
+            this.users[username].anim = `${anim}`;
+        }
+    }
+
 
     //Update the data of the model
     update(elapsed_time) {
@@ -66,14 +75,14 @@ class MyWorld {
         //Update the position of every user
         for(let name in this.users){
             let user = this.users[name]
-            if(!this.atTarget(user)) {
-                this.moveCharacter(user.sceneNode, user.target, elapsed_time);
+            if(!this.atTarget(name)) {
+                this.moveCharacter(SCENE_NODES[name], user.target, elapsed_time);
                 //user.pos[0] = lerp( user.pos[0], user.target[0], elapsed_time );
             }
             let t = getTime();
             let time_factor = 1;
             let anim = animations[user.anim]
-            let character = user.sceneNode.children[0]
+            let character = SCENE_NODES[name].children[0]
             //move bones in the skeleton based on animation
             anim.assignTime( t * 0.001 * time_factor );
             //copy the skeleton in the animation to the character
@@ -147,14 +156,15 @@ class MyWorld {
 
     }
 
-    //CHANGE: This function verifies if the user is at the range of it's target - Adapt it to 3d
-    atTarget(user){
-        let sceneNode = user.sceneNode
+    //This function verifies if the user is at the range of it's target - Adapt it to 3d
+    atTarget(username){
+        let user = this.users[username]
+        let sceneNode = SCENE_NODES[username]
         if((sceneNode.position[0] < user.target[0] -2 || sceneNode.position[0] > user.target[0] +2) && (sceneNode.position[2] < user.target[2] -2 || sceneNode.position[2] > user.target[2] +2)) {
-            user.anim = "walking"
+            user.anim = `${sceneNode.name}_walking`
             return false
         }
-        user.anim = "idle"
+        user.anim = `${sceneNode.name}_idle`
         return true
     }
 
@@ -176,8 +186,8 @@ class MyWorld {
                     MYCHAT.server.sendMessage(msg, info.userID)
                 }
 
-                
                 this.room.users[info.username] = this.users[info.username] = info.content
+                this.createCharacter(info.content.character, info.username, info.content.position, info.content.scaling)
 
                 break;
             
@@ -229,17 +239,62 @@ class MyWorld {
                     this.users[this.username] = {
                         "pos": vec3.create([-40, 0, 0]),
                         "target": vec3.create([-40, 0, 0]),
-                        "anim": [0],
+                        "anim": "default",
                     }
                 }
-                this.users[this.username].url = this.user_avatar
-    
-                this.background = this.imageManager.getImage(this.room.url) 
                 break;
 
             default:
                 console.error("Something went wrong")
                 break;
         }
+    }
+
+    //Create a character from a LOGIN message
+    createCharacter(character_name, username, position, scaling) {
+
+        //create material for the character
+        var mat = new RD.Material({
+            textures: {
+                color: `${character_name}/${character_name}.png` }
+            });
+        mat.register(`${character_name}`);
+
+        //create pivot point for the character
+        var character_pivot = new RD.SceneNode({
+            position: position,
+            name: character_name
+        });
+
+        //create a mesh for the character
+        var character = new RD.SceneNode({
+            scaling: scaling,
+            mesh: `${character_name}/${character_name}.wbin`,
+            material: `${character_name}`
+        });
+        character_pivot.addChild(character);
+        character.skeleton = new RD.Skeleton();
+
+        this.setUserSceneNode(username, character_pivot);
+        this.setUserTarget(username, position);
+        this.setUserAnim(username, `${character_name}_idle`)
+
+        scene.root.addChild( character_pivot );
+
+        //Create a selector for the character
+        var character_selector = new RD.SceneNode({
+            position: [0, 0, 0],
+            mesh: "cube",
+            material: `${character_name}`,
+            scaling: [10, 80, 10],
+            name: "character_selector",
+            layers: 0b1000
+        })
+        character_pivot.addChild(character_selector);
+        SCENE_NODES[username] = character_pivot;
+
+        loadAnimation(`${character_name}_idle`,`view/data/${character_name}/idle.skanim`);
+        loadAnimation(`${character_name}_walking`,`view/data/${character_name}/walking.skanim`);
+        loadAnimation(`${character_name}_dance`,`view/data/${character_name}/dance.skanim`);
     }
 }

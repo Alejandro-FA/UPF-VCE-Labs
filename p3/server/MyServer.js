@@ -116,10 +116,12 @@ class MyServer {
             username: user_name,
             type: "LOGIN",
             content: {
-                url: "img/spritesheet_1.png",
-                pos: [300, 250],
-                target: [300, 250],
-                anim: [0]
+                character: "girl",
+                //This is the default position. TODO: restore the position from previous connection
+                position: [-40, 0, 0],
+                scaling: 0.3,
+                target: [-40, 0, 0],
+                anim: "default"
             },
             date: new Date()
         }
@@ -218,6 +220,7 @@ class MyServer {
             this.on_message()
         }
         
+        console.log(msg);
         this.sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
     }
 

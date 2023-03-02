@@ -12,7 +12,7 @@ function configureInputs(context, character) {
                 console.log("Girl position", character.position);
 				console.log( "floor position clicked", ray.collision_point );
 
-                world.setThisUserTarget(ray.collision_point)
+                WORLD.setThisUserTarget(ray.collision_point)
 				sphere_cursor.position = ray.collision_point
 				
 				var delta = vec3.sub(vec3.create(), ray.collision_point, character.position)
@@ -25,37 +25,33 @@ function configureInputs(context, character) {
 				setTimeout(() => {
 					fastClick = false
 				}, 1000)
+
+
+				//Check if the click is on the canvas
+				if(e.target.nodeName == "CANVAS"){
+					
+					let myuser = WORLD.users[WORLD.username]
+					let username = WORLD.username
+					let msg = {
+						room: WORLD.room_name,
+						type: "MOVE",
+						username: username,
+						content: {
+							character: SCENE_NODES[username].name,
+							scaling: SCENE_NODES[username].children[0].scaling,
+							position: SCENE_NODES[username].position,
+							target: myuser.target,
+							anim: "walking"
+						},
+						userID: MYCHAT.server.user_id
+					}
+	
+					MYCHAT.server.sendMessage(msg)
+				}
 			}
 		}
+
 	}
-
-	/*switch (event.type) {
-            case "mousedown":
-                //Check if the click is on the upper half of the screen
-                if(this.inputState.mousePos[1] <= 440){
-                    this.mouseDown = true
-                    
-                    let myuser = this.users[this.username]
-                    myuser.target[0] = this.inputState.mousePos[0] - 48
-
-                    let msg = {
-                        room: this.room_name,
-                        type: "MOVE",
-                        username: this.username,
-                        content: myuser,
-                        userID: MYCHAT.server.user_id
-                    }
-
-                    MYCHAT.server.sendMessage(msg)
-                }
-                break;
-        
-            case "mouseup":
-                this.mouseDown = false
-                break;
-            default:
-                break;
-        } */
 		
 	context.onmousemove = function(e)
 	{

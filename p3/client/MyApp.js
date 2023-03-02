@@ -1,4 +1,4 @@
-let world;
+let WORLD;
 
 class MyApp {
   constructor() {
@@ -35,7 +35,7 @@ class MyApp {
     	this.chat.firstConnection(username, room_name);
 		
 		let user_name = username || this.chat.user_name
-		world = new MyWorld(room_name, user_name);
+		WORLD = new MyWorld(room_name, user_name);
 
 		//Initiate the rendering of the World
 		init(user_name);

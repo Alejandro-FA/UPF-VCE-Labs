@@ -7,6 +7,15 @@ var animations = {};
 var animation = null;
 
 var sphere_cursor = null
+
+//load some animations
+function loadAnimation( name, url )
+{
+	var anim = animations[name] = new RD.SkeletalAnimation();
+	anim.load(url);
+	return anim;
+}
+
 function init(username)
 {
 	//create the rendering context
@@ -40,18 +49,20 @@ function init(username)
 
 	//create pivot point for the girl
 	var girl_pivot = new RD.SceneNode({
-		position: [-40,0,0]
+		position: [-40,0,0],
+		name: "girl"
 	});
 
 	//create a mesh for the girl
 	var girl = new RD.SceneNode({
 		scaling: 0.3,
 		mesh: "girl/girl.wbin",
-		material: "girl"
+		material: "girl",
 	});
 	girl_pivot.addChild(girl);
 	girl.skeleton = new RD.Skeleton();
-	world.setUserSceneNode(username, girl_pivot);
+
+	WORLD.setUserSceneNode(username, girl_pivot);
 	scene.root.addChild( girl_pivot );
 
 	//Create a selector for the character
@@ -80,16 +91,9 @@ function init(username)
 
 	scene.root.addChild(sphere_cursor)
 
-	//load some animations
-	function loadAnimation( name, url )
-	{
-		var anim = animations[name] = new RD.SkeletalAnimation();
-		anim.load(url);
-		return anim;
-	}
-	loadAnimation("idle","view/data/girl/idle.skanim");
-	loadAnimation("walking","view/data/girl/walking.skanim");
-	loadAnimation("dance","view/data/girl/dance.skanim");
+	loadAnimation("girl_idle","view/data/girl/idle.skanim");
+	loadAnimation("girl_walking","view/data/girl/walking.skanim");
+	loadAnimation("girl_dance","view/data/girl/dance.skanim");
 
 	//load a GLTF for the room
 	var room = new RD.SceneNode({scaling:40});
@@ -105,10 +109,10 @@ function init(username)
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
 		//find where to place the camera based
-		var campos = character.localToGlobal([0,80,-70]);
+		var campos = character.localToGlobal([0,100,-80]);
 
 		//find where to point at the camera
-		var camtarget = character.localToGlobal([0,30,-10]);
+		var camtarget = character.localToGlobal([0,50,-10]);
 
 		var smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
 
@@ -134,7 +138,7 @@ function init(username)
 		//not necessary but just in case...
 		scene.update(dt);
 
-		world.update(dt);
+		WORLD.update(dt);
 		var t = getTime();
 		var anim = animations.idle;
 		var time_factor = 1;
