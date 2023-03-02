@@ -72,11 +72,13 @@ function init(username)
 	sphere_cursor = new RD.SceneNode({
 		position: [0, 0, 0],
 		mesh: "sphere",
-		material: "girl", 
-		scaling: 10,
+		color: [0, 255, 0, 0],
+		scaling: 5,
 		name: "sphere_cursor",
 		layers: 0b100
 	})
+
+	scene.root.addChild(sphere_cursor)
 
 	//load some animations
 	function loadAnimation( name, url )
@@ -109,9 +111,16 @@ function init(username)
 		var camtarget = character.localToGlobal([0,30,-10]);
 
 		var smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
-		
+
 		//use to set up camera
 		camera.lookAt( campos, smoothtarget, [0,1,0] );
+
+
+		if(fastClick) {
+			sphere_cursor.flags.visible = true
+		} else {
+			sphere_cursor.flags.visible = false
+		}
 
 		//clear
 		renderer.clear(bg_color);
