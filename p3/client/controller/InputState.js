@@ -15,10 +15,6 @@ function configureInputs(context, character) {
                 WORLD.setThisUserTarget(ray.collision_point)
 				sphere_cursor.position = ray.collision_point
 				
-				var delta = vec3.sub(vec3.create(), ray.collision_point, character.position)
-				//Face the wanted direction
-				delta[0] = -delta[0]
-				character.orientTo(delta, false, [0, 1, 0], true)
 
 				//Show the cursor during 1 second
 				fastClick = true

@@ -26,7 +26,9 @@ class MyWorld {
 
             if(!this.users[username]) {
                 this.users[username] = {
+                    "character": "girl",
                     "position": vec3.create([-40, 0, 0]),
+                    "scaling": 0.3,
                     "target": vec3.create([-40, 0, 0]),
                     "anim": "girl_idle",
                 }
@@ -50,7 +52,14 @@ class MyWorld {
     setUserTarget(username, target) {
         if(this.users) {
             this.users[username].target = target;
-            this.setThisUserAnim(username, `${SCENE_NODES[username]}_walking`)
+            this.setUserAnim(username, `${SCENE_NODES[username]}_walking`)
+
+            //Orient the character to the new target
+            let character = SCENE_NODES[username]
+            var delta = vec3.sub(vec3.create(), target, character.position)
+            //Face the wanted direction
+            delta[0] = -delta[0]
+            character.orientTo(delta, false, [0, 1, 0], true)
         }
     }
     
@@ -237,10 +246,18 @@ class MyWorld {
 
                 if(!this.users[this.username]) {
                     this.users[this.username] = {
-                        "pos": vec3.create([-40, 0, 0]),
+                        "character": "girl",
+                        "position": vec3.create([-40, 0, 0]),
+                        "scaling": 0.3,
                         "target": vec3.create([-40, 0, 0]),
-                        "anim": "default",
+                        "anim": "girl_idle",
                     }
+                }
+                
+                for (let name in this.users) {
+                    let user = this.users[name];
+                    if(name !== this.username)
+                        this.createCharacter(user.character, name, user.position, user.scaling)
                 }
                 break;
 
