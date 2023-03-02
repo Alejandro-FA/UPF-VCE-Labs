@@ -196,16 +196,16 @@ const MYCHAT = {
     let img = document.createElement("img");
     switch (avatar) {
       case 1:
-        img.src = "img/Profile 1.png";
+        img.src = "assets/Profile 1.png";
         break;
       case 2:
-        img.src = "img/Profile 2.png";
+        img.src = "assets/Profile 2.png";
         break;
       case 3:
-        img.src = "img/Profile 3.png";
+        img.src = "assets/Profile 3.png";
         break;
       case 4:
-        img.src = "img/Profile 4.png";
+        img.src = "assets/Profile 4.png";
         break;
     }
 

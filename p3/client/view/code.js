@@ -6,6 +6,7 @@ var character = null;
 var animations = {};
 var animation = null;
 
+var sphere_cursor = null
 function init(username)
 {
 	//create the rendering context
@@ -53,6 +54,16 @@ function init(username)
 	world.setUserSceneNode(username, girl_pivot);
 	scene.root.addChild( girl_pivot );
 
+	//Create a selector for the character
+	var girl_selector = new RD.SceneNode({
+		position: [0, 0, 0],
+		mesh: "cube",
+		material: "girl",
+		scaling: [20, 80, 20],
+		name: "girl_selector",
+		layers: 0b1000
+	})
+	girl_pivot.addChild(girl_selector);
 
 	character = girl;
 
@@ -80,7 +91,9 @@ function init(username)
 		gl.canvas.height = document.body.offsetHeight;
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
-		//camera.lookAt( camera.position, character_pivot.localToGlobal(), [0, 1, 0])
+		let campos = character_pivot.localToGlobal([0, 70, 40])
+		let camtarget = camera.target
+		camera.lookAt( camera.position, character_pivot.localToGlobal(), [0, 1, 0])
 		//clear
 		renderer.clear(bg_color);
 		//render scene

@@ -1,5 +1,6 @@
+var fastClick = false;
 //Detect clicks
-function configureInputs(context, girl_pivot) {
+function configureInputs(context, character) {
 	context.onmouseup = function(e)
 	{
 		if(e.click_time < 200) //fast click
@@ -8,10 +9,22 @@ function configureInputs(context, girl_pivot) {
 			var ray = camera.getRay(e.canvasx, e.canvasy);
 			if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
 			{
-                console.log("Girl position", girl_pivot.position);
+                console.log("Girl position", character.position);
 				console.log( "floor position clicked", ray.collision_point );
 
                 world.setThisUserTarget(ray.collision_point)
+				sphere_cursor.position = ray.collision_point
+				
+				var delta = vec3.sub(vec3.create(), ray.collision_point, character.position)
+				//Face the wanted direction
+				delta[0] = -delta[0]
+				character.orientTo(delta, false, [0, 1, 0], true)
+
+				//Show the cursor during 1 second
+				fastClick = true
+				setTimeout(() => {
+					fastClick = false
+				}, 1000)
 			}
 		}
 	}
