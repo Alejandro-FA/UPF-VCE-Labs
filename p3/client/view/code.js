@@ -59,13 +59,24 @@ function init(username)
 		position: [0, 0, 0],
 		mesh: "cube",
 		material: "girl",
-		scaling: [20, 80, 20],
+		scaling: [10, 80, 10],
 		name: "girl_selector",
 		layers: 0b1000
 	})
 	girl_pivot.addChild(girl_selector);
 
-	character = girl;
+	character = girl_pivot;
+
+	//Create a cursor
+
+	sphere_cursor = new RD.SceneNode({
+		position: [0, 0, 0],
+		mesh: "sphere",
+		material: "girl", 
+		scaling: 10,
+		name: "sphere_cursor",
+		layers: 0b100
+	})
 
 	//load some animations
 	function loadAnimation( name, url )
@@ -91,13 +102,21 @@ function init(username)
 		gl.canvas.height = document.body.offsetHeight;
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
-		let campos = character_pivot.localToGlobal([0, 70, 40])
-		let camtarget = camera.target
-		camera.lookAt( camera.position, character_pivot.localToGlobal(), [0, 1, 0])
+		//find where to place the camera based
+		var campos = character.localToGlobal([0,80,-70]);
+
+		//find where to point at the camera
+		var camtarget = character.localToGlobal([0,30,-10]);
+
+		var smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
+		
+		//use to set up camera
+		camera.lookAt( campos, smoothtarget, [0,1,0] );
+
 		//clear
 		renderer.clear(bg_color);
 		//render scene
-		renderer.render(scene, camera);
+		renderer.render(scene, camera, null, 0b111);
 	}
 
 	//main update
