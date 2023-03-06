@@ -17,7 +17,7 @@ class MyWorld {
         this.background = null
 
         //TODO: Change when using in server
-        fetch('/p3/client/model/world.json')
+        fetch('https://ecv-etic.upf.edu/node/9017/world')
         .then(response => response.json())
         .then(data => {
             this.world = data

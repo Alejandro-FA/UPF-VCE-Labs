@@ -1,6 +1,7 @@
 const express = require('express');
 const WebSocketServer = require('websocket').server;
 const http = require('http');
+const fs = require('fs');
 const url = require('url');
 const qs = require('querystring');
 const DB = require('./Database');

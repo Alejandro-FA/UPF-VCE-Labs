@@ -31,7 +31,7 @@ class MyClient
             this.socket.close()
         }
 
-        let url = `ws://localhost:9016/${room_name}?username=${user_name}&password=${password}`
+        let url = `wss://ecv-etic.upf.edu/node/9017/ws/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
         this.socket.onopen = () => {
@@ -188,7 +188,7 @@ class MyClient
 
     //Connect to register url
     register(username, password) {
-        let url = `wss://ecv-etic.upf.edu/node/9016/ws/register?username=${username}&password=${password}`
+        let url = `wss://ecv-etic.upf.edu/node/9017/ws/register?username=${username}&password=${password}`
      
         this.socket = new WebSocket(url)
         this.socket.onmessage = (msg) => {
