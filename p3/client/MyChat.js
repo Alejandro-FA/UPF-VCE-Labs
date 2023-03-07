@@ -94,7 +94,9 @@ const MYCHAT = {
 				user: this.user_name,
 				id: this.server.user_id
       };
+      return true;
     }
+    return false;
   },
 
   //Given a room name and a user name, connects to the server
@@ -108,11 +110,11 @@ const MYCHAT = {
     chatName.innerHTML = room_name;
     this.server.room.name = room_name;
 
-    if (room_name == "") {
+    if (room_name === "") {
       alert("Empty room name");
       return false;
     }
-    if (user_name == "") {
+    if (user_name === "") {
       alert("Empty user name");
       return false;
     }
@@ -124,7 +126,7 @@ const MYCHAT = {
 
   //Send the message and make it appear on the chat
   sendMessage: function (sender, message) {
-    if (message == "") {
+    if (message === "") {
       return;
     }
 
@@ -213,7 +215,7 @@ const MYCHAT = {
     let elem2 = document.createElement("div");
     elem2.classList.add("message");
 
-    let user = this.server.user == sender ? "me" : "it";
+    let user = this.server.user === sender ? "me" : "it";
 
     if (isPrivate) {
       elem2.classList.add("private");
@@ -258,8 +260,8 @@ const MYCHAT = {
 
       let c = chatName.charAt(0);
 
-      if (c != "_") {
-        if (MYCHAT.server.room.name != chatName) {
+      if (c !== "_") {
+        if (MYCHAT.server.room.name !== chatName) {
           MYCHAT.connection(chatName, MYCHAT.server.user, this.password);
         }
 
@@ -293,7 +295,7 @@ const MYCHAT = {
 
     document.getElementById("new-room").value = "";
 
-    if (chatName == "") {
+    if (chatName === "") {
       alert("Room name needed");
       return;
     }
@@ -397,7 +399,7 @@ const MYCHAT = {
 
     let type = message.type;
 
-    if (message.room == this.server.room.name) {
+    if (message.room === this.server.room.name) {
       switch (type) {
         case "text":
           this.history[message.room].content.push(message);

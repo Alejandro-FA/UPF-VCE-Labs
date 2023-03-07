@@ -63,7 +63,7 @@ class MyClient
 
             that.is_connected = false
             that.socket = null
-            that.room = null
+            that.room = { name:"", clients:{} }
         }
 
         //Configure the onmessage callback
@@ -103,7 +103,7 @@ class MyClient
                     this.on_ready(this.user_id, this.user_name)
                 }
                 break;
-        
+
             case "LOGIN":
                 
                 if(!this.clients[ message.userID ]) {
@@ -128,6 +128,7 @@ class MyClient
                 alert("Username or password is incorrect")
 
                 this.socket.close()
+
                 break;
 
             case "LOGOUT":
@@ -145,7 +146,7 @@ class MyClient
 
             case "ROOM":
                 this.clients = message.clients
-                this.num_clients == message.length
+                this.num_clients = message.length
                 
                 //Display the canvas
                 let conScreen = document.querySelector(".mychat .connecting");
@@ -157,6 +158,12 @@ class MyClient
                 if (this.on_connect){
                     this.on_connect()
                 }
+
+                let user_name = MYCHAT.user_name
+                WORLD = new MyWorld(this.room.name, user_name);
+
+                //Initiate the rendering of the World
+                init(user_name);
                 break;
 
             case "MOVE": 

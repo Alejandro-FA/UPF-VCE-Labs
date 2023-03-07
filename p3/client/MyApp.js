@@ -32,13 +32,7 @@ class MyApp {
 		if(window){
 			window.id = room_name
 		}
-    	if(this.chat.firstConnection(username, room_name)){
-			let user_name = username || this.chat.user_name
-			WORLD = new MyWorld(room_name, user_name);
-
-			//Initiate the rendering of the World
-			init(user_name);
-		}
+    	this.chat.firstConnection(username, room_name)
 
 	}
 
