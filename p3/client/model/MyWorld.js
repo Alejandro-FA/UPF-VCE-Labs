@@ -4,6 +4,7 @@ const LEFT = 128;
 const BACK = 192;
 
 const SCENE_NODES = {};
+
 class MyWorld {
     constructor(room, username) {
         this.user_avatar = null
@@ -17,27 +18,31 @@ class MyWorld {
         this.background = null
 
         //TODO: Change when using in server
-        fetch('https://ecv-etic.upf.edu/node/9017/world')
+        fetch('/p3/client/model/world.json')
         .then(response => response.json())
         .then(data => {
             this.world = data
-            this.room = data[room]
+            this.room = Room.fromJson(data[room])
             this.users = this.room.users
 
             if(!this.users[username]) {
-                this.users[username] = {
-                    "character": "girl",
-                    "position": vec3.create([-40, 0, 0]),
-                    "scaling": 0.3,
-                    "target": vec3.create([-40, 0, 0]),
-                    "anim": "girl_idle",
-                }
+                this.users[username] = new User(
+                    "girl",
+                    vec3.create([-40, 0, 0]),
+                    0.3,
+                    vec3.create([-40, 0, 0]),
+                    "girl_idle",
+                )
             }
 
         })
     }
 
-
+    /**
+     * Set the specified SceneNode to the specified username
+     * @param username {String}
+     * @param SceneNode {SceneNode}
+     */
     setUserSceneNode(username, SceneNode) {
         if(this.users){
             this.users[username].position = SceneNode.position;
@@ -49,6 +54,11 @@ class MyWorld {
         this.setUserSceneNode(this.username, SceneNode);
     }
 
+    /**
+     * This function sets the target of the specified user and orients said character
+     * @param {String} username Name of the user that changes target
+     * @param {vec3} target New target of the specified user
+    * */
     setUserTarget(username, target) {
         if(this.users) {
             this.users[username].target = target;
@@ -56,13 +66,17 @@ class MyWorld {
 
             //Orient the character to the new target
             let character = SCENE_NODES[username]
-            var delta = vec3.sub(vec3.create(), target, character.position)
+            let delta = vec3.sub(vec3.create(), target, character.position)
             //Face the wanted direction
             delta[0] = -delta[0]
             character.orientTo(delta, false, [0, 1, 0], true)
         }
     }
-    
+
+    /**
+     * Set this users target
+     * @param target
+     */
     setThisUserTarget(target) {
         this.setUserTarget(this.username, target);
     }
@@ -71,6 +85,11 @@ class MyWorld {
         this.setUserAnim(this.username, anim);
     }
 
+    /**
+     * Set the wanted user animation
+     * @param username
+     * @param anim
+     */
     setUserAnim(username, anim) {
         if(this.users) {
             this.users[username].anim = `${anim}`;
@@ -99,7 +118,7 @@ class MyWorld {
 
         }
         
-        //CHANGE: Check if a user exits the room - Adapt it to 3d
+        //TODO: Check if a user exits the room - Adapt it to 3d
         if(this.users){
             let myuser = this.users[this.username]
 
@@ -120,16 +139,25 @@ class MyWorld {
         }
     }
 
-    //Move the chosen sceneNode to the target
+    /**
+     * Move the chosen sceneNode to the target
+     * @param character
+     * @param target
+     * @param dt
+     */
     moveCharacter(character, target, dt) {
-        var delta = vec3.sub( vec3.create(), target, character.position );
+        let delta = vec3.sub( vec3.create(), target, character.position );
         vec3.normalize(delta,delta);
         vec3.scaleAndAdd( character.position, character.position, delta, dt * 50);
         character.updateMatrices();
         character.flags.flipX = delta[0] < 0;
     }
 
-    //CHANGE: Change all the necessary world data - Adapt it to 3d
+    /**
+     * Changes all the necessary world data
+     * TODO: Adapt it to 3d
+     * @param room_name
+     */
     changeRoom(room_name) {
         //Delete the user from the old room
         let myuser = this.users[this.username]
@@ -165,11 +193,18 @@ class MyWorld {
 
     }
 
-    //This function verifies if the user is at the range of it's target - Adapt it to 3d
+    /**
+     * This function verifies if the user is at the range of it's target
+     * TODO: Adapt it to 3d
+     * @param username
+     * @returns {boolean}
+     */
     atTarget(username){
         let user = this.users[username]
         let sceneNode = SCENE_NODES[username]
-        if((sceneNode.position[0] < user.target[0] -2 || sceneNode.position[0] > user.target[0] +2) && (sceneNode.position[2] < user.target[2] -2 || sceneNode.position[2] > user.target[2] +2)) {
+        if((sceneNode.position[0] < user.target[0] -2 || sceneNode.position[0] > user.target[0] +2)
+            && (sceneNode.position[2] < user.target[2] -2 || sceneNode.position[2] > user.target[2] +2)) {
+
             user.anim = `${sceneNode.name}_walking`
             return false
         }
@@ -177,7 +212,10 @@ class MyWorld {
         return true
     }
 
-    //Callback that handles all the world synchronization
+    /**
+     * Callback that handles all the world synchronization
+     * @param info {{room, userID, username, type, content, date}}
+     */
     on_world_info( info ){
         info = JSON.parse(info)
 
@@ -189,7 +227,7 @@ class MyWorld {
                         room: this.room_name,
                         type: "WORLD",
                         user: this.username,
-                        content: this.room,
+                        content: this.room.toJson(),
                         userID: MYCHAT.server.user_id
                     }
                     MYCHAT.server.sendMessage(msg, info.userID)
@@ -210,6 +248,7 @@ class MyWorld {
                 date: new Date()
                 }*/
 
+                delete SCENE_NODES[info.username]
                 delete this.users[info.username]
                 delete this.room.users[info.username]
                 break;
@@ -226,7 +265,10 @@ class MyWorld {
                 */
                 let user = info.content
 
-                this.room.users[info.username] = this.users[info.username] = user
+                this.setUserTarget(info.username, user.target)
+
+                this.room.users[info.username] = this.users[info.username] = User.fromJson(user);
+
                 
                 break;
 
@@ -240,7 +282,7 @@ class MyWorld {
                     userID: MYCHAT.server.user_id
                 }*/
                 let room = info.content
-                this.room = room
+                this.room = Room.fromJson(room)
                 this.room_name = info.room
                 this.users = this.room.users
 
@@ -267,24 +309,30 @@ class MyWorld {
         }
     }
 
-    //Create a character from a LOGIN message
+    /**
+     * Create a character from a LOGIN message
+     * @param character_name
+     * @param username
+     * @param position
+     * @param scaling
+     */
     createCharacter(character_name, username, position, scaling) {
 
         //create material for the character
-        var mat = new RD.Material({
+        let mat = new RD.Material({
             textures: {
                 color: `${character_name}/${character_name}.png` }
             });
         mat.register(`${character_name}`);
 
         //create pivot point for the character
-        var character_pivot = new RD.SceneNode({
+        let character_pivot = new RD.SceneNode({
             position: position,
             name: character_name
         });
 
         //create a mesh for the character
-        var character = new RD.SceneNode({
+        let character = new RD.SceneNode({
             scaling: scaling,
             mesh: `${character_name}/${character_name}.wbin`,
             material: `${character_name}`
@@ -299,7 +347,7 @@ class MyWorld {
         scene.root.addChild( character_pivot );
 
         //Create a selector for the character
-        var character_selector = new RD.SceneNode({
+        let character_selector = new RD.SceneNode({
             position: [0, 0, 0],
             mesh: "cube",
             material: `${character_name}`,

@@ -1,17 +1,17 @@
-var scene = null;
-var renderer = null;
-var camera = null;
-var character = null;
+let scene = null;
+let renderer = null;
+let camera = null;
+let character = null;
 
-var animations = {};
-var animation = null;
+let animations = {};
+let animation = null;
 
-var sphere_cursor = null
+let sphere_cursor = null
 
 //load some animations
 function loadAnimation( name, url )
 {
-	var anim = animations[name] = new RD.SkeletalAnimation();
+	let anim = animations[name] = new RD.SkeletalAnimation();
 	anim.load(url);
 	return anim;
 }
@@ -19,7 +19,7 @@ function loadAnimation( name, url )
 function init(username)
 {
 	//create the rendering context
-	var context = GL.create({width: window.innerWidth, height:window.innerHeight});
+	let context = GL.create({width: window.innerWidth, height:window.innerHeight});
 
 	//setup renderer
 	renderer = new RD.Renderer(context);
@@ -38,23 +38,23 @@ function init(username)
 	camera.lookAt( [0,40,100],[0,20,0],[0,1,0] );
 
 	//global settings
-	var bg_color = [0.1,0.1,0.1,1];
+	let bg_color = [0.1,0.1,0.1,1];
 
 	//create material for the girl
-	var mat = new RD.Material({
+	let mat = new RD.Material({
 		textures: {
 			color: "girl/girl.png" }
 		});
 	mat.register("girl");
 
 	//create pivot point for the girl
-	var girl_pivot = new RD.SceneNode({
+	let girl_pivot = new RD.SceneNode({
 		position: [-40,0,0],
 		name: "girl"
 	});
 
 	//create a mesh for the girl
-	var girl = new RD.SceneNode({
+	let girl = new RD.SceneNode({
 		scaling: 0.3,
 		mesh: "girl/girl.wbin",
 		material: "girl",
@@ -66,7 +66,7 @@ function init(username)
 	scene.root.addChild( girl_pivot );
 
 	//Create a selector for the character
-	var girl_selector = new RD.SceneNode({
+	let girl_selector = new RD.SceneNode({
 		position: [0, 0, 0],
 		mesh: "cube",
 		material: "girl",
@@ -96,7 +96,7 @@ function init(username)
 	loadAnimation("girl_dance","view/data/girl/dance.skanim");
 
 	//load a GLTF for the room
-	var room = new RD.SceneNode({scaling:40});
+	let room = new RD.SceneNode({scaling:40});
 	room.loadGLTF("view/data/room.gltf");
 	scene.root.addChild( room );
 
@@ -109,12 +109,12 @@ function init(username)
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
 		//find where to place the camera based
-		var campos = character.localToGlobal([0,100,-80]);
+		let campos = character.localToGlobal([0,100,-80]);
 
 		//find where to point at the camera
-		var camtarget = character.localToGlobal([0,50,-10]);
+		let camtarget = character.localToGlobal([0,50,-10]);
 
-		var smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
+		let smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
 
 		//use to set up camera
 		camera.lookAt( campos, smoothtarget, [0,1,0] );
@@ -139,9 +139,9 @@ function init(username)
 		scene.update(dt);
 
 		WORLD.update(dt);
-		var t = getTime();
-		var anim = animations.idle;
-		var time_factor = 1;
+		let t = getTime();
+		let anim = animations.idle;
+		let time_factor = 1;
 
 		//control with keys
 		if(gl.keys["UP"])
@@ -179,7 +179,7 @@ function init(username)
 }
 
 /* example of computing movement vector
-	var delta = vec3.sub( vec3.create(), target, sprite.position );
+	let delta = vec3.sub( vec3.create(), target, sprite.position );
 	vec3.normalize(delta,delta);
 	vec3.scaleAndAdd( sprite.position, sprite.position, delta, dt * 50 );
 	sprite.updateMatrices();

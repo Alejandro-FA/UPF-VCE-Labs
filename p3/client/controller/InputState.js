@@ -1,12 +1,17 @@
-var fastClick = false;
-//Detect clicks
+let fastClick = false;
+
+/**
+ * Manages mouse events
+ * @param context
+ * @param character
+ */
 function configureInputs(context, character) {
 	context.onmouseup = function(e)
 	{
 		if(e.click_time < 200) //fast click
 		{
 			//compute collision with floor plane
-			var ray = camera.getRay(e.canvasx, e.canvasy);
+			let ray = camera.getRay(e.canvasx, e.canvasy);
 			if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
 			{
                 console.log("Girl position", character.position);
@@ -26,19 +31,13 @@ function configureInputs(context, character) {
 				//Check if the click is on the canvas
 				if(e.target.nodeName == "CANVAS"){
 					
-					let myuser = WORLD.users[WORLD.username]
 					let username = WORLD.username
+					let myuser = WORLD.users[username]
 					let msg = {
 						room: WORLD.room_name,
 						type: "MOVE",
 						username: username,
-						content: {
-							character: SCENE_NODES[username].name,
-							scaling: SCENE_NODES[username].children[0].scaling,
-							position: SCENE_NODES[username].position,
-							target: myuser.target,
-							anim: "walking"
-						},
+						content: myuser.toJson(),
 						userID: MYCHAT.server.user_id
 					}
 	

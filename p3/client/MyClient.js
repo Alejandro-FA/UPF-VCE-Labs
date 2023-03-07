@@ -12,6 +12,7 @@ class MyClient
     user_id = 0
     user_name = "Default"
 
+    //Callbacks
     on_connect = null; //when connected
 	on_ready = null; //when we have an ID from the server
 	on_message = null; //when somebody sends a message
@@ -21,6 +22,12 @@ class MyClient
 	on_error = null; //when cannot connect
 	on_world_info = null; //when a user moves
 
+    /**
+     * Connect to the server
+     * @param room_name
+     * @param user_name
+     * @param password
+     */
     connect(room_name, user_name, password) {
 
         room_name = room_name || ""
@@ -31,7 +38,7 @@ class MyClient
             this.socket.close()
         }
 
-        let url = `wss://ecv-etic.upf.edu/node/9017/ws/${room_name}?username=${user_name}&password=${password}`
+        let url = `ws://localhost:9017/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
         this.socket.onopen = () => {
@@ -46,24 +53,30 @@ class MyClient
 
         }
 
+        //Configure the onclose callback
         let that = this
         this.socket.onclose = function () {
 
-            if(that.socket != this){
+            if(that.socket !== this){
                 return
             }
 
-            this.is_connected = false 
-            this.socket = null
-            this.room = null
+            that.is_connected = false
+            that.socket = null
+            that.room = null
         }
 
+        //Configure the onmessage callback
         this.socket.onmessage = (msg) => {
             this.manageServerMessage(msg)
         }
 
     }
 
+    /**
+     * Manages all the messages coming from the server
+     * @param message
+     */
     manageServerMessage( message ) {
         message = JSON.parse(message.data)
         switch (message.type) {
@@ -80,6 +93,7 @@ class MyClient
                 connecting.style.display = "flex"
                 register.style.display = "none"
                 break;
+
 
             case "ID":
                 this.user_id = message.userID
@@ -172,7 +186,11 @@ class MyClient
         }
     }
 
-    //Sends a JSON message to everyone or just the specified targets
+    /**
+     * Sends a JSON message to everyone or just the specified targets
+     * @param message
+     * @param targets
+     */
     sendMessage(message, targets){
         if (!message){
             console.error("Message not defined");
@@ -186,9 +204,13 @@ class MyClient
         this.socket.send(JSON.stringify(message))
     }
 
-    //Connect to register url
+    /**
+     * Connect to register url
+     * @param username
+     * @param password
+     */
     register(username, password) {
-        let url = `wss://ecv-etic.upf.edu/node/9017/ws/register?username=${username}&password=${password}`
+        let url = `ws://localhost:9017/register?username=${username}&password=${password}`
      
         this.socket = new WebSocket(url)
         this.socket.onmessage = (msg) => {

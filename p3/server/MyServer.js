@@ -17,11 +17,10 @@ class MyServer {
 
         let app = express();
 
-        app.use(express.static('public'));
+        app.use(express.static('../client'));
 
         app.get("/world", (req, res) => {
             let worldData = fs.readFileSync("./world.json")
-            console.log("It arrives here");
             res.send(worldData);
         })
 
@@ -72,14 +71,22 @@ class MyServer {
         }
 
         if(!(user_name in this.usernameToClient)){
-            //No password needed
-            if(DB.getPassword(user_name) != password) {
+            if(DB.getPassword(user_name) !== password) {
                 let msg = {
                     type: "LOGINERROR"
                 }
                 ws.send(JSON.stringify(msg))
                 return
+            } 
+    
+        } else {
+            //If the user already exists
+            let msg = {
+                type: "LOGINERROR",
+                content: "User is already connected"
             }
+            ws.send(JSON.stringify(msg))
+            return
         }
         
         //Accept the new client and give it it's ID
