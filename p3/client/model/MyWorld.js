@@ -18,12 +18,16 @@ class MyWorld {
         this.background = null
 
         //TODO: Change when using in server
-        fetch('/p3/client/model/world.json')
+        //fetch('https://ecv-etic.upf.edu/node/9017/world')
+        fetch('model/world.json')
         .then(response => response.json())
         .then(data => {
+
             this.world = data
-            this.room = Room.fromJson(data[room])
-            this.users = this.room.users
+	    if(!this.room){
+           	 this.room = Room.fromJson(data[room])
+           	 this.users = this.room.users
+	    }
 
             if(!this.users[username]) {
                 this.users[username] = new User(
@@ -119,6 +123,7 @@ class MyWorld {
         }
         
         //TODO: Check if a user exits the room - Adapt it to 3d
+	/*
         if(this.users){
             let myuser = this.users[this.username]
 
@@ -136,7 +141,7 @@ class MyWorld {
                 this.changeRoom(this.room.l_exit)
             }
 
-        }
+        }*/
     }
 
     /**
@@ -287,13 +292,13 @@ class MyWorld {
                 this.users = this.room.users
 
                 if(!this.users[this.username]) {
-                    this.users[this.username] = {
-                        "character": "girl",
-                        "position": vec3.create([-40, 0, 0]),
-                        "scaling": 0.3,
-                        "target": vec3.create([-40, 0, 0]),
-                        "anim": "girl_idle",
-                    }
+                    this.users[this.username] = new User(
+                         "girl",
+                         vec3.create([-40, 0, 0]),
+                         0.3,
+                         vec3.create([-40, 0, 0]),
+                         "girl_idle"
+                    )
                 }
                 
                 for (let name in this.users) {

@@ -38,6 +38,7 @@ class MyClient
             this.socket.close()
         }
 
+        //let url = `wss://ecv-etic.upf.edu/node/9017/ws/${room_name}?username=${user_name}&password=${password}`
         let url = `ws://localhost:9017/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
@@ -125,7 +126,7 @@ class MyClient
 
             case "LOGINERROR":
 
-                alert("Username or password is incorrect")
+                alert(message.content)
 
                 this.socket.close()
 
@@ -217,8 +218,9 @@ class MyClient
      * @param password
      */
     register(username, password) {
+        //let url = `wss://ecv-etic.upf.edu/node/9017/ws/register?username=${username}&password=${password}`
         let url = `ws://localhost:9017/register?username=${username}&password=${password}`
-     
+
         this.socket = new WebSocket(url)
         this.socket.onmessage = (msg) => {
             this.manageServerMessage(msg)

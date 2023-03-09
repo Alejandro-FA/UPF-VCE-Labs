@@ -73,7 +73,8 @@ class MyServer {
         if(!(user_name in this.usernameToClient)){
             if(DB.getPassword(user_name) !== password) {
                 let msg = {
-                    type: "LOGINERROR"
+                    type: "LOGINERROR",
+		    content: "Username or password is wrong"	
                 }
                 ws.send(JSON.stringify(msg))
                 return
@@ -215,7 +216,7 @@ class MyServer {
             if(!client.connected){
                 continue;
             }
-
+	    console.log(msg)
             client.send(msg)
         }
     }
