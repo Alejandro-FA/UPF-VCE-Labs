@@ -293,7 +293,6 @@ const MYCHAT = {
       this.visited_chats.push(chatName)
     }
 
-    document.getElementById("new-room").value = "";
 
     if (chatName === "") {
       alert("Room name needed");

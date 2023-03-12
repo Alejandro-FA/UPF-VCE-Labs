@@ -121,27 +121,7 @@ class MyWorld {
             character.skeleton.copyFrom( anim.skeleton );
 
         }
-        
-        //TODO: Check if a user exits the room - Adapt it to 3d
-	/*
-        if(this.users){
-            let myuser = this.users[this.username]
 
-            let l_exit = this.room.l_exit ? 200 : null
-            if(this.width == 0) {
-                this.width = 99999
-            }
-            let r_exit = this.room.r_exit ? this.width - 200 : null
-            
-            if(r_exit && myuser && myuser.pos[0] >= r_exit){
-                this.changeRoom(this.room.r_exit)
-            }
-
-            if(l_exit && myuser && myuser.pos[0] <= l_exit){
-                this.changeRoom(this.room.l_exit)
-            }
-
-        }*/
     }
 
     /**
@@ -172,8 +152,13 @@ class MyWorld {
         //Enter the new room
         this.room = this.world[room_name]
 
-        //Load the new background
-        this.background = this.imageManager.getImage(this.room.url)
+
+        let node = scene.root.findNodeByName("room")
+
+        node.removeAllChildren()
+        setTimeout(() => {
+            node.loadGLTF(this.room.url)
+        }, 500)
 
         //Change the current room name
 
@@ -181,7 +166,7 @@ class MyWorld {
     
         //Reset the position and target of the user
 
-        myuser.pos[0] = myuser.target[0] = 300
+        myuser.position = SCENE_NODES[this.username].position = myuser.target = [0, 0, 0]
 
         //Add the user to the new room
         this.room.users[this.username] = myuser
@@ -190,12 +175,13 @@ class MyWorld {
         this.users = this.room.users
 
         //Change the room in the chat
+        /*
         if(MYCHAT.visited_chats.includes(room_name)){
             MYCHAT.changeChat(room_name).call(MYCHAT)
         } else {
             MYCHAT.connectNewChat(room_name)
         }
-
+        */
     }
 
     /**

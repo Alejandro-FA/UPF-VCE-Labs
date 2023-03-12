@@ -2,7 +2,7 @@ class Room {
 
     /**
      * Creates an instance of Room from a Json of correct structure
-     * @param object {{l_exit, r_exit, url, users }}
+     * @param object {{exit, url, users }}
      * @returns {Room}
      */
     static fromJson(object) {
@@ -16,14 +16,13 @@ class Room {
         }
 
         room.users = users;
-        room.r_exit = object.r_exit;
-        room.l_exit = object.l_exit;
+        room.exit = object.exit;
         return room
     }
 
     /**
      * Converts the room into a JSON object
-     * @returns {{l_exit, r_exit, url, users}}
+     * @returns {{exit, url, users}}
      */
     toJson() {
 
@@ -35,8 +34,7 @@ class Room {
         return {
             "url": this.url,
             "users": users,
-            "r_exit": this.r_exit,
-            "l_exit": this.l_exit
+            "exit": this.exit,
         }
     }
 }

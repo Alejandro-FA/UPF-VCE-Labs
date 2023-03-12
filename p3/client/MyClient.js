@@ -163,19 +163,19 @@ class MyClient
                 let user_name = MYCHAT.user_name
                 WORLD = new MyWorld(this.room.name, user_name);
 
-                //Initiate the rendering of the World
-                init(user_name);
+                //Initiate the rendering of the World - TODO: change
+                init(user_name, "view/data/Room3.gltf");
                 break;
 
             case "MOVE": 
-                if(message.userID != this.user_id){
+                if(message.userID !== this.user_id){
                     if(this.on_world_info){
                         this.on_world_info(JSON.stringify(message))
                     }
                 }
                 break;
             case "WORLD":
-                if(message.userID != this.user_id){
+                if(message.userID !== this.user_id){
                     if(this.on_world_info){
                         this.on_world_info(JSON.stringify(message))
                     }

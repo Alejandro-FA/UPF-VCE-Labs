@@ -113,7 +113,8 @@ class MyServer {
             type: "ROOM",
             name: ws.room,
             clients: clients,
-            length: clients.length
+            length: clients.length,
+            url: "default"  //TODO: retrieve information when logging in
         }
 
         this.sendToRoom(ws.room, JSON.stringify(room), ws.id)

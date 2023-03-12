@@ -1,22 +1,13 @@
 {
-    "living_room": {
-        "url": "img/room1.avif",
+    "spain": {
+        "url": "view/data/Room3.gltf",
         "users": {},
-        "r_exit": "relax_room",
-        "l_exit": null
+        "exit": "default"
     },
 
-    "relax_room": {
-        "url": "img/room2.avif",
+    "default": {
+        "url": "view/data/Room_Default.gltf",
         "users": {},
-        "r_exit": "lounge_room",
-        "l_exit": "living_room"
-    }, 
-
-    "lounge_room": {
-        "url": "img/room3.avif",
-        "users": {},
-        "r_exit": null,
-        "l_exit": "relax_room"
+        "exit": "spain"
     }
 }

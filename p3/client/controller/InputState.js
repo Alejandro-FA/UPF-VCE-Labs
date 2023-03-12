@@ -12,37 +12,34 @@ function configureInputs(context, character) {
 		{
 			//compute collision with floor plane
 			let ray = camera.getRay(e.canvasx, e.canvasy);
-			if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
-			{
-                console.log("Girl position", character.position);
-				console.log( "floor position clicked", ray.collision_point );
+			let result = vec3.create();
 
-                WORLD.setThisUserTarget(ray.collision_point)
-				sphere_cursor.position = ray.collision_point
-				
+			let node = scene.testRay(ray, result, undefined, 0b1000, true)
 
-				//Show the cursor during 1 second
-				fastClick = true
-				setTimeout(() => {
-					fastClick = false
-				}, 1000)
+			//If there is no collision with the selectors, compute collision with the floor
+			if(node === null) {
+				floor_clicked(e, ray);
+				return
+			}
 
+			switch (node.name) {
+				case "girl_selector":
+					console.log("Hit clicked on the character")
+					break;
 
-				//Check if the click is on the canvas
-				if(e.target.nodeName == "CANVAS"){
-					
-					let username = WORLD.username
-					let myuser = WORLD.users[username]
-					let msg = {
-						room: WORLD.room_name,
-						type: "MOVE",
-						username: username,
-						content: myuser.toJson(),
-						userID: MYCHAT.server.user_id
-					}
-	
-					MYCHAT.server.sendMessage(msg)
-				}
+				case "closet_selector":
+					console.log("Hit clicked on the closet")
+					break
+
+				case "micro_selector":
+					console.log("Hit clicked on the micro")
+					break
+
+				case "door_selector":
+					console.log("Hit clicked on the door")
+					WORLD.changeRoom((WORLD.room_name === "spain") ? "default" : "spain")
+					break
+
 			}
 		}
 
@@ -68,4 +65,42 @@ function configureInputs(context, character) {
 	//capture mouse events
 	context.captureMouse(true);
 	context.captureKeys();
+}
+
+
+/**
+ * This function manages everything when the floor is clicked
+ * @param e The click event
+ * @param ray The computed ray
+ */
+function floor_clicked(e, ray) {
+	if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
+	{
+		console.log("floor position clicked", ray.collision_point);
+
+		//Check if the click is on the canvas
+		if (e.target.nodeName === "CANVAS") {
+			WORLD.setThisUserTarget(ray.collision_point)
+			sphere_cursor.position = ray.collision_point
+
+
+			//Show the cursor during 1 second
+			fastClick = true
+			setTimeout(() => {
+				fastClick = false
+			}, 1000)
+
+			let username = WORLD.username
+			let myuser = WORLD.users[username]
+			let msg = {
+				room: WORLD.room_name,
+				type: "MOVE",
+				username: username,
+				content: myuser.toJson(),
+				userID: MYCHAT.server.user_id
+			}
+
+			MYCHAT.server.sendMessage(msg)
+		}
+	}
 }

@@ -16,8 +16,9 @@ function loadAnimation( name, url )
 	return anim;
 }
 
-function init(username)
+function init(username, room_url)
 {
+
 	//create the rendering context
 	let context = GL.create({width: window.innerWidth, height:window.innerHeight});
 
@@ -34,7 +35,7 @@ function init(username)
 
 	//create camera
 	camera = new RD.Camera();
-	camera.perspective( 60, gl.canvas.width / gl.canvas.height, 0.1, 1000 );
+	camera.perspective( 60, gl.canvas.width / gl.canvas.height, 0.01, 1000 );
 	camera.lookAt( [0,40,100],[0,20,0],[0,1,0] );
 
 	//global settings
@@ -55,7 +56,7 @@ function init(username)
 
 	//create a mesh for the girl
 	let girl = new RD.SceneNode({
-		scaling: 0.3,
+		scaling: 0.4,
 		mesh: "girl/girl.wbin",
 		material: "girl",
 	});
@@ -64,17 +65,6 @@ function init(username)
 
 	WORLD.setUserSceneNode(username, girl_pivot);
 	scene.root.addChild( girl_pivot );
-
-	//Create a selector for the character
-	let girl_selector = new RD.SceneNode({
-		position: [0, 0, 0],
-		mesh: "cube",
-		material: "girl",
-		scaling: [10, 80, 10],
-		name: "girl_selector",
-		layers: 0b1000
-	})
-	girl_pivot.addChild(girl_selector);
 
 	character = girl_pivot;
 
@@ -95,10 +85,60 @@ function init(username)
 	loadAnimation("girl_walking","view/data/girl/walking.skanim");
 	loadAnimation("girl_dance","view/data/girl/dance.skanim");
 
+
 	//load a GLTF for the room
-	let room = new RD.SceneNode({scaling:40});
-	room.loadGLTF("view/data/room.gltf");
+	let room = new RD.SceneNode({scaling:10, name: "room"});
+	room.loadGLTF(room_url);
 	scene.root.addChild( room );
+
+	//Attach selectors to the interactive objects ***************************
+
+	//Create a selector for this users character
+	let girl_selector = new RD.SceneNode({
+		position: [0, 0, 0],
+		mesh: "cube",
+		material: "girl",
+		scaling: [15, 100, 15],
+		name: "girl_selector",
+		layers: 0b1000
+	})
+	girl_pivot.addChild(girl_selector);
+
+	//Create a selector for the micro - Done
+
+	let micro_selector = new RD.SceneNode({
+		position: [-54, 0, 166],
+		mesh: "cube",
+		material: "girl",
+		scaling: [15, 125, 15],
+		name: "micro_selector",
+		layers: 0b1000
+	})
+	scene.root.addChild(micro_selector);
+
+	//Create a selector for the door - Done
+
+	let door_selector = new RD.SceneNode({
+		position: [100, 0, -42],
+		mesh: "cube",
+		material: "girl",
+		scaling: [10, 160, 50],
+		name: "door_selector",
+		layers: 0b1000
+	})
+	scene.root.addChild(door_selector);
+
+	//Create a selector for the closet - Done
+
+	let closet_selector = new RD.SceneNode({
+		position: [-182, 0, 39],
+		mesh: "cube",
+		material: "girl",
+		scaling: [20, 130, 42],
+		name: "closet_selector",
+		layers: 0b1000
+	})
+	scene.root.addChild(closet_selector);
 
 	// main loop ***********************
 
@@ -109,10 +149,10 @@ function init(username)
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
 		//find where to place the camera based
-		let campos = character.localToGlobal([0,100,-80]);
+		let campos = character.localToGlobal([0,180,-120]);
 
 		//find where to point at the camera
-		let camtarget = character.localToGlobal([0,50,-10]);
+		let camtarget = character.localToGlobal([0,65,-10]);
 
 		let smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
 
@@ -120,11 +160,7 @@ function init(username)
 		camera.lookAt( campos, smoothtarget, [0,1,0] );
 
 
-		if(fastClick) {
-			sphere_cursor.flags.visible = true
-		} else {
-			sphere_cursor.flags.visible = false
-		}
+		sphere_cursor.flags.visible = fastClick;
 
 		//clear
 		renderer.clear(bg_color);
@@ -161,7 +197,7 @@ function init(username)
 			character.rotate(-90*DEG2RAD*dt,[0,1,0]);
 
 
-		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 0.1, 1000 );
+		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 100, 1000 );
 
 		//move bones in the skeleton based on animation
 		//anim.assignTime( t * 0.001 * time_factor );
@@ -177,6 +213,7 @@ function init(username)
 	context.animate();
 
 }
+
 
 /* example of computing movement vector
 	let delta = vec3.sub( vec3.create(), target, sprite.position );
