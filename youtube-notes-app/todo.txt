@@ -1,0 +1,60 @@
+✅ ❌❗
+
+☐ sign in (mongoDB v6)
+    - código base ✅
+    - mensajes errores ✅
+    - check de los datos
+        - username ✅
+        - correct password ✅
+    - adaptación códigpo P3
+
+☐ sign up / Registrarse (mongoDB v6)
+    - código base ✅ 
+    - mensajes de errores 
+        - repeated user ✅ 
+        - repeated mail ❌
+        - correct password ✅ 
+        - min password length ✅ 
+    - mensajes flash ✅ 
+    - guarda datos del nuevo user ✅
+    - adaptación códigpo P3
+        - character selection
+    - extra profe: ingresar con cuenta google, facebook, etc
+
+☐ mensajes de error
+    - corregir error: no funciona x (para quitar los msgs) -> bootstrap ha cambiado! ❌
+
+☐ passwords
+    - hasheadas ✅ 
+
+☐ index
+    - código base ✅ 
+    - adaptación código P3
+
+☐ navigation bar
+    - código base
+    - adaptar a las necesidades P3
+        - signin
+        - signup
+        - log out
+    
+☐ mongoDB
+    - se ejecuta ✅ 
+    - código base models ✅
+        - users (username, email, hashed password) ✅ 
+        NOTA: implementado con username Y NO CON EMAIL ❗
+    - adaptar código P3
+        - users
+    - gestión de user data
+
+☐ sessions
+    - NOTA: hubo problema con passport.js y modifiqué una función: NO sé si funciona como quiero ❗
+
+
+☐ security
+    - passwords
+        - hasheadas ✅
+        - NO se ven datos en url  ✅
+    - url
+        - blindadas
+        - no se pueden abrir 2 sesiones simultaneamente

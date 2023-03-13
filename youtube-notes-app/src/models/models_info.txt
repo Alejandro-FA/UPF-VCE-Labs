@@ -1,0 +1,1 @@
+Objetivo: definir como van a lucir los datos que vamos a guardar en la base de datos

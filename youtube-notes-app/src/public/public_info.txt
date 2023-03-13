@@ -1,0 +1,1 @@
+Objetivo: insertar all static files (js, imágenes, css, etc)

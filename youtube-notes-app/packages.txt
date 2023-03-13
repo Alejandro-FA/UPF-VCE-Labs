@@ -1,0 +1,25 @@
+> npm init --yes
+
+> npm i express express-handlebars express-session method-override mongoose passport passport-local bcryptjs connect-flash
+
+express: framework de node
+mongoose: NO es la DB es un módulo para conectar a la DB de mongoDB
+connect-flash: para mandar msg cuando errores y demás (password es < 4 dígitos)
+bcryptjs: encriptar passwords
+express-handlebars: html mejorado (motor de plantillas en nuestro server)
+express-session: crear sesiones dentro del server (almacenar temporalmente dtos user)
+method-override: para que formulario pueda utilizar otros métodos a parte de POST y GET (PUT DELETE...)
+
+> npm i nodemon -D
+
+de package.json quitado
+"test": "echo \"Error: no test specified\" && exit 1"
+ahora "dev": .. (tal que equivale al path src/index.js)
+
+> npm run dev
+
+> sudo service mongod start
+Para emepzar el server mongodb (o la DB)
+
+> sudo service mongod stop
+CREO que para apagar la DB

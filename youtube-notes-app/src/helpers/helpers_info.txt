@@ -1,0 +1,1 @@
+Objetivo: colocar funciones que nuestro server pueda utilizar y reutilizar (ej: función que genere num aleatorio)

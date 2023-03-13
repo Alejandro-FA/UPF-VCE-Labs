@@ -1,0 +1,44 @@
+<div class="jumbotron text-white bg-dark p-4 mt-4" style="border-radius: 20px">
+    <h1 class="display-4 text-center"> Welcome to Roomz!</h1>
+</div>
+
+<div class="container mt-4">
+    {{> errors}}
+</div>
+
+<div class="row pt-5">
+    <div class="col-md-4 mx-auto">
+        <div class="card">
+
+            <div class="card-header text-center h3">
+                Account register
+            </div>
+
+            <div class="card-body">
+                <form action="/users/signup" method="POST">
+
+                    <div class="form-group p-2">
+                        <input type="text" class="form-control" name="username" placeholder="Username" value="{{username}}">
+                    </div>
+
+                    <div class="form-group p-2">
+                        <input type="email" class="form-control" name="email" placeholder="Email" value="{{email}}">
+                    </div>
+
+                    <div class="form-group p-2">
+                        <input type="password" class="form-control" name="password" placeholder="Password" value="{{password}}">
+                    </div>
+
+                    <div class="form-group p-2">
+                        <input type="password" class="form-control" name="confirm_password" placeholder="Repeat Password" value="{{confirm_password}}">
+                    </div>
+
+                    <center class="form-group p-2">
+                        <button type="submit" class="btn btn-primary" style="width:100%">Sign up</button>
+                    </center>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
