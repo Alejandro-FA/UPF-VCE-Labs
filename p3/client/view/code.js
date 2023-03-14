@@ -9,7 +9,7 @@ let animation = null;
 let sphere_cursor = null
 
 //Mapping the characters to their appropriate scaling
-let character_scalings = {"cat": 5, "girl": 0.4}
+let character_scalings = {"cat": 5, "girl": 0.4, "storm": 1}
 
 //load some animations
 function loadAnimation( name, url )
@@ -70,17 +70,6 @@ function init(username, room_url, character_name)
 	scene.root.addChild( room );
 
 	//Attach selectors to the interactive objects ***************************
-
-	//Create a selector for this users character
-	let girl_selector = new RD.SceneNode({
-		position: [0, 0, 0],
-		mesh: "cube",
-		material: "girl",
-		scaling: [15, 100, 15],
-		name: "girl_selector",
-		layers: 0b1000
-	})
-	girl_pivot.addChild(girl_selector);
 
 	//Create a selector for the micro - Done
 
@@ -173,7 +162,6 @@ function init(username, room_url, character_name)
 			character.rotate(90*DEG2RAD*dt,[0,1,0]);
 		else if(gl.keys["RIGHT"])
 			character.rotate(-90*DEG2RAD*dt,[0,1,0]);
-
 
 		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 100, 1000 );
 

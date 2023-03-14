@@ -57,7 +57,7 @@ class MyWorld {
     }
 
     /**
-     * This function sets the target of the specified user and orients said character
+     * This function sets the target of the specified user and orient the user
      * @param {String} username Name of the user that changes target
      * @param {vec3} target New target of the specified user
     * */
@@ -71,7 +71,7 @@ class MyWorld {
             let delta = vec3.sub(vec3.create(), target, character.position)
             //Face the wanted direction
             delta[0] = -delta[0]
-            character.orientTo(delta, false, [0, 1, 0], true)
+            character.orientTo(delta, false, [0, 1, 0], true, false)
         }
     }
 
@@ -304,6 +304,7 @@ class MyWorld {
      * @param username
      * @param position
      * @param scaling
+     * @return {SceneNode}
      */
     createCharacter(character_name, username, position, scaling) {
 

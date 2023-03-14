@@ -164,7 +164,7 @@ class MyClient
                 WORLD = new MyWorld(this.room.name, user_name);
 
                 //Initiate the rendering of the World - TODO: change
-                init(user_name, "view/data/Room3.gltf", "cat");
+                init(user_name, "view/data/Room3.gltf", "girl");
                 break;
 
             case "MOVE": 
@@ -184,7 +184,7 @@ class MyClient
 
             default:
 
-                if(message.userID != this.user_id){
+                if(message.userID !== this.user_id){
                     if(this.on_message){
                         this.on_message(message.userID, JSON.stringify(message))
                     }

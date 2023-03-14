@@ -23,12 +23,13 @@ function configureInputs(context, character) {
 			}
 
 			switch (node.name) {
-				case "girl_selector":
+				case "character_selector":
 					console.log("Hit clicked on the character")
 					break;
 
 				case "closet_selector":
 					console.log("Hit clicked on the closet")
+					showCharacterChooser();
 					break
 
 				case "micro_selector":
@@ -113,6 +114,9 @@ function showRoomChooser() {
 	let body = document.body;
 	let room_list_container = document.createElement("div")
 	room_list_container.className = "blurred-background"
+	room_list_container.addEventListener("click", (event) => {
+		hideRoomChooser();
+	})
 
 	body.appendChild(room_list_container)
 
@@ -142,5 +146,54 @@ function showRoomChooser() {
  */
 function hideRoomChooser() {
 	let room_chooser = document.querySelector(".blurred-background")
-	room_chooser.remove()
+	room_chooser?.remove()
+}
+
+/**
+ * Show the character choosing interface
+ */
+function showCharacterChooser() {
+
+	let body = document.body;
+	let character_list_container = document.createElement("div")
+	character_list_container.className = "blurred-background"
+	character_list_container.addEventListener("click", (event) => {
+		hideCharacterChooser();
+	})
+
+	body.appendChild(character_list_container)
+
+	let character_list = document.createElement("div")
+	character_list.className = "choose-character"
+	character_list_container.appendChild(character_list)
+
+	let h3 = document.createElement("h3")
+	h3.innerHTML = "Choose the character that you want to be:"
+	character_list.appendChild(h3)
+
+	for (let character_name in character_scalings) {
+		let node = document.createElement("li")
+		node.innerHTML = character_name
+		node.classList.add("character")
+		node.addEventListener("click", (event) => {
+
+			//Update the sceneNode
+			let username = WORLD.username
+			scene.root.removeChild(SCENE_NODES[username])
+			character = WORLD.createCharacter(character_name, username, SCENE_NODES[username].position, character_scalings[character_name])
+
+			hideCharacterChooser();
+			//FIXME: find why the character is created upside down
+			//TODO: Send a message to all the users to update the skin
+		})
+		character_list.appendChild(node)
+	}
+}
+
+/**
+ * Hide the character choosing interface
+ */
+function hideCharacterChooser() {
+	let character_chooser = document.querySelector(".blurred-background")
+	character_chooser?.remove()
 }

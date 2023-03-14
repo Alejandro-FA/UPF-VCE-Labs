@@ -374,7 +374,8 @@ li:hover,
   z-index: 100;
   backdrop-filter: blur(10px);
 }
-.choose-room {
+.choose-room,
+.choose-character {
   position: absolute;
   height: 30%;
   width: 30%;
