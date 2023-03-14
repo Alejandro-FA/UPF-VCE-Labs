@@ -37,7 +37,7 @@ function configureInputs(context, character) {
 
 				case "door_selector":
 					console.log("Hit clicked on the door")
-					WORLD.changeRoom((WORLD.room_name === "spain") ? "default" : "spain")
+					showRoomChooser();
 					break
 
 			}
@@ -103,4 +103,44 @@ function floor_clicked(e, ray) {
 			MYCHAT.server.sendMessage(msg)
 		}
 	}
+}
+
+/**
+ * Show the room choosing interface
+ */
+function showRoomChooser() {
+
+	let body = document.body;
+	let room_list_container = document.createElement("div")
+	room_list_container.className = "blurred-background"
+
+	body.appendChild(room_list_container)
+
+	let room_list = document.createElement("div")
+	room_list.className = "choose-room"
+	room_list_container.appendChild(room_list)
+
+	let h3 = document.createElement("h3")
+	h3.innerHTML = "Choose the room where you want to go to:"
+	room_list.appendChild(h3)
+
+	for (let room in WORLD.world) {
+		let node = document.createElement("li")
+		node.innerHTML = `${room} room`
+		node.classList.add("room")
+		if(room === this.room_name) node.classList.add("selected")
+		node.addEventListener("click", (event) => {
+			WORLD.changeRoom(room)
+			hideRoomChooser()
+		})
+		room_list.appendChild(node)
+	}
+}
+
+/**
+ * Hide the room choosing interface
+ */
+function hideRoomChooser() {
+	let room_chooser = document.querySelector(".blurred-background")
+	room_chooser.remove()
 }

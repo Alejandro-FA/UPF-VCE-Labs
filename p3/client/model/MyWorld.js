@@ -15,7 +15,6 @@ class MyWorld {
         this.world = null
         this.room = null
         this.users = null
-        this.background = null
 
         //TODO: Change when using in server
         //fetch('https://ecv-etic.upf.edu/node/9017/world')
@@ -24,21 +23,20 @@ class MyWorld {
         .then(data => {
 
             this.world = data
-	    if(!this.room){
-           	 this.room = Room.fromJson(data[room])
-           	 this.users = this.room.users
-	    }
+            if(!this.room){
+                 this.room = Room.fromJson(data[room])
+                 this.users = this.room.users
+            }
 
             if(!this.users[username]) {
                 this.users[username] = new User(
-                    "girl",
+                    "shrek",
                     vec3.create([-40, 0, 0]),
                     0.3,
                     vec3.create([-40, 0, 0]),
-                    "girl_idle",
+                    "shrek_idle",
                 )
             }
-
         })
     }
 
@@ -352,5 +350,7 @@ class MyWorld {
         loadAnimation(`${character_name}_idle`,`view/data/${character_name}/idle.skanim`);
         loadAnimation(`${character_name}_walking`,`view/data/${character_name}/walking.skanim`);
         loadAnimation(`${character_name}_dance`,`view/data/${character_name}/dance.skanim`);
+
+        return character_pivot;
     }
 }

@@ -8,6 +8,9 @@ let animation = null;
 
 let sphere_cursor = null
 
+//Mapping the characters to their appropriate scaling
+let character_scalings = {"cat": 5, "girl": 0.4}
+
 //load some animations
 function loadAnimation( name, url )
 {
@@ -16,8 +19,9 @@ function loadAnimation( name, url )
 	return anim;
 }
 
-function init(username, room_url)
+function init(username, room_url, character_name)
 {
+
 
 	//create the rendering context
 	let context = GL.create({width: window.innerWidth, height:window.innerHeight});
@@ -41,30 +45,9 @@ function init(username, room_url)
 	//global settings
 	let bg_color = [0.1,0.1,0.1,1];
 
-	//create material for the girl
-	let mat = new RD.Material({
-		textures: {
-			color: "girl/girl.png" }
-		});
-	mat.register("girl");
+	//Create character
 
-	//create pivot point for the girl
-	let girl_pivot = new RD.SceneNode({
-		position: [-40,0,0],
-		name: "girl"
-	});
-
-	//create a mesh for the girl
-	let girl = new RD.SceneNode({
-		scaling: 0.4,
-		mesh: "girl/girl.wbin",
-		material: "girl",
-	});
-	girl_pivot.addChild(girl);
-	girl.skeleton = new RD.Skeleton();
-
-	WORLD.setUserSceneNode(username, girl_pivot);
-	scene.root.addChild( girl_pivot );
+	let girl_pivot = WORLD.createCharacter(character_name, username, [-40, 0, 0], character_scalings[character_name])
 
 	character = girl_pivot;
 
@@ -80,11 +63,6 @@ function init(username, room_url)
 	})
 
 	scene.root.addChild(sphere_cursor)
-
-	loadAnimation("girl_idle","view/data/girl/idle.skanim");
-	loadAnimation("girl_walking","view/data/girl/walking.skanim");
-	loadAnimation("girl_dance","view/data/girl/dance.skanim");
-
 
 	//load a GLTF for the room
 	let room = new RD.SceneNode({scaling:10, name: "room"});

@@ -164,7 +164,7 @@ class MyClient
                 WORLD = new MyWorld(this.room.name, user_name);
 
                 //Initiate the rendering of the World - TODO: change
-                init(user_name, "view/data/Room3.gltf");
+                init(user_name, "view/data/Room3.gltf", "cat");
                 break;
 
             case "MOVE": 

@@ -1,11 +1,16 @@
 {
-    "spain": {
+    "Spanish": {
         "url": "view/data/Room3.gltf",
         "users": {},
         "exit": "default"
     },
 
-    "default": {
+    "Japanese": {
+        "url": "view/data/Room_Default.gltf",
+        "users": {},
+        "exit": "spain"
+    },
+    "Rock&Roll": {
         "url": "view/data/Room_Default.gltf",
         "users": {},
         "exit": "spain"

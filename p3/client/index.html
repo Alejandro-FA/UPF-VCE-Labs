@@ -38,7 +38,7 @@
                 <div class="input-name">Password:</div>
                 <input type="password" id="Password">
             </div>
-            <button onclick="MYAPP.firstConnection(null, 'spain')" id="connect-button">Connect</button>
+            <button onclick="MYAPP.firstConnection(null, 'Spanish')" id="connect-button">Connect</button>
 
             <p><b>Or register if you don't have an account</b></p>
             <button name="register-page">Register</button>
@@ -50,7 +50,6 @@
             <div class="chatting">
                 <nav>
                     <li id="0" class="chat selected">
-                        <img src="img/group.svg" alt="User icon" class="room-icon">
                         <div class="chat-container">
                             <text class="chat-name">Chat 0</text>
                             <text class="last-message">No messages yet!</text>
@@ -58,7 +57,6 @@
                     </li>
                 </nav>
                 <header>
-                    <img src="img/group.svg" alt="User icon" class="room-icon">
                     <div class="chat-title">Chat 0</div>
                 </header>
                 <main>
@@ -71,8 +69,12 @@
                 </div>
             </div>
         </div>
-    </div>    
-
+    </div>
+    <div class="choose-room-container" style="display: none">
+        <div class="choose-room">
+            <h3>Choose the room where you want to go</h3>
+        </div>
+    </div>
     <!--Load the scripts-->
     <script type="text/javascript" src="MyClient.js"></script>
     <script type="text/javascript" src="MyChat.js"></script>
