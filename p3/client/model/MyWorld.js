@@ -30,11 +30,11 @@ class MyWorld {
 
             if(!this.users[username]) {
                 this.users[username] = new User(
-                    "shrek",
+                    "girl",
                     vec3.create([-40, 0, 0]),
-                    0.3,
+                    0.4,
                     vec3.create([-40, 0, 0]),
-                    "shrek_idle",
+                    "girl",
                 )
             }
         })
@@ -98,8 +98,21 @@ class MyWorld {
         }
     }
 
+    /**
+     * Set the wanted character skin
+     * @param username
+     * @param character_name
+     */
+    setUserSkin(username, character_name) {
+        if(this.users) {
+            this.users[username].character = character_name
+        }
+    }
 
-    //Update the data of the model
+    /**
+     * Update the data of the model
+     * @param elapsed_time
+     */
     update(elapsed_time) {
 
         //Update the position of every user
@@ -279,7 +292,7 @@ class MyWorld {
                     this.users[this.username] = new User(
                          "girl",
                          vec3.create([-40, 0, 0]),
-                         0.3,
+                         0.4,
                          vec3.create([-40, 0, 0]),
                          "girl_idle"
                     )
@@ -290,6 +303,24 @@ class MyWorld {
                     if(name !== this.username)
                         this.createCharacter(user.character, name, user.position, user.scaling)
                 }
+                break;
+
+            case "SKIN":
+                /*let msg = {
+                    room: this.room_name,
+                    type: "SKIN",
+                    user: this.username,
+                    content: character_name,
+                    userID: MYCHAT.server.user_id
+                }*/
+                let node = SCENE_NODES[info.user]
+                let pos = node.position
+                let character_name = info.content
+
+                scene.root.removeChild(node)
+                this.createCharacter(character_name, info.user, pos, character_scalings[character_name])
+                let changingUser = this.users[info.user]
+                changingUser.character = character_name
                 break;
 
             default:
@@ -333,6 +364,7 @@ class MyWorld {
         this.setUserSceneNode(username, character_pivot);
         this.setUserTarget(username, position);
         this.setUserAnim(username, `${character_name}_idle`)
+        this.setUserSkin(username, character_name)
 
         scene.root.addChild( character_pivot );
 

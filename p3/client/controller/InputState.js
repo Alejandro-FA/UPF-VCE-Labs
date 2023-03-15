@@ -183,8 +183,15 @@ function showCharacterChooser() {
 			character = WORLD.createCharacter(character_name, username, SCENE_NODES[username].position, character_scalings[character_name])
 
 			hideCharacterChooser();
-			//FIXME: find why the character is created upside down
 			//TODO: Send a message to all the users to update the skin
+			let msg = {
+				room: WORLD.room_name,
+				type: "SKIN",
+				user: WORLD.username,
+				content: character_name,
+				userID: MYCHAT.server.user_id
+			}
+			MYCHAT.server.sendMessage(msg)
 		})
 		character_list.appendChild(node)
 	}

@@ -126,6 +126,11 @@ function init(username, room_url, character_name)
 		//use to set up camera
 		camera.lookAt( campos, smoothtarget, [0,1,0] );
 
+		for (let node in SCENE_NODES) {
+			let pivot = SCENE_NODES[node]
+			if(pivot._local_matrix[5] === -1 ) pivot._local_matrix[5] *= -1
+			if(pivot._local_matrix[10] === -1) pivot._local_matrix[10] *= -1
+		}
 
 		sphere_cursor.flags.visible = fastClick;
 

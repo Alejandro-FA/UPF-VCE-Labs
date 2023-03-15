@@ -125,13 +125,13 @@ class MyServer {
             userID: ws.id,
             username: user_name,
             type: "LOGIN",
-            content: {
+            content:{  //TODO: restore the information from previous connection
                 character: "girl",
-                //This is the default position. TODO: restore the position from previous connection
-                position: [-40, 0, 0],
-                scaling: 0.3,
-                target: [-40, 0, 0],
-                anim: "default"
+                //This is the default position.
+                position: [0, 0, 0],
+                scaling: 0.4,
+                target: [0, 0, 0],
+                anim: "girl_idle"
             },
             date: new Date()
         }
