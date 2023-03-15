@@ -216,7 +216,7 @@ class MyWorld {
 
     /**
      * Callback that handles all the world synchronization
-     * @param info {{room, userID, username, type, content, date}}
+     * @param info
      */
     on_world_info( info ){
         info = JSON.parse(info)
@@ -224,103 +224,27 @@ class MyWorld {
         switch (info.type) {
             case "LOGIN":
                 //LOGIN HANDLING
-                if (MYCHAT.server.user_id === Number(Object.keys(MYCHAT.server.clients)[0])) {
-                    let msg = {
-                        room: this.room_name,
-                        type: "WORLD",
-                        user: this.username,
-                        content: this.room.toJson(),
-                        userID: MYCHAT.server.user_id
-                    }
-                    MYCHAT.server.sendMessage(msg, info.userID)
-                }
-
-                this.room.users[info.username] = this.users[info.username] = info.content
-                this.createCharacter(info.content.character, info.username, info.content.position, info.content.scaling)
-
+                parseLoginMessage(info)
                 break;
             
             case "LOGOUT":
                 //LOGOUT HANDLING
-                /*{
-                userID: ws.id,
-                username: user_name,
-                type: "LOGOUT",
-                content: "",
-                date: new Date()
-                }*/
-
-                delete SCENE_NODES[info.username]
-                delete this.users[info.username]
-                delete this.room.users[info.username]
+                parseLogoutMessage(info)
                 break;
             
             case "MOVE":
                 //UPDATE POSITION
-                /*{
-                        room: this.room_name,
-                        type: "MOVE",
-                        username: this.username,
-                        content: myuser,
-                        userID: MYCHAT.server.user_id
-                    } 
-                */
-                let user = info.content
-
-                this.setUserTarget(info.username, user.target)
-
-                this.room.users[info.username] = this.users[info.username] = User.fromJson(user);
-
+                parseMoveMessage(info)
                 
                 break;
 
             case "WORLD":
                 //LOAD THE WORLD
-                /*{
-                    room: this.room_name,
-                    type: "WORLD",
-                    user: this.username,
-                    content: this.room,
-                    userID: MYCHAT.server.user_id
-                }*/
-                let room = info.content
-                this.room = Room.fromJson(room)
-                this.room_name = info.room
-                this.users = this.room.users
-
-                if(!this.users[this.username]) {
-                    this.users[this.username] = new User(
-                         "girl",
-                         vec3.create([-40, 0, 0]),
-                         0.4,
-                         vec3.create([-40, 0, 0]),
-                         "girl_idle"
-                    )
-                }
-                
-                for (let name in this.users) {
-                    let user = this.users[name];
-                    if(name !== this.username)
-                        this.createCharacter(user.character, name, user.position, user.scaling)
-                }
+                parseWorldMessage(info)
                 break;
 
             case "SKIN":
-                /*let msg = {
-                    room: this.room_name,
-                    type: "SKIN",
-                    user: this.username,
-                    content: character_name,
-                    userID: MYCHAT.server.user_id
-                }*/
-                let node = SCENE_NODES[info.user]
-                let pos = node.position
-                let character_name = info.content
-
-                scene.root.removeChild(node)
-                this.createCharacter(character_name, info.user, pos, character_scalings[character_name])
-                let changingUser = this.users[info.user]
-                changingUser.character = character_name
+                parseSkinMessage(info)
                 break;
 
             default:

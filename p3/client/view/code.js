@@ -170,10 +170,6 @@ function init(username, room_url, character_name)
 
 		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 100, 1000 );
 
-		//move bones in the skeleton based on animation
-		//anim.assignTime( t * 0.001 * time_factor );
-		//copy the skeleton in the animation to the character
-		//character.skeleton.copyFrom( anim.skeleton );
 	}
 
 	//user input ***********************

@@ -113,7 +113,7 @@ class MyClient
                     this.num_clients += 1;
                 }
                 
-                if(message.userID != this.user_id){
+                if(message.userID !== this.user_id){
                     if (this.on_user_connected) {
                         this.on_user_connected(message.userID, message.username)
                     }

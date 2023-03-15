@@ -374,13 +374,15 @@ li:hover,
   z-index: 100;
   backdrop-filter: blur(10px);
 }
+
+.choose-song,
 .choose-room,
 .choose-character {
   position: absolute;
-  height: 30%;
-  width: 30%;
-  top: calc(50% - 30% / 2);
-  left: calc(50% - 30% / 2);
+  height: 50%;
+  width: 40%;
+  top: calc(50% - 50% / 2);
+  left: calc(50% - 40% / 2);
   background: #018a74;
   z-index: 150;
   border-radius: 10px;
@@ -402,6 +404,20 @@ li {
   align-items: center;
   box-shadow: #414051 1px 0px 5px;
   overflow: hidden;
+}
+
+li.song {
+  flex-direction: column;
+  justify-content: center;
+}
+
+.song-title {
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.song-artist {
+  font-style: italic;
 }
 
 li.selected {

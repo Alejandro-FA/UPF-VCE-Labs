@@ -2,17 +2,44 @@
     "Spanish": {
         "url": "view/data/Room3.gltf",
         "users": {},
-        "exit": "default"
+        "exit": "default",
+        "songs": [
+            {
+            "title": "La Flaca",
+            "artist": "Jarabe De Palo",
+            "url": "this/is/a/url1"
+            },
+            {
+                "title": "Zapatillas",
+                "artist": "Canto del Loco",
+                "url": "this/is/a/url2"
+            },
+            {
+                "title": "Tu Jardín con Enanitos",
+                "artist": "Melendi",
+                "url": "this/is/a/url3"
+            }
+        ]
     },
 
     "Japanese": {
         "url": "view/data/Room_Default.gltf",
         "users": {},
-        "exit": "spain"
+        "exit": "spain",
+        "songs": [{
+            "title": "Gagnam Style",
+            "artist": "Psy",
+            "url": "this/is/a/url"
+        }]
     },
     "Rock&Roll": {
         "url": "view/data/Room_Default.gltf",
         "users": {},
-        "exit": "spain"
+        "exit": "spain",
+        "songs": [{
+            "title": "Sweet Child o' mine",
+            "artist": "Guns & Roses",
+            "url": "this/is/a/url"
+        }]
     }
 }

@@ -34,6 +34,7 @@ function configureInputs(context, character) {
 
 				case "micro_selector":
 					console.log("Hit clicked on the micro")
+					showSongChooser();
 					break
 
 				case "door_selector":
@@ -93,15 +94,7 @@ function floor_clicked(e, ray) {
 
 			let username = WORLD.username
 			let myuser = WORLD.users[username]
-			let msg = {
-				room: WORLD.room_name,
-				type: "MOVE",
-				username: username,
-				content: myuser.toJson(),
-				userID: MYCHAT.server.user_id
-			}
-
-			MYCHAT.server.sendMessage(msg)
+			sendMoveMessage(WORLD.room_name, username, myuser.toJson(), MYCHAT.server.user_id)
 		}
 	}
 }
@@ -183,15 +176,7 @@ function showCharacterChooser() {
 			character = WORLD.createCharacter(character_name, username, SCENE_NODES[username].position, character_scalings[character_name])
 
 			hideCharacterChooser();
-			//TODO: Send a message to all the users to update the skin
-			let msg = {
-				room: WORLD.room_name,
-				type: "SKIN",
-				user: WORLD.username,
-				content: character_name,
-				userID: MYCHAT.server.user_id
-			}
-			MYCHAT.server.sendMessage(msg)
+			sendSkinMessage(WORLD.room_name, WORLD.username, character_name, MYCHAT.server.user_id)
 		})
 		character_list.appendChild(node)
 	}
@@ -203,4 +188,62 @@ function showCharacterChooser() {
 function hideCharacterChooser() {
 	let character_chooser = document.querySelector(".blurred-background")
 	character_chooser?.remove()
+}
+
+/**
+ * Show the song choosing interface
+ * TODO: Adapt to the needed song structure
+ */
+function showSongChooser() {
+	let body = document.body;
+	let song_list_container = document.createElement("div")
+	song_list_container.className = "blurred-background"
+	song_list_container.addEventListener("click", (event) => {
+		hideSongChooser();
+	})
+
+	body.appendChild(song_list_container)
+
+	let song_list = document.createElement("div")
+	song_list.className = "choose-song"
+	song_list_container.appendChild(song_list)
+
+	let h3 = document.createElement("h3")
+	h3.innerHTML = "Choose the song you want to sing:"
+	song_list.appendChild(h3)
+
+	for (let i = 0; i < WORLD.room.songs.length; i++) {
+		let song = WORLD.room.songs[i]
+
+		let title = document.createElement("div")
+		title.className = "song-title"
+		title.innerHTML = song.title
+
+		let artist = document.createElement("div")
+		artist.className = "song-artist"
+		artist.innerHTML = song.artist
+
+		let node = document.createElement("li")
+		node.classList.add("song")
+
+		node.appendChild(title)
+		node.appendChild(artist)
+
+		node.addEventListener("click", (event) => {
+
+			//TODO: Add the necessary code for songs
+
+			hideSongChooser()
+		})
+
+		song_list.appendChild(node)
+	}
+}
+
+/**
+ * Hide the song choosing interface
+ */
+function hideSongChooser() {
+	let song_chooser = document.querySelector(".blurred-background")
+	song_chooser?.remove()
 }
