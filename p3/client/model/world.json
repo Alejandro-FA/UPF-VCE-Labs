@@ -1,6 +1,6 @@
 {
     "Spanish": {
-        "url": "view/data/Room3.gltf",
+        "url": "view/data/Room Spain.gltf",
         "users": {},
         "exit": "default",
         "songs": [
@@ -23,7 +23,7 @@
     },
 
     "Japanese": {
-        "url": "view/data/Room_Default.gltf",
+        "url": "view/data/Room Japanese.gltf",
         "users": {},
         "exit": "spain",
         "songs": [{

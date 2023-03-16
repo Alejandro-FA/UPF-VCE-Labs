@@ -9,7 +9,7 @@ let animation = null;
 let sphere_cursor = null
 
 //Mapping the characters to their appropriate scaling
-let character_scalings = {"cat": 5, "girl": 0.4, "storm": 1}
+let character_scalings = {"cat": 5, "girl": 0.4}
 
 //load some animations
 function loadAnimation( name, url )
@@ -19,7 +19,7 @@ function loadAnimation( name, url )
 	return anim;
 }
 
-function init(username, room_url, character_name)
+function init(username, room_url, character_name, position)
 {
 
 
@@ -47,7 +47,7 @@ function init(username, room_url, character_name)
 
 	//Create character
 
-	let girl_pivot = WORLD.createCharacter(character_name, username, [-40, 0, 0], character_scalings[character_name])
+	let girl_pivot = WORLD.createCharacter(character_name, username, position, character_scalings[character_name])
 
 	character = girl_pivot;
 
@@ -65,7 +65,7 @@ function init(username, room_url, character_name)
 	scene.root.addChild(sphere_cursor)
 
 	//load a GLTF for the room
-	let room = new RD.SceneNode({scaling:10, name: "room"});
+	let room = new RD.SceneNode({scaling:10, name: "room", shader: "phong_texture"});
 	room.loadGLTF(room_url);
 	scene.root.addChild( room );
 
@@ -128,6 +128,7 @@ function init(username, room_url, character_name)
 
 		for (let node in SCENE_NODES) {
 			let pivot = SCENE_NODES[node]
+			//Because sometimes at loading the SceneNode the character is flipped
 			if(pivot._local_matrix[5] === -1 ) pivot._local_matrix[5] *= -1
 			if(pivot._local_matrix[10] === -1) pivot._local_matrix[10] *= -1
 		}
@@ -181,11 +182,3 @@ function init(username, room_url, character_name)
 
 }
 
-
-/* example of computing movement vector
-	let delta = vec3.sub( vec3.create(), target, sprite.position );
-	vec3.normalize(delta,delta);
-	vec3.scaleAndAdd( sprite.position, sprite.position, delta, dt * 50 );
-	sprite.updateMatrices();
-	sprite.flags.flipX = delta[0] < 0;
-*/

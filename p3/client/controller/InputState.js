@@ -165,9 +165,11 @@ function showCharacterChooser() {
 	character_list.appendChild(h3)
 
 	for (let character_name in character_scalings) {
-		let node = document.createElement("li")
-		node.innerHTML = character_name
-		node.classList.add("character")
+
+		let node = document.createElement("img")
+		node.src = `/p3/client/view/data/${character_name}/preview.png`
+		node.className = "character"
+
 		node.addEventListener("click", (event) => {
 
 			//Update the sceneNode
