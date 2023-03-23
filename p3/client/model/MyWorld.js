@@ -244,7 +244,18 @@ class MyWorld {
                 break;
 
             case "SKIN":
+                //Change the skin of some client
                 parseSkinMessage(info)
+                break;
+
+            case "SONG":
+                //Play the song chosen by a client
+                parseSongMessage(info)
+                break;
+
+            case "SING":
+                //Tell all the room that a client is singing
+                parseSingMessage(info)
                 break;
 
             default:

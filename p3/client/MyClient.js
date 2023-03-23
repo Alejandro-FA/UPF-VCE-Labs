@@ -190,6 +190,22 @@ class MyClient
                 }
                 break;
 
+            case "SONG":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
+            case "SING":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
             default:
 
                 if(message.userID !== this.user_id){

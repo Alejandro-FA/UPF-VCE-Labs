@@ -1,6 +1,6 @@
 {
     "Spanish": {
-        "url": "view/data/Room Spain.gltf",
+        "url": "view/data/Room Spain.glb",
         "users": {},
         "exit": "default",
         "songs": [
@@ -12,7 +12,7 @@
             {
                 "title": "Zapatillas",
                 "artist": "Canto del Loco",
-                "url": "this/is/a/url2"
+                "url": "view/data/music/Zapatillas.mp3"
             },
             {
                 "title": "Tu Jardín con Enanitos",

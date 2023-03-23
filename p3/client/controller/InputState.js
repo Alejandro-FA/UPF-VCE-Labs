@@ -234,7 +234,7 @@ function showSongChooser() {
 		node.addEventListener("click", (event) => {
 
 			//TODO: Add the necessary code for songs
-
+			song.play()
 			hideSongChooser()
 		})
 
