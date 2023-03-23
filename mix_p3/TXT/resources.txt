@@ -1,0 +1,18 @@
+- CSS ui gradietns
+https://uigradients.com/
+
+
+- bootstrap 5
+https://getbootstrap.com/docs/5.3/getting-started/introduction/#html5-doctype
+
+- bootstrap color commands
+https://getbootstrap.com/docs/4.0/utilities/colors/
+
+- bootstrap help: button align
+https://www.geeksforgeeks.org/how-to-set-the-button-alignment-in-bootstrap/
+
+- bootstrap help: text
+https://getbootstrap.com/docs/4.0/utilities/text/
+
+- bootstrap help: button full width
+https://stackoverflow.com/questions/12061139/making-button-go-full-width/68974259#68974259

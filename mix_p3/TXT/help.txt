@@ -1,0 +1,11 @@
+- exphbs is not a function
+https://stackoverflow.com/questions/69959820/typeerror-exphbs-is-not-a-function
+
+- mongodb deprecated options
+https://www.mongodb.com/community/forums/t/option-usecreateindex-is-not-supported/123048
+
+- mongodb start and stop
+https://stackoverflow.com/questions/11774887/how-to-stop-mongo-db-in-one-command
+
+- force killing linnux processes
+https://www.cyberciti.biz/faq/how-force-kill-process-linux/
