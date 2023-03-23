@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mychat">
+
+        <!--This is the screen where you register-->
+        <div class="register" style="display: none;">
+            <h1>Register</h1>
+            <h2>Username:</h2>
+            <input type="text" name="Username">
+            <h2>Password:</h2>
+            <input type="password" name="Password">
+            <button name="register">Register</button>
+            <h2><b>Or login if you already have an account:</b></h2>
+            <button name="login-page">Login</button>
+        </div>
+
+        <!--This is the screen where you login and choose the avatar-->
+        <div class="connecting" style="display: flex;">
+            <h1>Welcome to Roomz!</h1>
+            <h2>Choose between the following avatars:</h2>
+            <div class="avatars-container">
+                <img id="avatar1" class="avatar selected" src="assets/Profile 1.png"></img>
+                <img id="avatar2" class="avatar" src="assets//Profile 2.png"></img>
+                <img id="avatar3" class="avatar" src="assets//Profile 3.png"></img>
+                <img id="avatar4" class="avatar" src="assets//Profile 4.png"></img>
+            </div>
+            <div class="input-container">
+                <div class="input-name">User Name:</div>
+                <input type="text" id="User">
+                <div class="input-name">Password:</div>
+                <input type="password" id="Password">
+            </div>
+            <button onclick="MYAPP.firstConnection(null, 'Spanish')" id="connect-button">Connect</button>
+
+            <p><b>Or register if you don't have an account</b></p>
+            <button name="register-page">Register</button>
+        </div>
+
+        <div class="logged-in" style="display: none;">
+    
+            <!--Chatting HTML-->
+            <div class="chatting">
+                <nav>
+                    <li id="0" class="chat selected">
+                        <div class="chat-container">
+                            <text class="chat-name">Chat 0</text>
+                            <text class="last-message">No messages yet!</text>
+                        </div>
+                    </li>
+                </nav>
+                <header>
+                    <div class="chat-title">Chat 0</div>
+                </header>
+                <main>
+                    <!--In there will be all the messages-->
+                </main>
+                
+                <div id="input">
+                    <input type="text" id="message">
+                    <button onclick="MYAPP.chat.sendMessage(MYAPP.chat.user_name, document.getElementById('message').value)" id="message-button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="choose-room-container" style="display: none">
+        <div class="choose-room">
+            <h3>Choose the room where you want to go</h3>
+        </div>
+    </div>
+    <!--Load the scripts-->
+    <script type="text/javascript" src="MyClient.js"></script>
+    <script type="text/javascript" src="MyChat.js"></script>
+    <script type="text/javascript" src="MyApp.js"></script>
+    <script type="text/javascript" src="model/MyWorld.js"></script>
+    <script type="text/javascript" src="model/Room.js"></script>
+    <script type="text/javascript" src="model/User.js"></script>
+    <script type="text/javascript" src="model/Message.js"></script>
+    <script type="text/javascript" src="model/Song.js"></script>
+    <script type="text/javascript" src="controller/InputState.js"></script>
+	<script type="text/javascript" src="view/code.js"></script>
+
+    <script type="text/javascript" src="view/extra/gl-matrix-min.js"></script>
+	<script type="text/javascript" src="view/extra/litegl.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer.js"></script>
+	<script type="text/javascript" src="view/extra/wbin.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-animation.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-curves.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-extended.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-gizmo.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-gltf.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-light.js"></script>
+	<script type="text/javascript" src="view/extra/rendeer-pbr.js"></script>
+    <script>
+        let MYAPP = new MyApp();
+    </script>   
+</body>
+</html>

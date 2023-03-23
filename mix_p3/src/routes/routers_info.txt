@@ -1,0 +1,2 @@
+Objetivo: crear urls o rutas que enviará el server al user
+Guardaremos urls!!
