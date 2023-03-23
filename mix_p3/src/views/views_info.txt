@@ -1,0 +1,1 @@
+Objetivo: almacenar todas las vistas html que le enviaremos al navegador

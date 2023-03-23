@@ -1,0 +1,28 @@
+{{#if user}}
+    <script type="application/javascript" src="../client/MyClient.js"></script>
+    <script type="application/javascript" src="../client/MyChat.js"></script>
+    <script type="application/javascript" src="../client/MyApp.js"></script>
+    <script type="application/javascript" src="../client/model/MyWorld.js"></script>
+    <script type="application/javascript" src="../client/model/Room.js"></script>
+    <script type="application/javascript" src="../client/model/User.js"></script>
+    <script type="application/javascript" src="../client/model/Message.js"></script>
+    <script type="application/javascript" src="../client/model/Song.js"></script>
+    <script type="application/javascript" src="../client/controller/InputState.js"></script>
+    <script type="application/javascript" src="../client/view/code.js"></script>
+
+    <script type="application/javascript" src="../client/view/extra/gl-matrix-min.js"></script>
+    <script type="application/javascript" src="../client/view/extra/litegl.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer.js"></script>
+    <script type="application/javascript" src="../client/view/extra/wbin.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-animation.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-curves.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-extended.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-gizmo.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-gltf.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-light.js"></script>
+    <script type="application/javascript" src="../client/view/extra/rendeer-pbr.js"></script>
+    <script>
+        let MYAPP = new MyApp();
+        MYAPP.firstConnection({{user.username}}, 'Spanish');
+    </script> 
+{{/if}}
