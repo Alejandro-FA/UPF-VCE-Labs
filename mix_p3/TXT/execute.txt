@@ -1,0 +1,12 @@
+1º: ejecutar mongoDB
+> sudo service mongod start
+
+2º ejecutar server
+> npm run dev
+(por qué este comando? Mirar explicación packages.txt)
+
+3º vamos a urls:
+localhost:3000 (intro de la web)
+localhost:3000/users/signin (ingresar en web)
+localhost:3000/users/signup (registrarse)
+localhost:3000/about (aun borrador)
