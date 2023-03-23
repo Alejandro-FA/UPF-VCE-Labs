@@ -107,7 +107,7 @@ app.use(require(path.join(app.get('routes'), 'canvas')));
 //--------------- STATIC FILES ---------------
 //Donde estará la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'client')));
 
 
 
