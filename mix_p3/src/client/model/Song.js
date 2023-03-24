@@ -90,6 +90,7 @@ class Song {
         //To control the sound
         const gainNode = audioContext.createGain();
 
+        //EXemple
         /*
         <input type="range" id="volume" min="0" max="2" value="1" step="0.01" />
 

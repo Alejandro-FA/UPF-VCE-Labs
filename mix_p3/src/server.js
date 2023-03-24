@@ -8,7 +8,6 @@ const passport = require('passport');
 const http = require('http');
 const fs = require('fs');
 const WebSocketServer = require('websocket').server;
-const socketio = require('socket.io');
 
 
 
@@ -324,20 +323,3 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 
 module.exports = {server, app};
-
-
-
-//--------------- SERVER IS LISTENING ---------------
-/*server.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'))
-})*/
-
-
-
-//--------------- SOCKET IO --------------- V2
-//Getión de WebSocket server con socket.io
-/*const io = socketio.listen(server);
-
-io.on('connection', socket => {
-    console.log('new user connected');
-});*/
