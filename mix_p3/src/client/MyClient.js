@@ -36,7 +36,7 @@ class MyClient
         }
 
         //let url = `wss://ecv-etic.upf.edu/node/9017/ws/`
-        let url = `ws://localhost:9017?${user_name}`
+        let url = `ws://localhost:9017?username=${user_name}`
         //let url = `ws://localhost:5500/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
@@ -158,6 +158,22 @@ class MyClient
                 break;
 
             case "SKIN":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
+            case "SONG":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
+            case "SING":
                 if(message.userID !== this.user_id){
                     if(this.on_world_info){
                         this.on_world_info(JSON.stringify(message))

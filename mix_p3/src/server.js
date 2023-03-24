@@ -59,7 +59,6 @@ function on_connection(req) {
 
     let path = url.parse(req.resource)
     let user_name = qs.parse(path.query).username
-
     get_new_id(ws);
 
     //Retrieve all the needed information from the database TODO: use mongoDB to retrieve said information
@@ -86,7 +85,6 @@ function on_connection(req) {
     //Retrieve the url of the room model
 
     let room_url = world[ws.room].url
-    console.log(room_url)
 
     let room = {
         type: "ROOM",
@@ -236,7 +234,6 @@ function on_message_received(message) {
         on_message()
     }
 
-    console.log(msg);
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
 }
 

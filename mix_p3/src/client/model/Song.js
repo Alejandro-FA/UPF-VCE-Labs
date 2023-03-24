@@ -98,8 +98,8 @@ class Song {
         })
 
         peer.on("connection", (conn) => {
-            conn.on("data", () => {
-
+            conn.on("data", (data) => {
+                console.log(data)
             })
         })
         this.play()
