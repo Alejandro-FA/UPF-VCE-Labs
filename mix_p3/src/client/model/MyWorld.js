@@ -11,7 +11,7 @@ class MyWorld {
         this.username = username
         this.room_name = room
         MYCHAT.server.on_world_info = this.on_world_info.bind(this)
-        
+
         this.world = null
         this.room = null
         this.users = null
@@ -19,25 +19,26 @@ class MyWorld {
         //TODO: Change when using in server
         //fetch('https://ecv-etic.upf.edu/node/9017/world')
         fetch('model/world.json')
-        .then(response => response.json())
-        .then(data => {
+            .then(response => response.json())
+            .then(data => {
 
-            this.world = data
-            if(!this.room){
-                 this.room = Room.fromJson(data[room])
-                 this.users = this.room.users
-            }
+                this.world = data
+                if(!this.room){
+                    this.room = Room.fromJson(data[room])
+                    this.users = this.room.users
+                }
 
-            if(!this.users[username]) {
-                this.users[username] = new User(
-                    "girl",
-                    vec3.create([-40, 0, 0]),
-                    0.4,
-                    vec3.create([-40, 0, 0]),
-                    "girl",
-                )
-            }
-        })
+                if(!this.users[username]) {
+                    this.users[username] = new User(
+                        "girl",
+                        vec3.create([-40, 0, 0]),
+                        0.4,
+                        vec3.create([-40, 0, 0]),
+                        "girl",
+                    )
+                }
+            })
+            .catch(err => console.log(err))
     }
 
     /**
@@ -48,7 +49,7 @@ class MyWorld {
     setUserSceneNode(username, SceneNode) {
         if(this.users){
             this.users[username].position = SceneNode.position;
-        } 
+        }
         SCENE_NODES[username] = SceneNode
     }
 
@@ -60,7 +61,7 @@ class MyWorld {
      * This function sets the target of the specified user and orient the user
      * @param {String} username Name of the user that changes target
      * @param {vec3} target New target of the specified user
-    * */
+     * */
     setUserTarget(username, target) {
         if(this.users) {
             this.users[username].target = target;
@@ -155,6 +156,13 @@ class MyWorld {
      * @param room_name
      */
     changeRoom(room_name) {
+
+        //Check if there is a song playing
+        if(SONG_PLAYING) {
+            let audio = document.querySelector("audio")
+            audio.remove()
+            SONG_PLAYING = false
+        }
         //Delete the user from the old room
         let myuser = this.users[this.username]
 
@@ -174,7 +182,7 @@ class MyWorld {
         //Change the current room name
 
         this.room_name = room_name
-    
+
         //Reset the position and target of the user
 
         myuser.position = SCENE_NODES[this.username].position = myuser.target = [0, 0, 0]
@@ -226,16 +234,16 @@ class MyWorld {
                 //LOGIN HANDLING
                 parseLoginMessage(info)
                 break;
-            
+
             case "LOGOUT":
                 //LOGOUT HANDLING
                 parseLogoutMessage(info)
                 break;
-            
+
             case "MOVE":
                 //UPDATE POSITION
                 parseMoveMessage(info)
-                
+
                 break;
 
             case "WORLD":
@@ -244,7 +252,18 @@ class MyWorld {
                 break;
 
             case "SKIN":
+                //Change the skin of some client
                 parseSkinMessage(info)
+                break;
+
+            case "SONG":
+                //Play the song chosen by a client
+                parseSongMessage(info)
+                break;
+
+            case "SING":
+                //Tell all the room that a client is singing
+                parseSingMessage(info)
                 break;
 
             default:
@@ -267,7 +286,7 @@ class MyWorld {
         let mat = new RD.Material({
             textures: {
                 color: `${character_name}/${character_name}.png` }
-            });
+        });
         mat.register(`${character_name}`);
 
         //create pivot point for the character

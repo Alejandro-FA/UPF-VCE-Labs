@@ -42,25 +42,6 @@ const MYCHAT = {
 
   //This function sets all the event listeners
   configureEventListeners: function () {
-    //Event listener for sending messages
-    let elem = document.getElementById("message");
-    elem.addEventListener("keydown", (event) => {
-      if (event.code == "Enter") {
-        let message = document.getElementById("message").value;
-        this.sendMessage(this.server.user, message);
-      }
-    });
-
-    //document.querySelector(".mychat li").onclick = this.changeChat(0);
-
-    //Event listener for the avatar selection
-    let avatars = document.querySelectorAll(".mychat .avatar");
-    avatars.forEach((elem) => {
-      elem.addEventListener("click", (event) => {
-        this.selectAvatar(event.target);
-      });
-    });
-
   },
 
   //Configure all the server callbacks
@@ -80,27 +61,16 @@ const MYCHAT = {
     return this.connection(this.user_name);
   },
 
-  //Given a room name and a user name, connects to the server
+  //Given a username, connects to the server
   connection: function (user_name) {
     this.server.user = user_name;
 
-    let chatTitle = document.querySelector(".mychat .chat-title");
-    let chatName = document.querySelector(".mychat .selected .chat-name");
-
-    chatTitle.innerHTML = room_name;
-    chatName.innerHTML = room_name;
-    this.server.room.name = room_name;
-
-    if (room_name === "") {
-      alert("Empty room name");
-      return false;
-    }
     if (user_name === "") {
       alert("Empty user name");
       return false;
     }
 
-    this.server.connect(room_name, user_name, password);
+    this.server.connect(user_name);
 
     return true;
   },
@@ -359,9 +329,12 @@ const MYCHAT = {
 
   //this method is called when the server gives the user his ID (ready to start transmiting)
   on_connect: function () {
+    /*
     this.systemMessage(
       `Entered the room ${this.server.room.name}`
     );
+
+     */
   },
 
   //this method is called when we receive the info about the current state of the room (clients connected)

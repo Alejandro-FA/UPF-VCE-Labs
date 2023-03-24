@@ -12,7 +12,7 @@
             {
                 "title": "Zapatillas",
                 "artist": "Canto del Loco",
-                "url": "this/is/a/url2"
+                "url": "view/data/music/Zapatillas.mp3"
             },
             {
                 "title": "Tu Jardín con Enanitos",
@@ -29,16 +29,6 @@
         "songs": [{
             "title": "Gagnam Style",
             "artist": "Psy",
-            "url": "this/is/a/url"
-        }]
-    },
-    "Rock&Roll": {
-        "url": "view/data/Room_Default.gltf",
-        "users": {},
-        "exit": "spain",
-        "songs": [{
-            "title": "Sweet Child o' mine",
-            "artist": "Guns & Roses",
             "url": "this/is/a/url"
         }]
     }

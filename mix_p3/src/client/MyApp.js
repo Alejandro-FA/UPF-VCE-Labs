@@ -4,27 +4,6 @@ class MyApp {
   constructor() {
     this.chat = MYCHAT;
     this.chat.init();
-
-	let button = document.querySelector("button[name='register']")
-	button.addEventListener("click", this.register.bind(this))
-
-	button = document.querySelector("button[name='register-page']")
-	button.addEventListener("click", ( event ) => {
-		let connecting = document.querySelector(".connecting")
-		let register = document.querySelector(".register")
-
-		connecting.style.display = "none"
-		register.style.display = "flex"
-	})
-
-	button = document.querySelector("button[name='login-page']")
-	button.addEventListener("click", ( event ) => {
-		let connecting = document.querySelector(".connecting")
-		let register = document.querySelector(".register")
-
-		connecting.style.display = "flex"
-		register.style.display = "none"
-	})
   }
 
 	firstConnection(username, room_name) {

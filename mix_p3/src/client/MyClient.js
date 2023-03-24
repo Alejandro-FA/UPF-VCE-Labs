@@ -24,13 +24,10 @@ class MyClient
 
     /**
      * Connect to the server
-     * @param room_name
      * @param user_name
-     * @param password
      */
-    connect(room_name, user_name, password) {
+    connect(user_name) {
 
-        room_name = room_name || ""
         user_name = user_name || "Default"
         this.user_name = user_name
 
@@ -38,8 +35,8 @@ class MyClient
             this.socket.close()
         }
 
-        //let url = `wss://ecv-etic.upf.edu/node/9017/ws/${room_name}?username=${user_name}&password=${password}`
-        let url = `ws://localhost:9017/${room_name}?username=${user_name}&password=${password}`
+        //let url = `wss://ecv-etic.upf.edu/node/9017/ws/`
+        let url = `ws://localhost:9017?${user_name}`
         //let url = `ws://localhost:5500/${room_name}?username=${user_name}&password=${password}`
         this.socket = new WebSocket(url)
 
@@ -50,8 +47,6 @@ class MyClient
                 this.room = {name: "", clients: []}
             }
             this.is_connected = true
-
-            this.room.name = room_name
 
         }
 
@@ -82,21 +77,6 @@ class MyClient
     manageServerMessage( message ) {
         message = JSON.parse(message.data)
         switch (message.type) {
-            case "REGISTER":
-
-                //Close the register connection and go back to the LOGIN screen
-                this.socket.close()
-                if(message.exists){
-                    alert("Account already exists")
-                }
-                let connecting = document.querySelector(".connecting")
-                let register = document.querySelector(".register")
-
-                connecting.style.display = "flex"
-                register.style.display = "none"
-                break;
-
-
             case "ID":
                 this.user_id = message.userID
                 this.clients[this.user_id] = {id: this.user_id, name: this.user_name}
@@ -149,19 +129,13 @@ class MyClient
             case "ROOM":
                 this.clients = message.clients
                 this.num_clients = message.length
-                
-                //Display the canvas
-                let conScreen = document.querySelector(".mychat .connecting");
-                let msgScreen = document.querySelector(".mychat .logged-in");
-          
-                conScreen.style.display = "none";
-                msgScreen.style.display = "grid";
 
                 if (this.on_connect){
                     this.on_connect()
                 }
 
                 let user_name = MYCHAT.user_name
+                this.room.name = message.name
                 WORLD = new MyWorld(this.room.name, user_name);
 
                 //Initiate the rendering of the World - TODO: change so that it uses the info queried from the database
@@ -219,22 +193,6 @@ class MyClient
             message["targets"] = targets
         }
         this.socket.send(JSON.stringify(message))
-    }
-
-    /**
-     * Connect to register url
-     * @param username
-     * @param password
-     */
-    register(username, password) {
-        //let url = `wss://ecv-etic.upf.edu/node/9017/ws/register?username=${username}&password=${password}`
-        let url = `ws://localhost:9017/register?username=${username}&password=${password}`
-        //let url = `ws://localhost:5500/register?username=${username}&password=${password}`
-
-        this.socket = new WebSocket(url)
-        this.socket.onmessage = (msg) => {
-            this.manageServerMessage(msg)
-        }
     }
 
 }

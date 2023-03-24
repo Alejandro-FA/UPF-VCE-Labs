@@ -155,3 +155,67 @@ function parseLogoutMessage(msg) {
     delete WORLD.users[msg.username]
     delete WORLD.room.users[msg.username]
 }
+
+/**
+ * Send a Song message to all the room that indicates that a song is playing
+ * @param room_name
+ * @param song_title
+ * @param userId
+ */
+function sendSongMessage(room_name, song_title, userId) {
+    let msg = {
+        room: room_name,
+        type: "SONG",
+        content: song_title,
+        userID: userId
+    }
+    MYCHAT.server.sendMessage(msg)
+}
+
+/**
+ * Parse a Song Message
+ * @param msg {{room, type, content, userID}}
+ */
+function parseSongMessage(msg) {
+    let songs = WORLD.room.songs
+
+    for (const song of songs) {
+        if (song.title === msg.content) {
+            song.play();
+        }
+    }
+}
+
+/**
+ * Send a Sing message to all the room that indicates that a user is singing
+ * @param room_name
+ * @param userId
+ * @param peerId
+ */
+function sendSingMessage(room_name, userId, peerId) {
+    let msg = {
+        room: room_name,
+        type: "SING",
+        userID: userId,
+        peerId: peerId,
+    }
+    MYCHAT.server.sendMessage(msg)
+}
+
+/**
+ * Parse a Sing Message
+ * @param msg {{room, type, userID, peerId}}
+ */
+function parseSingMessage(msg) {
+    let peer = new peerjs.Peer()
+
+    peer.on("connect", (peerId) => {
+
+        let conn = peer.connect( msg.peerId );
+        conn.on("open", () => {
+            conn.send({id: peerId});
+        });
+
+    });
+
+}

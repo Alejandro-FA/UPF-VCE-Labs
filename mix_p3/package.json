@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "run mongo": "sudo service mongod start",
+    "run mongo": "brew services start mongodb-community@6.0",
     "run dev": "npm run dev"
   },
   "keywords": [],
