@@ -207,15 +207,23 @@ function sendSingMessage(room_name, userId, peerId) {
  * @param msg {{room, type, userID, peerId}}
  */
 function parseSingMessage(msg) {
-    let peer = new peerjs.Peer()
 
-    peer.on("connect", (peerId) => {
+    let conn = peer.connect( msg.peerId );
+    conn.on("open", () => {
+        conn.send({id: peerId});
+    });
 
-        let conn = peer.connect( msg.peerId );
-        conn.on("open", () => {
-            conn.send({id: peerId});
+    peer.on('call', (call) => {
+        call.answer()
+        call.on('stream', (stream) => {
+            // use the stream to receive audio
+            console.log("Receiving the stream")
+            const audio = new Audio();
+            audio.srcObject = stream;
+            audio.play()
+                .then(r => console.log(r))
+                .catch(err => console.error(err));
         });
 
     });
-
 }

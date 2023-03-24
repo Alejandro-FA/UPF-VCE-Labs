@@ -1,4 +1,33 @@
 let SONG_PLAYING = false;
+let peer = new Peer()
+let peerId = null
+
+peer.on("open", (id) => {
+    peerId = id
+})
+
+peer.on("connection", (conn) => {
+    conn.on("data", (data) => {
+        console.log(data)
+        let id = data.id
+        sendAudioStream(id)
+    })
+})
+
+/**
+ * Send the audio from one peer to another
+ * @param other_peer_id
+ */
+function sendAudioStream(other_peer_id) {
+    let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    getUserMedia({audio: true}, (stream) => {
+        peer.call(other_peer_id, stream);
+    }, (err) => {
+        console.error('Failed to get local stream', err);
+    });
+}
+
+
 class Song {
 
     /**
@@ -51,6 +80,7 @@ class Song {
         audioElement.addEventListener("ended", () => {
             console.log("Song ended");
             SONG_PLAYING = false;
+            peer.destroy()
         });
 
         document.body.appendChild(audioElement);
@@ -91,17 +121,8 @@ class Song {
         if(!SONG_PLAYING)
             sendSongMessage(WORLD.room_name, this.title, MYCHAT.server.user_id);
 
-        let peer = new peerjs.Peer();
+        sendSingMessage(WORLD.room_name, MYCHAT.server.user_id, peerId);
 
-        peer.on("open", (peerId) => {
-            sendSingMessage(WORLD.room_name, MYCHAT.server.user_id, peerId);
-        })
-
-        peer.on("connection", (conn) => {
-            conn.on("data", (data) => {
-                console.log(data)
-            })
-        })
         this.play()
     }
 }
