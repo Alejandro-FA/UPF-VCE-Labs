@@ -54,6 +54,7 @@ class MyClient
         let that = this
         this.socket.onclose = function () {
 
+            console.log("Socket closed")
             if(that.socket !== this){
                 return
             }
@@ -96,7 +97,7 @@ class MyClient
                 
                 if(message.userID !== this.user_id){
                     if (this.on_user_connected) {
-                        this.on_user_connected(message.userID, message.username)
+                        this.on_user_connected(message.username)
                     }
                     if(this.on_world_info) {
                         this.on_world_info(JSON.stringify(message))
@@ -185,7 +186,7 @@ class MyClient
 
                 if(message.userID !== this.user_id){
                     if(this.on_message){
-                        this.on_message(message.userID, JSON.stringify(message))
+                        this.on_message(JSON.stringify(message))
                     }
                 }
                 break;

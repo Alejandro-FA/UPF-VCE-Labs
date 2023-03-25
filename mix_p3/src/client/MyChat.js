@@ -4,31 +4,9 @@ const MYCHAT = {
     //Current instance of MyClient
     server: undefined,
 
-    //Variable that will indicate which avatar is selected (default 1)
-    avatar: 1,
-
-    //Variable to keep track of wich is the current chat
-    currentChat: "living_room",
-
-    //Variable to keep track of how many chats there are
-    n_chats: 1,
-
-    //Object where the history of the visited chats will be stored
-    history: {},
-
-    //Boolean variable that will be used to know if the current chat is private or not
-    private: false,
-
-    //History that will be stored locally
-    privateHistory: {},
+    currentChat: "Spanish",
 
     user_name: "anonymous",
-
-    //Visited chats
-
-    visited_chats: [],
-
-    id_user: {},
 
     password: "undefined",
 
@@ -42,6 +20,14 @@ const MYCHAT = {
 
     //This function sets all the event listeners
     configureEventListeners: function () {
+        let input = document.getElementById("message-input")
+
+        input.addEventListener("keydown", (e) => {
+            if(e.code === "Enter") {
+                let message = input.value
+                this.sendMessage(this.user_name, message)
+            }
+        })
     },
 
     //Configure all the server callbacks
@@ -83,100 +69,39 @@ const MYCHAT = {
 
         let room = this.server.room.name;
 
-        if (!this.private) {
-            let msg = {
-                room: room,
-                type: "text",
-                user: sender,
-                avatar: this.avatar,
-                content: message,
-                userID: this.server.user_id
-            };
+        let msg = {
+            room: room,
+            type: "text",
+            user: sender,
+            avatar: this.avatar,
+            content: message,
+            userID: this.server.user_id
+        };
 
-            this.history[room].content.push(msg);
+        this.server.sendMessage(msg);
 
-            this.server.sendMessage(msg);
+        this.displayMessage(sender, message);
 
-            this.displayMessage(sender, message, this.avatar, false, this.server.user_id);
-
-            document.getElementById("message").value = "";
-        } else {
-            let chatName = document.querySelector(".mychat .chat-title").innerHTML;
-
-            this.privateHistory[chatName].push({
-                room: room,
-                type: "text",
-                user: sender,
-                avatar: this.avatar,
-                content: message,
-            });
-
-            document.getElementById("message").value = "";
-
-            this.displayMessage(sender, message, this.avatar, false, this.server.user_id);
-
-            let clients = this.server.clients;
-            let userID = chatName.slice(1);
-            if (userID in clients) {
-                let msg = {
-                    room: room,
-                    type: "private",
-                    user: sender,
-                    avatar: this.avatar,
-                    content: message,
-                    id: this.server.user_id
-                };
-                this.server.sendMessage(msg, userID);
-            }
-        }
-    },
-
-    //Update the preview of the last message that there is under the name
-    updatePreview: function (sender, message) {
-        let currentChat = document.getElementById(this.currentChat);
-        currentChat.querySelector(
-            ".mychat .last-message"
-        ).innerHTML = `${sender}: ${message}`;
+        document.getElementById("message-input").value = "";
     },
 
     //Display the message that has been sent
-    displayMessage: function (sender, message, avatar, isPrivate, userID) {
-        let chat = document.querySelector(".mychat main");
+    displayMessage: function (sender, message) {
+        let chat = document.querySelector(".mychat .message-space");
         let elem = document.createElement("div");
 
         elem.className = "message-container";
 
-        let img = document.createElement("img");
-        switch (avatar) {
-            case 1:
-                img.src = "assets/Profile 1.png";
-                break;
-            case 2:
-                img.src = "assets/Profile 2.png";
-                break;
-            case 3:
-                img.src = "assets/Profile 3.png";
-                break;
-            case 4:
-                img.src = "assets/Profile 4.png";
-                break;
-        }
-
-        elem.appendChild(img);
         let elem2 = document.createElement("div");
         elem2.classList.add("message");
 
         let user = this.server.user === sender ? "me" : "it";
 
-        if (isPrivate) {
-            elem2.classList.add("private");
-        }
-
         elem.classList.add(user);
 
         let userName = document.createElement("div");
         userName.classList.add("sender");
-        userName.innerHTML = sender + '#' + userID;
+        userName.innerHTML = sender
 
         let content = document.createElement("div");
         content.classList.add("content");
@@ -188,132 +113,26 @@ const MYCHAT = {
         elem.appendChild(elem2);
         chat.appendChild(elem);
 
-        this.updatePreview(sender, message);
         chat.scrollTop = 10000;
     },
 
     //Returns a function that changes to the chat which ID is passed
     changeChat: function (chatName) {
-        return function () {
 
-            let chat = document.getElementById(chatName);
-            let oldChat = document.querySelector(".mychat li.selected");
+        MYCHAT.currentChat = chatName;
 
-            oldChat.classList.remove("selected");
-            chat.classList.add("selected");
+        let main = document.querySelector(".mychat .message-space");
+        main.innerHTML = "";
 
-            MYCHAT.currentChat = chat.id;
-
-            document.querySelector(".mychat .chat-title").innerHTML = chatName;
-
-            let main = document.querySelector(".mychat main");
-            main.innerHTML = "";
-
-            let c = chatName.charAt(0);
-
-            if (c !== "_") {
-                if (MYCHAT.server.room.name !== chatName) {
-                    MYCHAT.connection(chatName, MYCHAT.server.user, this.password);
-                }
-
-                MYCHAT.private = false;
-
-                MYCHAT.history[chatName].content.forEach(
-                    (elem) => {
-                        MYCHAT.displayMessage(elem.user, elem.content, elem.avatar,false, elem.userID);
-                    }
-                );
-
-            } else {
-                MYCHAT.private = true;
-                let history = MYCHAT.privateHistory[chatName];
-                history.forEach((elem) => {
-                    MYCHAT.displayMessage(elem.user, elem.content, elem.avatar);
-                });
-            }
-        };
-    },
-
-    //Creates a new Client for a new room
-    connectNewChat: function (chatName) {
-
-        if (chatName in this.visited_chats) {
-            console.error("Room " + chatName + " already exists")
-            return
-        } else {
-            this.visited_chats.push(chatName)
+        if (MYCHAT.server.room.name !== chatName) {
+            MYCHAT.connection(chatName, MYCHAT.server.user, this.password);
         }
 
-
-        if (chatName === "") {
-            alert("Room name needed");
-            return;
-        }
-
-        this.n_chats += 1;
-        let c = chatName.charAt(0);
-        if (c === "_") {
-            this.privateChat(chatName);
-        } else {
-            this.createNewChat(chatName);
-        }
-
-
-        this.history[chatName] = {
-            room: chatName,
-            type: "history",
-            content: [],
-            user: this.user_name,
-            id: this.server.user_id
-        };
-
-        let newchat = document.getElementById(chatName);
-        //newchat.onclick = this.changeChat(chatName).bind(MYCHAT);
-
-        this.changeChat(chatName).call(this);
     },
 
-    //Create a new private chat
-    privateChat: function (chatName) {
-        this.createNewChat(chatName);
-        this.privateHistory[chatName] = [];
-        let clients = this.server.clients;
-
-        let userID = chatName.slice(1);
-    },
-
-    //Create the HTML element with all the attributes
-    createNewChat: function (chatName) {
-        let nav = document.querySelector(".mychat nav");
-
-        let li = document.createElement("li");
-        li.id = chatName;
-        li.className = "chat selected";
-        li = nav.appendChild(li);
-
-
-        let img = document.createElement("img");
-        img.src = "img/group.svg";
-        img.className = "room-icon";
-        li.appendChild(img);
-
-        let div = document.createElement("div");
-        div.className = "chat-container";
-        div = li.appendChild(div);
-
-        let text1 = document.createElement("text");
-        text1.className = "chat-name";
-        text1.innerHTML = chatName;
-        div.appendChild(text1);
-        let text2 = document.createElement("text");
-        text2.className = "last-message";
-        text2.innerHTML = "No messages yet!";
-        div.appendChild(text2);
-    },
-
-    //Send a system message that wont be stored on history
+    //Send a system message
     systemMessage: function (message) {
-        let chat = document.querySelector(".mychat main");
+        let chat = document.querySelector(".mychat .message-space");
         let elem = document.createElement("div");
 
         elem.classList.add("message");
@@ -329,12 +148,11 @@ const MYCHAT = {
 
     //this method is called when the server gives the user his ID (ready to start transmiting)
     on_connect: function () {
-        /*
+
         this.systemMessage(
-          `Entered the room ${this.server.room.name}`
+          `Entered the ${this.currentChat} room`
         );
 
-         */
     },
 
     //this method is called when we receive the info about the current state of the room (clients connected)
@@ -344,102 +162,61 @@ const MYCHAT = {
         this.server.user_id = id
     },
 
-    //this methods receives messages from other users (author_id is an unique identifier per user)
-    on_message: function (author_id, msg) {
+    //this method receives messages from other users (author_id is a unique identifier per user)
+    on_message: function (msg) {
         //data received
 
         let message = JSON.parse(msg);
+        console.log(message)
 
         let type = message.type;
 
         if (message.room === this.server.room.name) {
             switch (type) {
                 case "text":
-                    this.history[message.room].content.push(message);
-                    if (!this.private) {
-                        this.displayMessage(message.user, message.content, message.avatar, false, message.userID);
-                    }
+                    this.displayMessage(message.user, message.content);
                     break;
-
-                case "history":
-                    this.history[message.room].content = message.content;
-                    this.history[message.room].content.forEach((elem) => {
-                        this.displayMessage(elem.user, elem.content, elem.avatar, false, elem.userID);
-                    });
-
-                    this.id_user[message.userID] = message.user
-
-                    break;
-
-                case "private":
-                    this.displayMessage(
-                        message.user,
-                        message.content,
-                        message.avatar,
-                        true
-                    );
-                    break;
-
             }
         }
     },
 
-    //this methods is called when a new user is connected
-    on_user_connected: function (user_id, user_name) {
+    //this method is called when a new user is connected
+    on_user_connected: function (user_name) {
         //new user!
-        this.id_user[user_id] = user_name
-        //this.systemMessage(`${user_name}#${user_id} has entered the room`);
-        /*
-        if (this.server.user_id === Number(Object.keys(this.server.clients)[0])) {
-            let history = this.history[this.server.room.name]
-            history.userID = this.server.user_id
-            this.server.sendMessage(history, user_id);
-        }
-         */
+        this.systemMessage(`${user_name} has entered the room`);
     },
 
-    //this methods is called when a user leaves the room
-    on_user_disconnected: function (user_id, user_name) {
+    //this method is called when a user leaves the room
+    on_user_disconnected: function (user_name) {
         //user is gone
-
-        //this.systemMessage(`${user_name}#${user_id} has left the room`)
+        this.systemMessage(`${user_name} has left the room`)
     },
 
-    //this methods is called when the server gets closed (it shutdowns)
+    //this method is called when the server gets closed (it shutdowns)
     on_close: function () {
         //server closed
         console.log("server closed");
     },
 
-    //this method is called when coulndt connect to the server
+    //this method is called when couldn't connect to the server
     on_error: function (err) {
         console.log("Couldn't connect to the server");
     },
 
-    //this methods changes the selected avatar when clicking on them
-    selectAvatar: function (target) {
-        let previousSelected = document.querySelector(".mychat .selected");
-        previousSelected.classList.remove("selected");
-
-        target.classList.add("selected");
-        let id = 1;
-        switch (target.id) {
-            case "avatar1":
-                id = 1;
-                break;
-
-            case "avatar2":
-                id = 2;
-                break;
-
-            case "avatar3":
-                id = 3;
-                break;
-
-            case "avatar4":
-                id = 4
-                break;
-        }
-        this.avatar = Number(id);
+    /**
+     * Method that shows the chat
+     */
+    show: function () {
+        let chat = document.querySelector(".mychat");
+        chat.style.display = "flex"
     },
+
+    /**
+     * Method that hides the chat
+     */
+    hide: function () {
+        let chat = document.querySelector(".mychat");
+        chat.style.display = "none"
+    },
+
 };

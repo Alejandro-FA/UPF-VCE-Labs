@@ -194,13 +194,7 @@ class MyWorld {
         this.users = this.room.users
 
         //Change the room in the chat
-        /*
-        if(MYCHAT.visited_chats.includes(room_name)){
-            MYCHAT.changeChat(room_name).call(MYCHAT)
-        } else {
-            MYCHAT.connectNewChat(room_name)
-        }
-        */
+        MYCHAT.changeChat(room_name)
     }
 
     /**
