@@ -29,7 +29,7 @@ class MyWorld {
                         vec3.create([-40, 0, 0]),
                         0.4,
                         vec3.create([-40, 0, 0]),
-                        "girl",
+                        "girl_idle",
                     )
                 }
             })
@@ -210,7 +210,16 @@ class MyWorld {
             user.anim = `${sceneNode.name}_walking`
             return false
         }
+
         user.anim = `${sceneNode.name}_idle`
+
+        if(dance) {
+            user.anim = `${sceneNode.name}_dance`
+        }
+
+        if(freeze) {
+            user.anim = `${sceneNode.name}_talk`
+        }
         return true
     }
 
@@ -318,6 +327,7 @@ class MyWorld {
         loadAnimation(`${character_name}_idle`,`view/data/${character_name}/idle.skanim`);
         loadAnimation(`${character_name}_walking`,`view/data/${character_name}/walking.skanim`);
         loadAnimation(`${character_name}_dance`,`view/data/${character_name}/dance.skanim`);
+        loadAnimation(`${character_name}_talk`,`view/data/${character_name}/talk.skanim`);
 
         return character_pivot;
     }

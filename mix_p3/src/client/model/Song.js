@@ -80,7 +80,8 @@ class Song {
         audioElement.addEventListener("ended", () => {
             console.log("Song ended");
             SONG_PLAYING = false;
-            peer.destroy()
+            freeze = false;
+            peer.destroy();
         });
 
         document.body.appendChild(audioElement);

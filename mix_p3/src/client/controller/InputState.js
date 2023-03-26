@@ -1,4 +1,6 @@
 let fastClick = false;
+let freeze = false
+let dance = false
 
 /**
  * Manages mouse events
@@ -8,7 +10,7 @@ let fastClick = false;
 function configureInputs(context, character) {
 	context.onmouseup = function(e)
 	{
-		if(e.click_time < 200) //fast click
+		if(e.click_time < 200 && !freeze) //fast click
 		{
 			//compute collision with floor plane
 			let ray = camera.getRay(e.canvasx, e.canvasy);
@@ -25,6 +27,7 @@ function configureInputs(context, character) {
 			switch (node.name) {
 				case "character_selector":
 					console.log("Hit clicked on the character")
+					dance = true
 					break;
 
 				case "closet_selector":
@@ -46,23 +49,6 @@ function configureInputs(context, character) {
 		}
 
 	}
-		
-	context.onmousemove = function(e)
-	{
-		if(e.dragging)
-		{
-			//orbit camera around
-			//camera.orbit( e.deltax * -0.01, RD.UP );
-			//camera.position = vec3.scaleAndAdd( camera.position, camera.position, RD.UP, e.deltay );
-			camera.move([-e.deltax*0.1, e.deltay*0.1,0]);
-		}
-	}
-
-	context.onmousewheel = function(e)
-	{
-		//move camera forward
-		camera.moveLocal([0,0,e.wheel < 0 ? 10 : -10] );
-	}
 
 	//capture mouse events
 	context.captureMouse(true);
@@ -79,6 +65,7 @@ function floor_clicked(e, ray) {
 	if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
 	{
 		console.log("floor position clicked", ray.collision_point);
+		dance = false
 
 		//Check if the click is on the canvas
 		if (e.target.nodeName === "CANVAS") {
@@ -233,9 +220,24 @@ function showSongChooser() {
 
 		node.addEventListener("click", (event) => {
 
-			//TODO: Add the necessary code for songs
 			song.sing()
+			let node = SCENE_NODES[WORLD.username]
+
+			node.position = [-54, 0, 195]
+
+			let user = WORLD.users[WORLD.username]
+			user.position = [-54, 0, 195]
+			user.target = [-54, 0, 195]
+
+			node.orientTo(vec3.fromValues(0.001, 0,-1), false, [0, 1, 0], true, false)
+
+			let campos = character.localToGlobal([0, 180, -120])
+			let camtarget = character.localToGlobal([0,65,-10]);
+			camera.lookAt(campos, camtarget, [0, 1, 0])
+
+			freeze = true
 			hideSongChooser()
+
 		})
 
 		song_list.appendChild(node)
