@@ -22,7 +22,6 @@ const wss = new WebSocketServer({ httpServer: server });
 
 
 //Information to be stored for websocket server
-const rooms = {};
 
 const clients = [];
 
@@ -34,7 +33,7 @@ let on_user_connected = null
 let on_message = null
 let on_user_disconnected = null
 
-const world = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
+const rooms = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
 
 
 //initialize DB
@@ -83,7 +82,7 @@ function on_connection(req) {
 
     //Retrieve the url of the room model
 
-    let room_url = world[ws.room].url
+    let room_url = rooms[ws.room].url
 
     let room = {
         type: "ROOM",
@@ -121,10 +120,6 @@ function on_connection(req) {
 
         room.clients.splice(index, 1)
         clients.splice(clients.indexOf(ws), 1)
-
-        if(room.clients.length === 0){
-            delete rooms[ws.room]
-        }
 
         //Send logout message to all the clients
         let msg = {
@@ -231,6 +226,20 @@ function on_message_received(message) {
 
     if(on_message){
         on_message()
+    }
+
+    if (msg.type === "CHANGE-ROOM") {
+        let username = msg.user
+        let ws = usernameToClient[username]
+
+        let room = rooms[ws.room]
+        let index = room.clients.indexOf(ws)
+
+        room.clients.splice(index, 1)
+
+        ws.room = msg.room
+        room = rooms[ws.room]
+        room.clients.push(ws)
     }
 
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)

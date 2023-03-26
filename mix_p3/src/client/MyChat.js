@@ -4,7 +4,7 @@ const MYCHAT = {
     //Current instance of MyClient
     server: undefined,
 
-    currentChat: "Spanish",
+    currentRoom: "Spanish",
 
     user_name: "anonymous",
 
@@ -73,7 +73,6 @@ const MYCHAT = {
             room: room,
             type: "text",
             user: sender,
-            avatar: this.avatar,
             content: message,
             userID: this.server.user_id
         };
@@ -119,15 +118,18 @@ const MYCHAT = {
     //Returns a function that changes to the chat which ID is passed
     changeChat: function (chatName) {
 
-        MYCHAT.currentChat = chatName;
+        this.currentRoom = chatName;
 
         let main = document.querySelector(".mychat .message-space");
         main.innerHTML = "";
 
-        if (MYCHAT.server.room.name !== chatName) {
-            MYCHAT.connection(chatName, MYCHAT.server.user, this.password);
+        let msg = {
+            room: chatName,
+            type: "CHANGE-ROOM",
+            user: this.user_name,
+            userID: this.server.user_id
         }
-
+        this.server.sendMessage(msg);
     },
 
     //Send a system message
@@ -150,7 +152,7 @@ const MYCHAT = {
     on_connect: function () {
 
         this.systemMessage(
-          `Entered the ${this.currentChat} room`
+          `Entered the ${this.currentRoom} room`
         );
 
     },

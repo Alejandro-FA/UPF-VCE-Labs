@@ -8,6 +8,8 @@ let animation = null;
 
 let sphere_cursor = null
 
+let loading = true
+
 //Mapping the characters to their appropriate scaling
 let character_scalings = {"cat": 5, "girl": 0.4}
 
@@ -119,15 +121,21 @@ function init(username, room_url, character_name, position)
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
 		//find where to place the camera based
-		let campos = character.localToGlobal([0,180,-120]);
+		let campos = character.localToGlobal([0, 180, -120]);
+
+		let smoothpos = vec3.lerp(vec3.create(), camera.position, campos, 0.02)
 
 		//find where to point at the camera
 		let camtarget = character.localToGlobal([0,65,-10]);
 
 		let smoothtarget = vec3.lerp(vec3.create(), camera.target, camtarget, 0.02)
 
-		//use to set up camera
-		camera.lookAt( campos, smoothtarget, [0,1,0] );
+		if (!loading) {
+			//use to set up camera
+			camera.lookAt( smoothpos, smoothtarget, [0,1,0] );
+		} else {
+			camera.lookAt( campos, camtarget, [0,1,0] );
+		}
 
 		for (let node in SCENE_NODES) {
 			let pivot = SCENE_NODES[node]
@@ -155,18 +163,6 @@ function init(username, room_url, character_name, position)
 		let anim = animations.idle;
 		let time_factor = 1;
 
-		//control with keys
-		if(gl.keys["UP"])
-		{
-			character.moveLocal([0,0,1]);
-			anim = animations.walking;
-		}
-		else if(gl.keys["DOWN"])
-		{
-			character.moveLocal([0,0,-1]);
-			anim = animations.walking;
-			time_factor = -1;
-		}
 		if(gl.keys["LEFT"])
 			character.rotate(90*DEG2RAD*dt,[0,1,0]);
 		else if(gl.keys["RIGHT"])
@@ -185,3 +181,6 @@ function init(username, room_url, character_name, position)
 
 }
 
+setTimeout(() => {
+	loading = false
+}, 1000)

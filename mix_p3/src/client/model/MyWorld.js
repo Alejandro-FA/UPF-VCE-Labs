@@ -1,8 +1,3 @@
-const RIGHT = 0;
-const FRONT = 64;
-const LEFT = 128;
-const BACK = 192;
-
 const SCENE_NODES = {};
 
 class MyWorld {
@@ -73,6 +68,8 @@ class MyWorld {
             //Face the wanted direction
             delta[0] = -delta[0]
             character.orientTo(delta, false, [0, 1, 0], true, false)
+
+
         }
     }
 
@@ -163,6 +160,7 @@ class MyWorld {
             audio.remove()
             SONG_PLAYING = false
         }
+
         //Delete the user from the old room
         let myuser = this.users[this.username]
 

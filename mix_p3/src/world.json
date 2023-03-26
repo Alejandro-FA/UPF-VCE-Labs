@@ -19,7 +19,8 @@
                 "artist": "Melendi",
                 "url": "this/is/a/url3"
             }
-        ]
+        ],
+        "clients": []
     },
 
     "Japanese": {
@@ -30,6 +31,7 @@
             "title": "Gagnam Style",
             "artist": "Psy",
             "url": "this/is/a/url"
-        }]
+        }],
+        "clients": []
     }
 }
