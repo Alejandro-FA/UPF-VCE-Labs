@@ -22,27 +22,48 @@ const wss = new WebSocketServer({ httpServer: server });
 
 
 //Information to be stored for websocket server
-
 const clients = [];
-
 const usernameToClient = {};
-
 let lastID = 1;
-
 let on_user_connected = null
 let on_message = null
 let on_user_disconnected = null
-
-const rooms = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
 
 
 //initialize DB
 require('./database');
 
+
+//Get MongoDB Models
+const User = require('./models/User');
+const Room = require('./models/Room');
+
 //passport functionalities
 require('./config/passport');
 const url = require("url");
 const qs = require("querystring");
+
+
+
+
+
+
+//--------------SAVE WORLD.JSON DATA INTO MONGODB--------------
+//const rooms = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
+const roomsJson = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
+
+//Rooms dictionary
+const rooms = {}; 
+
+//Fill rooms dictionary from rooms inside world.json data
+for (let i = 0; i<roomsJson['rooms'].length; i++) {
+    let roomObject = Room.fromJson(roomsJson['rooms'][i]);
+    let room = new Room(roomObject);
+    rooms[room.name] = room;
+}
+
+
+
 
 //--------------WEBSOCKET CALLBACKS--------------
 
@@ -52,25 +73,33 @@ wss.on("request", on_connection);
  * Callback that handles connections
  * @param req
  */
-function on_connection(req) {
+async function on_connection(req) {
     let ws = req.accept();
+    console.log(req.user);
 
     let path = url.parse(req.resource)
     let user_name = qs.parse(path.query).username
     get_new_id(ws);
 
-    //Retrieve all the needed information from the database TODO: use mongoDB to retrieve said information
-    let userInfo = get_user_info(user_name);
+    //Retrieve the user from the database according to their unique username
+    let user = await User.findOne({username: user_name});
+    //console.log("imprimo info " + user);
+    let userInfo = get_user_info(user_name);//RAQUEL: ANTIGUO, PERO AUN NO SE PUEDE QUITAR
 
-    ws.room = userInfo.room
+    ws.room = user.room;
+    ws.username = user_name;
 
     //Add the new client
     if(!rooms[ws.room]){
-        createRoom(ws.room)
+        createRoom(ws.room) //TODO RAQUEL: cerrar conexión si no existe room!!
     }
-    usernameToClient[user_name] = ws
-    clients.push(ws)
-    rooms[ws.room].clients.push(ws)
+
+    //Guardamos la conexión ws del user:
+    usernameToClient[user_name] = ws //Diccionario del server
+    //console.log("/n/n/n" + ws.id + " " + ws.username);
+    clients.push(ws) //Dentro del server
+    rooms[ws.room].clients.push(ws) //Dentro de la room donde está el user
+
 
 
     let clients_obj = {}
@@ -78,6 +107,8 @@ function on_connection(req) {
     for (let client of rooms[ws.room].clients) {
         clients_obj[client.id] = {id: client.id, name: client.username}
     }
+    //RAQUEL: ANTES NO UESRNAME!
+    //console.log(clients_obj);
 
 
     //Retrieve the url of the room model
@@ -93,6 +124,13 @@ function on_connection(req) {
     }
 
     sendToRoom(ws.room, JSON.stringify(room), ws.id)
+    console.log("ORIGINAL: " + JSON.stringify(room));
+
+    //RAQUEL: Mongo PRUBEAS msg room
+    /*rooms[ws.room].clients = clients_obj;
+    rooms[ws.room].length = clients_obj.length;
+    console.log(JSON.stringify(Room.toJson(rooms[ws.room])));
+    //sendToRoom(ws.room, JSON.stringify(Room.toJson(rooms[ws.room])), ws.id)*/
 
     //Tell everyone that a user has connected
 
@@ -101,8 +139,10 @@ function on_connection(req) {
         username: user_name,
         type: "LOGIN",
         content: userInfo,
+        //content: user, //RAQUEL: MONGODB aun por testar!
         date: new Date()
     }
+    console.log(userInfo);
     sendToRoom(ws.room, JSON.stringify(msg))
 
     //Configure on message callback
@@ -246,6 +286,10 @@ function on_message_received(message) {
 }
 
 
+
+
+
+
 //--------------- SETTINGS ---------------
 
 //port
@@ -268,9 +312,10 @@ app.set('view engine', '.hbs'); //para poder usar el engine de las vistas
 
 
 
+
 //--------------- MIDDLEWARES ---------------
-//Todas las funciones que serán ejecutadas antes de que
-//lleguen al server al server, o antes que pasárselo a las rutas
+//Todas las funciones que serán ejecutadas antes de que lleguen al server, 
+//o antes que pasárselo a las rutas
 
 //formularios
 app.use(express.urlencoded({extended:false})); //poder usar formularios (extended:false pq no queremos imgs, solo txt)
@@ -295,6 +340,7 @@ app.use(flash());
 
 
 
+
 //--------------- GLOBAL VARIABLES ---------------
 //Datos que queremos que toda nuestra app tenga accesible
 app.use((req, res, next) => {
@@ -309,11 +355,9 @@ app.use((req, res, next) => {
 
 
 
+
 //--------------- ROUTES ---------------
-/*app.use(require('./routes/index'));
-app.use(require('./routes/users'));
-app.use(require('./routes/notes'));
-app.use(require('./routes/canvas'));*/
+//Paths funcionales en cualquier OS
 app.use(require(path.join(app.get('routes'), 'index')));
 app.use(require(path.join(app.get('routes'), 'users')));
 app.use(require(path.join(app.get('routes'), 'notes')));
