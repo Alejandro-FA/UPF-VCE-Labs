@@ -5,9 +5,9 @@
         "exit": "default",
         "songs": [
             {
-            "title": "La Flaca",
-            "artist": "Jarabe De Palo",
-            "url": "this/is/a/url1"
+                "title": "La Flaca",
+                "artist": "Jarabe De Palo",
+                "url": "view/data/music/La Flaca.mp3"
             },
             {
                 "title": "Zapatillas",
@@ -17,9 +17,10 @@
             {
                 "title": "Tu Jardín con Enanitos",
                 "artist": "Melendi",
-                "url": "this/is/a/url3"
+                "url": "view/data/music/Tu jardin con Enanitos.mp3"
             }
-        ]
+        ],
+        "clients": []
     },
 
     "Japanese": {
@@ -29,7 +30,8 @@
         "songs": [{
             "title": "Gagnam Style",
             "artist": "Psy",
-            "url": "this/is/a/url"
-        }]
+            "url": "view/data/music/Gagnam Style.mp3"
+        }],
+        "clients": []
     }
 }

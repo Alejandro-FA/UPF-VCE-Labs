@@ -221,20 +221,8 @@ function showSongChooser() {
 		node.addEventListener("click", (event) => {
 
 			song.sing()
-			let node = SCENE_NODES[WORLD.username]
 
-			node.position = [-54, 0, 195]
-
-			let user = WORLD.users[WORLD.username]
-			user.position = [-54, 0, 195]
-			user.target = [-54, 0, 195]
-
-			node.orientTo(vec3.fromValues(0.001, 0,-1), false, [0, 1, 0], true, false)
-
-			let campos = character.localToGlobal([0, 180, -120])
-			let camtarget = character.localToGlobal([0,65,-10]);
-			camera.lookAt(campos, camtarget, [0, 1, 0])
-
+			WORLD.teleportUser(WORLD.username, vec3.fromValues(-54, 0, 195), vec3.fromValues(0.001, 0,-1))
 			freeze = true
 			hideSongChooser()
 

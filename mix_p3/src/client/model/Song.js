@@ -42,7 +42,7 @@ class Song {
      * @return {Song}
      */
     static fromJson(object) {
-        return new Song(object.title, object.artist, object.url);
+        return new Song(object.title, object.artist, object.url, null);
     }
 
     /**
@@ -59,10 +59,11 @@ class Song {
 
     /**
      * Play a Song and connect via Peer.js to the other clients to send the audio stream
+     * @param username
      * TODO: Use peer.js
      * TODO: Think how we will do if some user connects in the middle of a song
      */
-    play() {
+    play(username) {
         //Check if some song is already playing
         if(SONG_PLAYING) {
             console.log("Song is playing");
@@ -82,6 +83,7 @@ class Song {
             SONG_PLAYING = false;
             freeze = false;
             peer.destroy();
+            WORLD.teleportUser(username, vec3.fromValues(0, 0, 0))
         });
 
         document.body.appendChild(audioElement);
@@ -91,7 +93,7 @@ class Song {
         //To control the sound
         const gainNode = audioContext.createGain();
 
-        //EXemple
+        //Exemple
         /*
         <input type="range" id="volume" min="0" max="2" value="1" step="0.01" />
 
@@ -121,10 +123,10 @@ class Song {
     sing() {
         //Send the song message to all the room
         if(!SONG_PLAYING)
-            sendSongMessage(WORLD.room_name, this.title, MYCHAT.server.user_id);
+            sendSongMessage(WORLD.username, WORLD.room_name, this.title, MYCHAT.server.user_id);
 
         sendSingMessage(WORLD.room_name, MYCHAT.server.user_id, peerId);
 
-        this.play()
+        this.play(WORLD.username)
     }
 }

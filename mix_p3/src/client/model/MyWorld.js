@@ -1,10 +1,12 @@
 const SCENE_NODES = {};
+const WALK_AREAS = {"Spanish": SpanishWalkArea, "Japanese": JapaneseWalkArea}
 
 class MyWorld {
     constructor(room, username) {
         this.user_avatar = null
         this.username = username
         this.room_name = room
+        this.currentWalkArea = WALK_AREAS[room]
         MYCHAT.server.on_world_info = this.on_world_info.bind(this)
 
         this.world = null
@@ -117,7 +119,8 @@ class MyWorld {
         for(let name in this.users){
             let user = this.users[name]
             if(!this.atTarget(name)) {
-                this.moveCharacter(SCENE_NODES[name], user.target, elapsed_time);
+                this.moveCharacter(name, elapsed_time);
+                user.position = SCENE_NODES[name].position
                 //user.pos[0] = lerp( user.pos[0], user.target[0], elapsed_time );
             }
             let t = getTime();
@@ -134,19 +137,45 @@ class MyWorld {
     }
 
     /**
-     * Move the chosen sceneNode to the target
-     * @param character
-     * @param target
+     * Move the chosen user to the target
+     * @param name
      * @param dt
      */
-    moveCharacter(character, target, dt) {
-        let delta = vec3.sub( vec3.create(), target, character.position );
+    moveCharacter(name, dt) {
+        let node = SCENE_NODES[name]
+        let user = this.users[name]
+
+        let delta = vec3.sub( vec3.create(), user.target, node.position );
         vec3.normalize(delta,delta);
-        vec3.scaleAndAdd( character.position, character.position, delta, dt * 50);
-        character.updateMatrices();
-        character.flags.flipX = delta[0] < 0;
+        vec3.scaleAndAdd( node.position, node.position, delta, dt * 50);
+        user.position = node.position = this.currentWalkArea.adjustPosition(name, node.position)
+        node.updateMatrices();
+
+        node.flags.flipX = delta[0] < 0;
     }
 
+    /**
+     * Teleports the chosen users at the wanted position
+     * @param name
+     * @param position
+     * @param orientation
+     */
+    teleportUser(name, position, orientation) {
+        let node = SCENE_NODES[name]
+
+
+        let user = WORLD.users[name]
+        node.position = user.position = user.target = position
+
+
+        if(orientation){
+            node.orientTo(orientation, false, [0, 1, 0], true, false)
+        }
+
+        let campos = character.localToGlobal([0, 180, -120])
+        let camtarget = character.localToGlobal([0,65,-10]);
+        camera.lookAt(campos, camtarget, [0, 1, 0])
+    }
     /**
      * Changes all the necessary world data
      * TODO: Adapt it to 3d
@@ -167,7 +196,7 @@ class MyWorld {
         this.room.users = {}
 
         //Enter the new room
-        this.room = this.world[room_name]
+        this.room = Room.fromJson(this.world[room_name])
 
 
         let node = scene.root.findNodeByName("room")
