@@ -65,6 +65,20 @@ function init(username, room_url, character_name, position)
 		layers: 0b100
 	})
 
+	//Remove when release
+	for (const area of SpanishWalkArea.areas) {
+		for (const point of area) {
+			let dot = new RD.SceneNode({
+				position: point,
+				mesh: "sphere",
+				color: [255, 255, 255, 0],
+				scaling: 3,
+				layers: 0b100
+			})
+			scene.root.addChild(dot)
+		}
+	}
+
 	scene.root.addChild(sphere_cursor)
 
 	//load a GLTF for the room
@@ -159,14 +173,6 @@ function init(username, room_url, character_name, position)
 		scene.update(dt);
 
 		WORLD.update(dt);
-		let t = getTime();
-		let anim = animations.idle;
-		let time_factor = 1;
-
-		if(gl.keys["LEFT"])
-			character.rotate(90*DEG2RAD*dt,[0,1,0]);
-		else if(gl.keys["RIGHT"])
-			character.rotate(-90*DEG2RAD*dt,[0,1,0]);
 
 		camera.perspective( 60, gl.canvas.width / gl.canvas.height, 100, 1000 );
 

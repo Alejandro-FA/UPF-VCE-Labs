@@ -158,12 +158,14 @@ function parseLogoutMessage(msg) {
 
 /**
  * Send a Song message to all the room that indicates that a song is playing
+ * @param username
  * @param room_name
  * @param song_title
  * @param userId
  */
-function sendSongMessage(room_name, song_title, userId) {
+function sendSongMessage(username, room_name, song_title, userId) {
     let msg = {
+        username: username,
         room: room_name,
         type: "SONG",
         content: song_title,
@@ -174,14 +176,14 @@ function sendSongMessage(room_name, song_title, userId) {
 
 /**
  * Parse a Song Message
- * @param msg {{room, type, content, userID}}
+ * @param msg {{username, room, type, content, userID}}
  */
 function parseSongMessage(msg) {
     let songs = WORLD.room.songs
 
     for (const song of songs) {
         if (song.title === msg.content) {
-            song.play();
+            song.play(msg.username);
         }
     }
 }
