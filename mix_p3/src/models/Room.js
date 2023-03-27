@@ -5,11 +5,11 @@ const Song = require('./Song');
 
 const RoomSchema = new Schema ({
     type: {type: String, default: "ROOM"},
-    name: {type: String, required: true},
+    name: {type: String, required: true, default: "roomName"},
     //exit: {type: String, required: true},
     clients: [{type: Object, required: true}],
     length: {type: Number, required: false, default: 0},
-    url: {type: String, required: true},
+    url: {type: String, required: true, default: "url"},
     songs: [{type: mongoose.ObjectId, ref: 'Song', required: false}],
     users: [{type: mongoose.ObjectId, ref: 'User', required: false}]
 
@@ -21,7 +21,7 @@ const RoomSchema = new Schema ({
 
 //----------- Methods -----------
 
-//RoomSchema.method.getRoom = function()
+//RoomSchema.methods.getRoom = function()
 
 
 

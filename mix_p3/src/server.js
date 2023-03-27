@@ -25,9 +25,6 @@ const wss = new WebSocketServer({ httpServer: server });
 const clients = [];
 const usernameToClient = {};
 let lastID = 1;
-let on_user_connected = null
-let on_message = null
-let on_user_disconnected = null
 
 
 //initialize DB
@@ -37,6 +34,8 @@ require('./database');
 //Get MongoDB Models
 const User = require('./models/User');
 const Room = require('./models/Room');
+const Globals = require('./models/Globals');
+
 
 //passport functionalities
 require('./config/passport');
@@ -44,25 +43,19 @@ const url = require("url");
 const qs = require("querystring");
 
 
+//Globals for our server (using MongoDB)
+const GLOBALS = new Globals();
+
 
 
 
 
 //--------------SAVE WORLD.JSON DATA INTO MONGODB--------------
 //const rooms = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
-const roomsJson = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
+const jsonFile = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
 
-//Rooms dictionary
-const rooms = {}; 
-
-//Fill rooms dictionary from rooms inside world.json data
-for (let i = 0; i<roomsJson['rooms'].length; i++) {
-    let roomObject = Room.fromJson(roomsJson['rooms'][i]);
-    let room = new Room(roomObject);
-    rooms[room.name] = room;
-}
-
-
+//Get info from jsonFile
+GLOBALS.chargeWorldJson(jsonFile);
 
 
 //--------------WEBSOCKET CALLBACKS--------------
@@ -83,43 +76,46 @@ async function on_connection(req) {
 
     //Retrieve the user from the database according to their unique username
     let user = await User.findOne({username: user_name});
-    //console.log("imprimo info " + user);
     let userInfo = get_user_info(user_name);//RAQUEL: ANTIGUO, PERO AUN NO SE PUEDE QUITAR
 
     ws.room = user.room;
     ws.username = user_name;
 
+    let currentRoom = GLOBALS.findRoomByName(ws.room);
+
     //Add the new client
-    if(!rooms[ws.room]){
+    if(!currentRoom){
         createRoom(ws.room) //TODO RAQUEL: cerrar conexión si no existe room!!
     }
 
     //Guardamos la conexión ws del user:
     usernameToClient[user_name] = ws //Diccionario del server
-    //console.log("/n/n/n" + ws.id + " " + ws.username);
     clients.push(ws) //Dentro del server
-    rooms[ws.room].clients.push(ws) //Dentro de la room donde está el user
+
+    //console.log(GLOBALS.findRoomByName(ws.room));
+    GLOBALS.findRoomByName(ws.room).clients.push(ws);
+    GLOBALS.clients.push(ws);
+    
 
 
 
     let clients_obj = {}
 
-    for (let client of rooms[ws.room].clients) {
-        clients_obj[client.id] = {id: client.id, name: client.username}
+    for (let client of currentRoom.clients) {
+        clients_obj[client.id] = {id: client.id, name: client.username};
+        GLOBALS.addClientObject(client.id, client.username);
     }
-    //RAQUEL: ANTES NO UESRNAME!
-    //console.log(clients_obj);
 
 
     //Retrieve the url of the room model
 
-    let room_url = rooms[ws.room].url
+    let room_url = currentRoom.url;
 
     let room = {
         type: "ROOM",
         name: ws.room,
-        clients: clients_obj,
-        length: clients_obj.length,
+        clients: GLOBALS.clients_obj,
+        length: GLOBALS.clients_obj.length,
         url: room_url
     }
 
@@ -152,7 +148,8 @@ async function on_connection(req) {
 
     let connection_close = () => {
 
-        let room = rooms[ws.room]
+        //let room = rooms[ws.room]
+        let room = currentRoom;
         if(!room) {
             return
         }
@@ -173,9 +170,6 @@ async function on_connection(req) {
         sendToRoom(ws.room, JSON.stringify(msg));
         delete usernameToClient[user_name]
 
-        if(on_user_disconnected){
-            on_user_disconnected()
-        }
     }
 
     ws.on("close", connection_close)
@@ -224,7 +218,10 @@ function get_new_id(ws) {
  * @param room_name
  */
 function createRoom(room_name) {
-    rooms[room_name] = { clients: []}
+    //rooms[room_name] = { clients: []}
+    let room = new Room();
+    room.name = room_name;
+    GLOBALS.rooms.push(room);
 }
 
 /**
@@ -238,7 +235,8 @@ function sendToRoom(room_name, msg, target) {
     if ( msg === undefined){
         return
     }
-    let room = rooms[room_name]
+    let room = GLOBALS.findRoomByName(room_name);
+    //let room = rooms[room_name]
     if ( !room ){
         return
     }
@@ -264,22 +262,21 @@ function sendToRoom(room_name, msg, target) {
 function on_message_received(message) {
     let msg = JSON.parse(message.utf8Data)
 
-    if(on_message){
-        on_message()
-    }
-
     if (msg.type === "CHANGE-ROOM") {
         let username = msg.user
         let ws = usernameToClient[username]
 
-        let room = rooms[ws.room]
+        let room = GLOBALS.findRoomByName(ws.room);
+        //let room = rooms[ws.room]
         let index = room.clients.indexOf(ws)
 
         room.clients.splice(index, 1)
 
         ws.room = msg.room
-        room = rooms[ws.room]
-        room.clients.push(ws)
+        //room = rooms[ws.room]
+        //room.clients.push(ws)
+        GLOBALS.findRoomByName(ws.room).clients.push(ws);
+        
     }
 
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
