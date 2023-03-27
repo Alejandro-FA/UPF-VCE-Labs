@@ -11,7 +11,7 @@ let sphere_cursor = null
 let loading = true
 
 //Mapping the characters to their appropriate scaling
-let character_scalings = {"cat": 5, "girl": 0.4}
+let character_scalings = {"cat": 5, "girl": 0.4, "ninja": 0.4}
 
 //load some animations
 function loadAnimation( name, url )

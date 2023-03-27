@@ -167,7 +167,7 @@ class MyWorld {
         this.room.users = {}
 
         //Enter the new room
-        this.room = this.world[room_name]
+        this.room = Room.fromJson(this.world[room_name])
 
 
         let node = scene.root.findNodeByName("room")
