@@ -31,10 +31,11 @@ function sendAudioStream(other_peer_id) {
 class Song {
 
     //Constructor
-    constructor(title="", artist="", url=""){
+    constructor(title="", artist="", url="", singingUser=null){
         this.title = title;
         this.artist = artist;
         this.url = url;
+        this.singingUser = singingUser;
     }
     /**
      * Creates an instance of Song from a Json of correct structure
