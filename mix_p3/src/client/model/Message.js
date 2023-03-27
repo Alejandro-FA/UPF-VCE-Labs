@@ -19,7 +19,8 @@ function sendMoveMessage(room, username, myuser, userId) {
         content: myuser,
         userID: MYCHAT.server.user_id
     }
-
+    console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + myuser.target + " " + myuser.position);
+    console.log(JSON.stringify(myuser));
     MYCHAT.server.sendMessage(msg)
 }
 

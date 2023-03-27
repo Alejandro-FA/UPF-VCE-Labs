@@ -34,6 +34,18 @@ UserSchema.methods.matchPassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 }
 
+UserSchema.methods.getUserInfo = function() {
+    let user = {
+        character: this.character,
+        room: this.room,
+        position: this.position,
+        scaling: this.scaling,
+        target: this.target,
+        anim: this.anim,
+    }
+    return user;
+}
+
 
 
 //----------- Statics -----------

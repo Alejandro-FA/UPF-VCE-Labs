@@ -29,7 +29,6 @@ class Room {
      */
     static fromJson(object) {
         let name = object.name || ""; //RAQUEL: undefined por ahora
-        console.log("HOLA roomName " + name);
         let url = object.url;
         let exit = object.exit;
 

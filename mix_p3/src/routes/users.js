@@ -24,17 +24,6 @@ router.get('/users/signup', (req, res) => {
 
 // ------ POST ------
 //para recibir datos que el user ingrese
-/*
-router.post('/users/signin', (req, res) => {
-    passport.authenticate('local', {
-        successRedirect: '/canvas',
-        failureRedirect: 'signin',
-        failureFlash: true
-    });
-    const {username, password} = req.body;
-    console.log(username);
-});*/
-
 router.post('/users/signin',
     passport.authenticate('local', {
         successRedirect: '/canvas',
@@ -46,7 +35,6 @@ router.post('/users/signin',
 //para registrarse
 router.post('/users/signup', async (req, res) => {
     const {username, password, confirm_password} = req.body;
-    console.log(req.body);
 
     //Vamos a comprobar errores
     const errors = [];
@@ -66,7 +54,6 @@ router.post('/users/signup', async (req, res) => {
     } else {
         //Coge el username si ya existe
         const inputUsername = await User.findOne({username: username});
-        console.log(inputUsername);
         
         //si ya existe ese username
         if(inputUsername) {

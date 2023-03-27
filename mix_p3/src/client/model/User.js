@@ -17,7 +17,7 @@ class User {
      */
     static fromJson(object) {
         let user = new User(object.character, object.position, object.scaling, object.target, object.anim, object.room, object.username);
-        console.log(user);
+        console.log("FROM JSON: " + user);
         return user;
     }
 

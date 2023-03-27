@@ -21,12 +21,6 @@ const server = http.createServer( app );
 const wss = new WebSocketServer({ httpServer: server });
 
 
-//Information to be stored for websocket server
-const clients = [];
-const usernameToClient = {};
-let lastID = 1;
-
-
 //initialize DB
 require('./database');
 
@@ -43,7 +37,7 @@ const url = require("url");
 const qs = require("querystring");
 
 
-//Globals for our server (using MongoDB)
+//Globals for our server (using MongoDB): Information to be stored for websocket server
 const GLOBALS = new Globals();
 
 
@@ -51,10 +45,9 @@ const GLOBALS = new Globals();
 
 
 //--------------SAVE WORLD.JSON DATA INTO MONGODB--------------
-//const rooms = JSON.parse(fs.readFileSync("./src/world.json", "utf8")) // TODO: Change path to where the Json file is
-const jsonFile = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
 
 //Get info from jsonFile
+const jsonFile = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
 GLOBALS.chargeWorldJson(jsonFile);
 
 
@@ -68,7 +61,6 @@ wss.on("request", on_connection);
  */
 async function on_connection(req) {
     let ws = req.accept();
-    console.log(req.user);
 
     let path = url.parse(req.resource)
     let user_name = qs.parse(path.query).username
@@ -76,7 +68,10 @@ async function on_connection(req) {
 
     //Retrieve the user from the database according to their unique username
     let user = await User.findOne({username: user_name});
-    let userInfo = get_user_info(user_name);//RAQUEL: ANTIGUO, PERO AUN NO SE PUEDE QUITAR
+    GLOBALS.users.push(user);
+    let userInfo = user.getUserInfo();
+    console.log("GETUSERINFO " + JSON.stringify(userInfo));
+    //let userInfo = get_user_info(user_name);//RAQUEL: ANTIGUO, PERO AUN NO SE PUEDE QUITAR
 
     ws.room = user.room;
     ws.username = user_name;
@@ -85,14 +80,11 @@ async function on_connection(req) {
 
     //Add the new client
     if(!currentRoom){
-        createRoom(ws.room) //TODO RAQUEL: cerrar conexión si no existe room!!
+        //createRoom(ws.room) //TODO RAQUEL: cerrar conexión si no existe room!!
+        GLOBALS.createNewRoom(ws.room);
     }
 
     //Guardamos la conexión ws del user:
-    usernameToClient[user_name] = ws //Diccionario del server
-    clients.push(ws) //Dentro del server
-
-    //console.log(GLOBALS.findRoomByName(ws.room));
     GLOBALS.findRoomByName(ws.room).clients.push(ws);
     GLOBALS.clients.push(ws);
     
@@ -116,16 +108,15 @@ async function on_connection(req) {
         name: ws.room,
         clients: GLOBALS.clients_obj,
         length: GLOBALS.clients_obj.length,
+        userInfo: userInfo,
         url: room_url
     }
 
     sendToRoom(ws.room, JSON.stringify(room), ws.id)
-    console.log("ORIGINAL: " + JSON.stringify(room));
+    //console.log("ORIGINAL: " + JSON.stringify(room));
 
     //RAQUEL: Mongo PRUBEAS msg room
-    /*rooms[ws.room].clients = clients_obj;
-    rooms[ws.room].length = clients_obj.length;
-    console.log(JSON.stringify(Room.toJson(rooms[ws.room])));
+    /*console.log("NOT ORIGINAL " + JSON.stringify(Room.toJson(currentRoom)));
     //sendToRoom(ws.room, JSON.stringify(Room.toJson(rooms[ws.room])), ws.id)*/
 
     //Tell everyone that a user has connected
@@ -138,7 +129,7 @@ async function on_connection(req) {
         //content: user, //RAQUEL: MONGODB aun por testar!
         date: new Date()
     }
-    console.log(userInfo);
+    //console.log(userInfo);
     sendToRoom(ws.room, JSON.stringify(msg))
 
     //Configure on message callback
@@ -146,17 +137,31 @@ async function on_connection(req) {
 
     //Configure on close and on error callback
 
-    let connection_close = () => {
+    let connection_close = async () => {
 
-        //let room = rooms[ws.room]
-        let room = currentRoom;
+        //Get currentRoom and check if exists
+        let room = GLOBALS.findRoomByName(ws.room);
         if(!room) {
             return
         }
-        let index = room.clients.indexOf(ws)
 
-        room.clients.splice(index, 1)
-        clients.splice(clients.indexOf(ws), 1)
+        //Save user data
+        //console.log("USERNAME " + JSON.stringify(msg));
+        let user = GLOBALS.usernameToUser(ws.username);
+        if(!user){
+            console.log("NOT USER");
+            return;
+        }
+        user.target = user.position;
+        await user.save();
+        console.log("SAVED USER " + JSON.stringify(user));
+        //GLOBALS.saveUserData(room.username, room); //userInfo == user object
+        //console.log(JSON.stringify(userInfo));
+
+        //Delete client from... (using index)
+        room.clients.splice(room.clients.indexOf(ws), 1) //Room.clients array
+        GLOBALS.clients.splice(GLOBALS.clients.indexOf(ws), 1) //Global Clients array
+        GLOBALS.users.splice(GLOBALS.users.indexOf(user), 1);
 
         //Send logout message to all the clients
         let msg = {
@@ -168,7 +173,8 @@ async function on_connection(req) {
         }
 
         sendToRoom(ws.room, JSON.stringify(msg));
-        delete usernameToClient[user_name]
+        let client_obj = GLOBALS.findClientObjectByUsername(user_name);
+        GLOBALS.clients_obj.splice(GLOBALS.clients_obj.indexOf(client_obj), 1)
 
     }
 
@@ -177,31 +183,13 @@ async function on_connection(req) {
 }
 
 /**
- * Retrieve all the useful information of the given user in MongoDB
- * @param username
- * @return {{character, room, position, scaling, target, anim}}
- */
-function get_user_info(username) {
-
-    return {  //TODO: Change so that it actually retrieves the information from the database
-        character: "girl",
-        room: "Spanish",
-        //This is the default position.
-        position: [0, 0, 0],
-        scaling: 0.4,
-        target: [0, 0, 0],
-        anim: "girl_idle"
-    }
-}
-
-/**
  * Given a ws, generate a new ID and send it to the user
  * @param ws
  * @return {int}
  */
 function get_new_id(ws) {
-    ws.id = lastID
-    lastID++
+    ws.id = GLOBALS.lastID;
+    GLOBALS.lastID++;
 
     let msg = {
         userID: ws.id,
@@ -218,7 +206,6 @@ function get_new_id(ws) {
  * @param room_name
  */
 function createRoom(room_name) {
-    //rooms[room_name] = { clients: []}
     let room = new Room();
     room.name = room_name;
     GLOBALS.rooms.push(room);
@@ -236,7 +223,6 @@ function sendToRoom(room_name, msg, target) {
         return
     }
     let room = GLOBALS.findRoomByName(room_name);
-    //let room = rooms[room_name]
     if ( !room ){
         return
     }
@@ -250,7 +236,7 @@ function sendToRoom(room_name, msg, target) {
         if(!client.connected){
             continue;
         }
-        console.log(msg)
+        console.log("SEND TO ROOM: " + msg)
         client.send(msg)
     }
 }
@@ -264,21 +250,38 @@ function on_message_received(message) {
 
     if (msg.type === "CHANGE-ROOM") {
         let username = msg.user
-        let ws = usernameToClient[username]
+        let ws = GLOBALS.usernameToClient(username); //usernameToClient[username] 
 
         let room = GLOBALS.findRoomByName(ws.room);
-        //let room = rooms[ws.room]
         let index = room.clients.indexOf(ws)
 
         room.clients.splice(index, 1)
 
         ws.room = msg.room
-        //room = rooms[ws.room]
-        //room.clients.push(ws)
         GLOBALS.findRoomByName(ws.room).clients.push(ws);
         
     }
+    if (msg.type === "MOVE") {
+        let user = GLOBALS.usernameToUser(msg.username);
+        if(user) {
+            let userInfo = msg.content;
+            user.room = msg.room;
+            user.character = userInfo.character;
+            user.target = userInfo.target;
+            user.position = userInfo.position;
+            user.anim = userInfo.anim;
+            user.scaling = userInfo.scaling;
+            console.log("INSIDE MOVE " + JSON.stringify(user));
+        } else {
+            console.log("NOT USER HERE!");
+        }
+    }
 
+    if (msg.type === "ROOM") {
+        //let user = GLOBALS.usernameToUser(msg.username);
+        //console.log(JSON.stringify(msg));
+    }
+    console.log("TYPE " + msg.type);
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
 }
 

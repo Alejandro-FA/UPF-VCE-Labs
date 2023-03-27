@@ -26,6 +26,11 @@ const RoomSchema = new Schema ({
 
 
 //----------- Statics -----------
+RoomSchema.statics.createRoomWithName = function(roomName) {
+    let room = new RoomSchema();
+    room.name = roomName;
+    return room;
+}
 
 RoomSchema.statics.fromJson = function(object) {
     

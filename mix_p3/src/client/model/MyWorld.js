@@ -15,7 +15,7 @@ class MyWorld {
 
         //TODO: Change when using in server
         //fetch('https://ecv-etic.upf.edu/node/9017/world')
-        fetch('model/world.json')
+        fetch('model/world.json') //RAQUEL TODO: ESTO DA PROBLEMAS USER START DATA POSITION TARGET
             .then(response => response.json())
             .then(data => {
 
@@ -336,6 +336,7 @@ class MyWorld {
 
         this.setUserSceneNode(username, character_pivot);
         this.setUserTarget(username, position);
+        console.log("RAQUEEEL " + position); //RAQUEL: ESTO ESTÁ OK!
         this.setUserAnim(username, `${character_name}_idle`)
         this.setUserSkin(username, character_name)
 
@@ -343,7 +344,7 @@ class MyWorld {
 
         //Create a selector for the character
         let character_selector = new RD.SceneNode({
-            position: [0, 0, 0],
+            position: [0, 0, 0], //RAQUEL
             mesh: "cube",
             material: `${character_name}`,
             scaling: [10, 80, 10],
