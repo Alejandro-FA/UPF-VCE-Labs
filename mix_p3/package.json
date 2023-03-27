@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "run mongo": "brew services start mongodb-community@6.0",
+    "run mongo ubuntu": "sudo service mongod start",
     "run dev": "npm run dev"
   },
   "keywords": [],
@@ -26,6 +27,6 @@
     "websocket": "^1.0.34"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.22"
   }
 }
