@@ -28,6 +28,7 @@ require('./database');
 //Get MongoDB Models
 const User = require('./models/User');
 const Room = require('./models/Room');
+const Song = require('./models/Song');
 const Globals = require('./models/Globals');
 
 
@@ -71,8 +72,7 @@ async function on_connection(req) {
     GLOBALS.users.push(user);
     let userInfo = user.getUserInfo();
     console.log("GETUSERINFO " + JSON.stringify(userInfo));
-    //let userInfo = get_user_info(user_name);//RAQUEL: ANTIGUO, PERO AUN NO SE PUEDE QUITAR
-
+    
     ws.room = user.room;
     ws.username = user_name;
 
@@ -80,36 +80,32 @@ async function on_connection(req) {
 
     //Add the new client
     if(!currentRoom){
-        //createRoom(ws.room) //TODO RAQUEL: cerrar conexión si no existe room!!
-        GLOBALS.createNewRoom(ws.room);
+        console.log("unkown room name " + ws.room);
+        ws.room = "Spanish"; //Default room
+        currentRoom = GLOBALS.findRoomByName(ws.room);
     }
 
     //Guardamos la conexión ws del user:
     GLOBALS.findRoomByName(ws.room).clients.push(ws);
     GLOBALS.clients.push(ws);
     
-
-
-
-    let clients_obj = {}
-
+    //Fill clientsObject
     for (let client of currentRoom.clients) {
-        clients_obj[client.id] = {id: client.id, name: client.username};
         GLOBALS.addClientObject(client.id, client.username);
     }
 
+    //Retrieve the information of the World: Rooms and their songs
+    let worldInfo = GLOBALS.generateWorldInfo(userInfo);
 
-    //Retrieve the url of the room model
-
-    let room_url = currentRoom.url;
-
+    //Generate the first message in order to send the WorldInfo to the new user
     let room = {
         type: "ROOM",
         name: ws.room,
         clients: GLOBALS.clients_obj,
         length: GLOBALS.clients_obj.length,
         userInfo: userInfo,
-        url: room_url
+        content: worldInfo,
+        url: currentRoom.url
     }
 
     sendToRoom(ws.room, JSON.stringify(room), ws.id)
@@ -119,8 +115,8 @@ async function on_connection(req) {
     /*console.log("NOT ORIGINAL " + JSON.stringify(Room.toJson(currentRoom)));
     //sendToRoom(ws.room, JSON.stringify(Room.toJson(rooms[ws.room])), ws.id)*/
 
-    //Tell everyone that a user has connected
 
+    //Tell everyone that a user has connected
     let msg = {
         userID: ws.id,
         username: user_name,
@@ -129,7 +125,7 @@ async function on_connection(req) {
         //content: user, //RAQUEL: MONGODB aun por testar!
         date: new Date()
     }
-    //console.log(userInfo);
+
     sendToRoom(ws.room, JSON.stringify(msg))
 
     //Configure on message callback
@@ -248,39 +244,68 @@ function sendToRoom(room_name, msg, target) {
 function on_message_received(message) {
     let msg = JSON.parse(message.utf8Data)
 
+    //If user wants to change the room
     if (msg.type === "CHANGE-ROOM") {
         let username = msg.user
         let ws = GLOBALS.usernameToClient(username); //usernameToClient[username] 
-
+        
+        //Delete user from past room
         let room = GLOBALS.findRoomByName(ws.room);
         let index = room.clients.indexOf(ws)
-
         room.clients.splice(index, 1)
 
+        //Get new room name
         ws.room = msg.room
+
+        //Add user to the new room
         GLOBALS.findRoomByName(ws.room).clients.push(ws);
-        
+
+        //update user data with NEW room
+        //RAQUEL: CUAL ES LA DEFAULT POSITION DE LA ROOM AL ENTRAR??
+        GLOBALS.usernameToUser(msg.user).room = ws.room;
     }
+
+    //If the user changes their skin
+    if(msg.type === "SKIN") {
+        let user = GLOBALS.usernameToUser(msg.user);
+        if(user) {
+            //Update user character
+            user.character = msg.content;
+        }
+    }
+
+    //If user moves
     if (msg.type === "MOVE") {
         let user = GLOBALS.usernameToUser(msg.username);
         if(user) {
+            //Update user world info 
             let userInfo = msg.content;
             user.room = msg.room;
-            user.character = userInfo.character;
-            user.target = userInfo.target;
-            user.position = userInfo.position;
-            user.anim = userInfo.anim;
-            user.scaling = userInfo.scaling;
+            user.saveUserData(userInfo)
+
             console.log("INSIDE MOVE " + JSON.stringify(user));
         } else {
             console.log("NOT USER HERE!");
         }
     }
 
-    if (msg.type === "ROOM") {
-        //let user = GLOBALS.usernameToUser(msg.username);
-        //console.log(JSON.stringify(msg));
+    //RAQUEL: SAVE_USER_DATA NO LLEGA NUNCA :(
+    if (msg.type === "SAVE_USER_DATA") {
+        console.log("SAVE USER DATA PLEASEEEEEEEEE");
+        let user = GLOBALS.usernameToUser(msg.username);
+        if(user) {
+            let userInfo = msg.content;
+            //Set position == target
+            userInfo.position = userInfo.target;
+            console.log("log " + userInfo.position + " " + userInfo.target);
+            //Save user room
+            user.room = msg.room;
+
+            //Update user from GLOBALS.users[
+            user.saveUserData(userInfo);
+        }
     }
+
     console.log("TYPE " + msg.type);
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
 }

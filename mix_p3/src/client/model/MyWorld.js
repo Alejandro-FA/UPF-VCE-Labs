@@ -2,40 +2,26 @@ const SCENE_NODES = {};
 const WALK_AREAS = {"Spanish": SpanishWalkArea, "Japanese": JapaneseWalkArea}
 
 class MyWorld {
-    constructor(room, username) {
+    //constructor(room, username) {
+    constructor(room, username, worldInfo) { //RAQUEL TO DO
         this.user_avatar = null
         this.username = username
         this.room_name = room
         this.currentWalkArea = WALK_AREAS[room]
         MYCHAT.server.on_world_info = this.on_world_info.bind(this)
 
-        this.world = null
-        this.room = null
-        this.users = null
+        this.world = null //Rooms dicitonary
+        this.room = null //Current room
+        this.users = null //Users dictionary
 
-        //TODO: Change when using in server
-        //fetch('https://ecv-etic.upf.edu/node/9017/world')
-        fetch('model/world.json') //RAQUEL TODO: ESTO DA PROBLEMAS USER START DATA POSITION TARGET
-            .then(response => response.json())
-            .then(data => {
-
-                this.world = data
-                if(!this.room){
-                    this.room = Room.fromJson(data[room])
-                    this.users = this.room.users
-                }
-
-                if(!this.users[username]) {
-                    this.users[username] = new User(
-                        "girl",
-                        vec3.create([-40, 0, 0]),
-                        0.4,
-                        vec3.create([-40, 0, 0]),
-                        "girl_idle",
-                    )
-                }
-            })
-            .catch(err => console.log(err))
+        //Charge worldInfo data from server
+        //RAQUEL: qué pasa con los users ya conectados???
+        this.world = worldInfo.rooms;
+        this.room = Room.fromJson(worldInfo.rooms[room]);
+        this.users = this.room.users
+        if(!this.users[username]) {
+            this.users[username] = User.fromJson(worldInfo.user);
+        }
     }
 
     /**
