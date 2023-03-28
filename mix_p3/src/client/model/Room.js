@@ -1,4 +1,26 @@
 class Room {
+    //Constructor
+    constructor(name="", url="", usersDict={}, songsList=[], exit="") {
+        this.name = name;
+        //this.clients = [...clientsList];
+        //this.length = this.clients.length;
+        this.url = url;
+        this.songs = [...songsList];
+        this.users = {};
+        this.exit = exit;
+
+        for (const username in usersDict) {
+            let user = usersDict[username];
+            this.users[username] = user;
+        }
+
+        /*for (let i = 0; i < clientsList.length; i++) {
+            this.clients.push(clientsList[i]);
+        }
+        for (let i = 0; i < songsList.length; i++) {
+            this.songs.push(songsList[i]);
+        }*/
+    }
 
     /**
      * Creates an instance of Room from a Json of correct structure
@@ -6,8 +28,9 @@ class Room {
      * @returns {Room}
      */
     static fromJson(object) {
-        let room = new Room();
-        room.url = object.url;
+        let name = object.name || ""; //RAQUEL: undefined por ahora
+        let url = object.url;
+        let exit = object.exit;
 
         let users = {};
         for (const username in object.users) {
@@ -15,20 +38,17 @@ class Room {
             users[username] = User.fromJson(user);
         }
 
-        room.users = users;
-        room.exit = object.exit;
-
-        room.songs = []
+        let songs = [];
         for (let i = 0; i < object.songs.length; i++) {
-            room.songs[i] = Song.fromJson(object.songs[i])
+            songs[i] = Song.fromJson(object.songs[i])
         }
-
-        return room
+        
+        return new Room(name, url, users, songs, exit);
     }
 
     /**
      * Converts the room into a JSON object
-     * @returns {{exit, url, users, songs}}
+     * @returns {{name, exit, url, users, songs}}
      */
     toJson() {
 
@@ -44,6 +64,7 @@ class Room {
         }
 
         return {
+            "name": this.name,
             "url": this.url,
             "users": users,
             "exit": this.exit,

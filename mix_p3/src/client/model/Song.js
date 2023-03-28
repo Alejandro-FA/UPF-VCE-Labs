@@ -30,20 +30,20 @@ function sendAudioStream(other_peer_id) {
 
 class Song {
 
+    //Constructor
+    constructor(title="", artist="", url="", singingUser=null){
+        this.title = title;
+        this.artist = artist;
+        this.url = url;
+        this.singingUser = singingUser;
+    }
     /**
      * Creates an instance of Song from a Json of correct structure
      * @param object {{title, artist, url}}
      * @return {Song}
      */
     static fromJson(object) {
-        let song = new Song()
-
-        song.title = object.title
-        song.artist = object.artist
-        song.url = object.url
-        song.singingUser = null
-
-        return song
+        return new Song(object.title, object.artist, object.url, null);
     }
 
     /**

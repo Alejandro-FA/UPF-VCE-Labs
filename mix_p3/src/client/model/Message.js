@@ -19,7 +19,8 @@ function sendMoveMessage(room, username, myuser, userId) {
         content: myuser,
         userID: MYCHAT.server.user_id
     }
-
+    console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + myuser.target + " " + myuser.position);
+    console.log(JSON.stringify(myuser));
     MYCHAT.server.sendMessage(msg)
 }
 
@@ -35,7 +36,9 @@ function parseMoveMessage(msg) {
         content: myuser,
         userID: MYCHAT.server.user_id
     }*/
-    let user = msg.content
+    let user = msg.content;
+    user.room = msg.room; //RAQUEL
+    user.username = msg.username; //RAQUEL
 
     WORLD.setUserTarget(msg.username, user.target)
 
