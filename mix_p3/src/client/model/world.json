@@ -24,7 +24,7 @@
     },
 
     "Japanese": {
-        "url": "view/data/Room Japanese.gltf",
+        "url": "view/data/Room Japanese.glb",
         "users": {},
         "exit": "spain",
         "songs": [{

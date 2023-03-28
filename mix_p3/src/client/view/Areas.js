@@ -31,6 +31,13 @@ const guitarShape = [
     [100, 0, 83]
 ];
 
+const pikachuShape = [
+    [65, 0, 94],
+    [65, 0, 145],
+    [95, 0, 145],
+    [95, 0, 94]
+];
+
 const microShape = [
     [-40, 0, 185],
     [-40, 0, 145],
@@ -48,6 +55,9 @@ JapaneseWalkArea.addShape(tableShape)
 
 //Guitar
 SpanishWalkArea.addShape(guitarShape)
+
+//Pikachu
+JapaneseWalkArea.addShape(pikachuShape)
 
 //Micro
 SpanishWalkArea.addShape(microShape)

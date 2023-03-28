@@ -210,6 +210,9 @@ class MyWorld {
 
         this.room_name = room_name
 
+        //Load the new collisions
+        this.currentWalkArea = WALK_AREAS[room_name]
+
         //Reset the position and target of the user
 
         myuser.position = SCENE_NODES[this.username].position = myuser.target = [0, 0, 0]
