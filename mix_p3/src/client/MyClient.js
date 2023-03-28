@@ -140,7 +140,7 @@ class MyClient
                 WORLD = new MyWorld(this.room.name, user_name);
 
                 //Initiate the rendering of the World - TODO: change so that it uses the info queried from the database
-                init(user_name, "view/data/Room Spain.gltf", "girl", [-40, 0, 0]);
+                init(user_name, "view/data/Room Spain.glb", "girl", [-40, 0, 0]);
                 break;
 
             case "MOVE": 

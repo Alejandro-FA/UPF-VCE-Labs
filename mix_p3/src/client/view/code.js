@@ -20,7 +20,6 @@ function loadAnimation( name, url )
 	anim.load(url);
 	return anim;
 }
-
 function init(username, room_url, character_name, position)
 {
 
@@ -32,11 +31,11 @@ function init(username, room_url, character_name, position)
 	renderer = new RD.Renderer(context);
 	renderer.setDataFolder("view/data");
 	renderer.autoload_assets = true;
+	renderer.loadShaders("../shaders.txt")
 
 	//attach canvas to DOM
 	let main = document.querySelector("main")
 	main.appendChild(renderer.canvas);
-
 	//create a scene
 	scene = new RD.Scene();
 
