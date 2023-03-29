@@ -51,6 +51,20 @@ GlobalsSchema.methods.addClientObject = function(id, username) {
     this.clients_obj.push(client_obj);
 }
 
+
+GlobalsSchema.methods.clientObjectListToDict = function() {
+    let clientObjDict = {};
+    for(let i = 0; i < this.clients_obj.length; i++) {
+        clientObjDict[this.clients_obj[i].id] = {
+            id: this.clients_obj[i].id,
+            name: this.clients_obj[i].name
+        };
+    };
+    return clientObjDict;
+}
+
+
+
 GlobalsSchema.methods.findClientObjectByUsername = function(username) {
     for(const client_obj of this.clients_obj) {
         if (client_obj.name === username) return client_obj;
@@ -97,6 +111,12 @@ GlobalsSchema.methods.generateWorldInfo = function (userInfo) {
         let room_songs = [];
         for(let j = 0; j < room.songs.length; j++) {
             room_songs.push(Song.toJson(room.songs[j]));
+        }
+
+        //Send room_users RAQUEL: NO SÉ SI ESTO LO USA EL CLIENT SIDE
+        let room_users = {};
+        for( let k = 0; k < room.users.length; k++) {
+            room_users[room.users[i].username] = room.users[i];
         }
 
         roomsDict[room.name] = {

@@ -101,7 +101,7 @@ async function on_connection(req) {
     let room = {
         type: "ROOM",
         name: ws.room,
-        clients: GLOBALS.clients_obj,
+        clients: GLOBALS.clientObjectListToDict(),
         length: GLOBALS.clients_obj.length,
         userInfo: userInfo,
         content: worldInfo,
@@ -149,11 +149,7 @@ async function on_connection(req) {
             return;
         }
         user.target = user.position;
-        await user.save().then((data)=>{
-
-        }).catch((error)=>{
-
-        }) ;
+        await user.save().then((data)=>{}).catch((error)=>{});
         console.log("SAVED USER " + JSON.stringify(user));
         //GLOBALS.saveUserData(room.username, room); //userInfo == user object
         //console.log(JSON.stringify(userInfo));
@@ -399,5 +395,9 @@ app.use(require(path.join(app.get('routes'), 'canvas')));
 //Donde estará la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'client')));
+
+
+
+
 
 module.exports = {server, app};
