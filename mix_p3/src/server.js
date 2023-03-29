@@ -149,7 +149,7 @@ async function on_connection(req) {
             return;
         }
         user.target = user.position;
-        await user.save();
+        await user.save().then((data)=>{}).catch((error)=>{});
         console.log("SAVED USER " + JSON.stringify(user));
         //GLOBALS.saveUserData(room.username, room); //userInfo == user object
         //console.log(JSON.stringify(userInfo));
