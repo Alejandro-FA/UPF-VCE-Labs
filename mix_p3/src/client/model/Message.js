@@ -88,6 +88,30 @@ function parseSkinMessage(msg) {
 }
 
 /**
+ * Send a Dance message to the room
+ * @param room
+ * @param username
+ * @param userId
+ */
+function sendDanceMessage(room, username, userId) {
+    let msg = {
+        room: room,
+        type: "DANCE",
+        username: username,
+        userID: userId
+    }
+    MYCHAT.server.sendMessage(msg)
+}
+
+/**
+ * Parses a Dance message
+ * @param msg {{room, username, userId}}
+ */
+function parseDanceMessage(msg) {
+    dance[msg.username] = true
+}
+
+/**
  * Send a World message to the specified target
  * @param room_name
  * @param username
@@ -161,6 +185,7 @@ function parseLogoutMessage(msg) {
     let node = SCENE_NODES[msg.username]
     node.remove()
 
+    delete dance[msg.username]
     delete SCENE_NODES[msg.username]
     delete WORLD.users[msg.username]
     delete WORLD.room.users[msg.username]

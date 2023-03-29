@@ -47,7 +47,7 @@ function init(username, room_url, character_name, position)
 	let bg_color = [0.1,0.1,0.1,1];
 
 	//Create character
-	let girl_pivot = WORLD.createCharacter(character_name, username, position, character_scalings[character_name])
+	let girl_pivot = WORLD.createCharacter(character_name, username, position, character_scalings[character_name], true)
 
 	character = girl_pivot;
 
@@ -182,4 +182,4 @@ function init(username, room_url, character_name, position)
 
 setTimeout(() => {
 	loading = false
-}, 7000)
+}, 5000)

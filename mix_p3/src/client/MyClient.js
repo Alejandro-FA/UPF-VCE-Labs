@@ -125,14 +125,6 @@ class MyClient
 
                 break;
 
-            case "LOGINERROR":
-
-                alert(message.content)
-
-                this.socket.close()
-
-                break;
-
             case "LOGOUT":
                 delete this.clients[ message.userID ];
                 delete this.room.clients[ message.userID ];
@@ -207,6 +199,14 @@ class MyClient
                 break;
 
             case "SING":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
+            case "DANCE":
                 if(message.userID !== this.user_id){
                     if(this.on_world_info){
                         this.on_world_info(JSON.stringify(message))

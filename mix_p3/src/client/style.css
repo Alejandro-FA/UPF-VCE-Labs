@@ -375,8 +375,7 @@ li:hover,
 }
 
 .choose-song,
-.choose-room,
-.choose-character {
+.choose-room {
   position: absolute;
   height: 50%;
   width: 40%;
@@ -389,6 +388,21 @@ li:hover,
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.choose-character {
+  position: absolute;
+  height: 50%;
+  width: 40%;
+  top: calc(50% - 50% / 2);
+  left: calc(50% - 40% / 2);
+  z-index: 150;
+  background: #018a74;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 li {
@@ -407,7 +421,6 @@ li {
 
 img.character {
   display: flex;
-  flex-direction: column;
   aspect-ratio: 1 / 1;
   height: 30%;
   border-radius: 20%;
@@ -419,10 +432,6 @@ img.character:hover {
   transform: scale(1.05);
 }
 
-li.song {
-  flex-direction: column;
-  justify-content: center;
-}
 
 .song-title {
   font-weight: bold;
@@ -431,9 +440,4 @@ li.song {
 
 .song-artist {
   font-style: italic;
-}
-
-li.selected {
-  background-color: #97c7b3;
-  cursor: pointer;
 }

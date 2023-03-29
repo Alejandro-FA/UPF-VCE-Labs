@@ -169,6 +169,10 @@ class MyWorld {
      */
     changeRoom(room_name) {
 
+        loading = true
+        setTimeout(() => {
+            loading = false
+        }, 3000)
         //Check if there is a song playing
         if(SONG_PLAYING) {
             let audio = document.querySelector("audio")
@@ -188,9 +192,7 @@ class MyWorld {
         let node = scene.root.findNodeByName("room")
 
         node.removeAllChildren()
-        setTimeout(() => {
-            node.loadGLTF(this.room.url)
-        }, 500)
+        node.loadGLTF(this.room.url)
 
         //Change the current room name
 
@@ -215,7 +217,6 @@ class MyWorld {
 
     /**
      * This function verifies if the user is at the range of it's target
-     * TODO: Adapt it to 3d
      * @param username
      * @returns {boolean}
      */
@@ -225,13 +226,14 @@ class MyWorld {
         if((sceneNode.position[0] < user.target[0] -2 || sceneNode.position[0] > user.target[0] +2)
             && (sceneNode.position[2] < user.target[2] -2 || sceneNode.position[2] > user.target[2] +2)) {
 
+            dance[username] = false
             user.anim = `${sceneNode.name}_walking`
             return false
         }
 
         user.anim = `${sceneNode.name}_idle`
 
-        if(dance) {
+        if(dance[username]) {
             user.anim = `${sceneNode.name}_dance`
         }
 
@@ -281,8 +283,13 @@ class MyWorld {
                 break;
 
             case "SING":
-                //Tell all the room that a client is singing
+                //A user is singing
                 parseSingMessage(info)
+                break;
+
+            case "DANCE":
+                //A user is dancing
+                parseDanceMessage(info)
                 break;
 
             default:
@@ -299,7 +306,7 @@ class MyWorld {
      * @param scaling
      * @return {SceneNode}
      */
-    createCharacter(character_name, username, position, scaling) {
+    createCharacter(character_name, username, position, scaling, isThisCharacter) {
 
         //create material for the character
         let mat = new RD.Material({
@@ -332,16 +339,19 @@ class MyWorld {
         scene.root.addChild( character_pivot );
 
         //Create a selector for the character
-        let character_selector = new RD.SceneNode({
-            position: [0, 0, 0], //RAQUEL
-            mesh: "cube",
-            material: `${character_name}`,
-            scaling: [10, 80, 10],
-            name: "character_selector",
-            layers: 0b1000
-        })
-        character_pivot.addChild(character_selector);
+        if(isThisCharacter) {
+            let character_selector = new RD.SceneNode({
+                position: [0, 0, 0], //RAQUEL
+                mesh: "cube",
+                material: `${character_name}`,
+                scaling: [10, 80, 10],
+                name: "character_selector",
+                layers: 0b1000
+            })
+            character_pivot.addChild(character_selector);
+        }
         SCENE_NODES[username] = character_pivot;
+        dance[username] = false
 
         loadAnimation(`${character_name}_idle`,`view/data/${character_name}/idle.skanim`);
         loadAnimation(`${character_name}_walking`,`view/data/${character_name}/walking.skanim`);
