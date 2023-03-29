@@ -101,7 +101,7 @@ async function on_connection(req) {
     let room = {
         type: "ROOM",
         name: ws.room,
-        clients: GLOBALS.clients_obj,
+        clients: GLOBALS.clientObjectListToDict(),
         length: GLOBALS.clients_obj.length,
         userInfo: userInfo,
         content: worldInfo,
