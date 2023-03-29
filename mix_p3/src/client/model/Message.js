@@ -117,6 +117,10 @@ function parseWorldMessage(msg) {
     WORLD.room_name = msg.room
     WORLD.users = WORLD.room.users
 
+    //Save my user inside room.users and then replace WORLD.users data
+    WORLD.room.users[WORLD.username] = WORLD.users[WORLD.username];
+    WORLD.users = WORLD.room.users
+
     if(!WORLD.users[WORLD.username]) {
         WORLD.users[WORLD.username] = new User(
             "girl",
@@ -153,6 +157,9 @@ function parseLoginMessage(msg) {
  * @param msg {{userID, username, type, content, date}}
  */
 function parseLogoutMessage(msg) {
+    //Delete user logged out from this user world data
+    let node = SCENE_NODES[msg.username]
+    node.remove()
 
     delete SCENE_NODES[msg.username]
     delete WORLD.users[msg.username]
