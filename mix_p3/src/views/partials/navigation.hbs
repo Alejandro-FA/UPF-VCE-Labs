@@ -20,32 +20,43 @@
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         {{#if user}}
             <li class="nav-item">
+              <div class="range">
+                <button type="button" class="btn rainbow text-dark me-4 my-btn-align " data-bs-toggle="collapse" data-bs-target="#collapseChat">Chat</button>
+              </div>
+            </li>
+
+            <li class="nav-item">
               <div class="range"> 
                 <img src="userIconVolume.png" class="rounded float-left mr-n15" alt="user" style="max-width: 20px; max-height: 20px"/>
-                <input type="range" class="form-range ps-4 pe-4" min="0" max="3" step="0.01" id="userVolume">
+                <input type="range" class="form-range slider ps-4 pe-4" min="0" max="3" step="0.01" id="userVolume">
               </div>
             </li>
 
             <li class="nav-item">
               <div class="range"> 
                 <img src="microIconVolume.png" class="rounded float-left mr-n15" alt="micro" style="max-width: 20px; max-height: 20px"/>
-                <input type="range" class="form-range ps-4 pe-4" min="0" max="5" step="0.01" id="microVolume">
+                <input type="range" class="form-range slider ps-4 pe-4" min="0" max="5" step="0.01" id="microVolume">
               </div>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="/users/logout">Log out</a>
             </li>
+
         {{else}}
             <li class="nav-item">
                 <a class="nav-link" href="/users/signin">Sign in</a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/users/signup">Sign up</a>
             </li>
+
         {{/if}}
         
       </ul>
     </div>
   </div>
 </nav>
+
+{{> chat}}

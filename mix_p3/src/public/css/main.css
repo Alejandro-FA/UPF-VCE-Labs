@@ -5,6 +5,12 @@ body {
     overflow: hidden;
 }
 
+.rainbow {
+    background: #a8ff78;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #78ffd6, #a8ff78);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #78ffd6, #a8ff78); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
 .container {
     padding: 0;
     margin: 0;
@@ -46,14 +52,58 @@ nav {
 }
 
 .range {
-    /*display: table-cell;
-    vertical-align: middle;*/
     height: 50px;
     max-width: 800px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
+
+.my-btn-range {
+    /*display: table-cell;
+    vertical-align: middle;*/
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.my-btn-align {
+    align-items: center;
+    flex: 1;
+}
+
+
+
+/** SLIDER PROPERTIES FOR MOZILLA**/
+
+.slider::-moz-range-track {
+    background: #a8ff78;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #78ffd6, #a8ff78);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #78ffd6, #a8ff78); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+  
+.slider::-moz-range-thumb {
+    background-color: rgba(3,155,229 ,1);
+}
+
+/** SLIDER PROPERTIES FOR CHROME**/
+
+.slider::-webkit-slider-runnable-track {
+    background: #a8ff78;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #78ffd6, #a8ff78);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #78ffd6, #a8ff78); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+  
+.slider::-webkit-slider-thumb {
+    background-color: rgba(3,155,229 ,1);
+}
+
+
+
+
+/**END SLIDER PROPERTIES**/
+
+
 
 .mr-n15 {
     margin-right: -15px;
@@ -67,6 +117,10 @@ nav {
     align-items: center;
     justify-content: center;*/
 }
+
+
+
+
 
 /*** This is the CSS for the chat ***/
 
