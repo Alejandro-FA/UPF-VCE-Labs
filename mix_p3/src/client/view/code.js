@@ -31,7 +31,6 @@ function init(username, room_url, character_name, position)
 	renderer = new RD.Renderer(context);
 	renderer.setDataFolder("view/data");
 	renderer.autoload_assets = true;
-	renderer.loadShaders("../shaders.txt")
 
 	//attach canvas to DOM
 	let main = document.querySelector("main")
@@ -115,6 +114,14 @@ function init(username, room_url, character_name, position)
 	gl.canvas.height = main.offsetHeight;
 	//main draw function
 	context.ondraw = function(){
+
+		let loadingScreen = document.querySelector(".loading")
+		if(loading) {
+			loadingScreen.style.display = "flex"
+		} else {
+			loadingScreen.style.display = "none"
+		}
+
 		gl.canvas.width = main.offsetWidth;
 		gl.viewport(0,0,gl.canvas.width,gl.canvas.height);
 
@@ -175,4 +182,4 @@ function init(username, room_url, character_name, position)
 
 setTimeout(() => {
 	loading = false
-}, 1000)
+}, 7000)

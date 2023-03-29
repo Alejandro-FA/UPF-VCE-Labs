@@ -130,7 +130,7 @@ class MyClient
                 delete this.room.clients[ message.userID ];
                 this.num_clients -= 1;
                 if (this.on_user_disconnected) {
-                    this.on_user_disconnected(message.userID, message.username)
+                    this.on_user_disconnected(message.username)
                 }
                 if(this.on_world_info) {
                     this.on_world_info(JSON.stringify(message))

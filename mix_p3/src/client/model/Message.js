@@ -223,7 +223,25 @@ function parseSingMessage(msg) {
         call.on('stream', (stream) => {
             // use the stream to receive audio
             console.log("Receiving the stream")
+            const audioContext = new window.AudioContext();
             const audio = new Audio();
+
+            let track = audioContext.createMediaElementSource(audio);
+
+            //To control the sound
+            const gainNode = audioContext.createGain();
+
+            const volumeControl = document.querySelector("#microVolume");
+
+            volumeControl.addEventListener(
+                "input",
+                () => {
+                    gainNode.gain.value = volumeControl.value;
+                },
+                false
+            );
+
+            track.connect(gainNode).connect(audioContext.destination);
             audio.srcObject = stream;
             audio.play()
                 .then(r => console.log(r))

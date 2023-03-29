@@ -94,11 +94,7 @@ class Song {
         //To control the sound
         const gainNode = audioContext.createGain();
 
-        //Exemple
-        /*
-        <input type="range" id="volume" min="0" max="2" value="1" step="0.01" />
-
-        const volumeControl = document.querySelector("#volume");
+        const volumeControl = document.querySelector("#userVolume");
 
         volumeControl.addEventListener(
           "input",
@@ -107,8 +103,6 @@ class Song {
           },
           false
         );
-
-         */
 
         track.connect(gainNode).connect(audioContext.destination);
 

@@ -16,6 +16,19 @@ nav {
 
 }
 
+.loading {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    font-size: 10vw;
+    background: #a8ff78;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #78ffd6, #a8ff78);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #78ffd6, #a8ff78); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}
+
 .range {
     /*display: table-cell;
     vertical-align: middle;*/
