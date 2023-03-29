@@ -130,7 +130,7 @@ function parseWorldMessage(msg) {
     for (let name in WORLD.users) {
         let user = WORLD.users[name];
         if(name !== WORLD.username)
-            WORLD.createCharacter(user.character, name, user.position, user.scaling)
+            WORLD.createCharacter(user.character, name, user.position, character_scalings[user.character])
     }
 }
 
