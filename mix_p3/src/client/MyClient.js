@@ -57,13 +57,21 @@ class MyClient
             
             
             //RAQUEL: SEND MESSAGE LOGOUT PER GUARDAR ÚLTIMA POS USER (NO VA CREO :()
-            //let myuser = WORLD.users[that.user_name]
+            let myuser = WORLD.users[that.user_name]
+            let msg_onclose = {
+                room: that.room.name,
+                type: "SAVE_USER_DATA",
+                username: user_name,
+                content: myuser
+            }
+            that.socket.send(msg_onclose);
             //console.log("bebe " + myuser.position + " " + myuser.target);
             //await sendSaveUserDataMessage(that.room.name, user_name, myuser);
             /*let msg_onclose = {
                 type: "SAVE_USER_DATA",
                 content: WORLD.users[this.user_name]
             }*/
+
 
             console.log("Socket closed")
             if(that.socket !== this){ //RAQUEL: ESTO QUÉ HACE?
