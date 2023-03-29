@@ -133,6 +133,8 @@ function init(username, room_url, character_name, position)
 			camera.lookAt( smoothpos, smoothtarget, [0,1,0] );
 		} else {
 			camera.lookAt( campos, camtarget, [0,1,0] );
+			//let user = WORLD.users[WORLD.username]; //RAQUEL LUKA
+			//user.target = user.position;
 		}
 
 		for (let node in SCENE_NODES) {

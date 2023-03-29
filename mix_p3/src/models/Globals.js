@@ -86,5 +86,53 @@ GlobalsSchema.methods.chargeWorldJson = function(json) {
 }
 
 
+//
+GlobalsSchema.methods.generateWorldInfo = function (userInfo) {
+
+    let roomsDict = {};
+    for(let i = 0; i< this.rooms.length; i++) {
+        //console.log(JSON.stringify(room));
+        let room = this.rooms[i]//Room.toJson(rooms[i]);
+        
+        let room_songs = [];
+        for(let j = 0; j < room.songs.length; j++) {
+            room_songs.push(Song.toJson(room.songs[j]));
+        }
+
+        roomsDict[room.name] = {
+            url: room.url,
+            users: {},
+            exit: "default",
+            songs: room_songs,
+            clients: []
+        }
+    }
+    /*let room_songs = [];
+    for(let song in currentRoom.songs) {
+        room_songs.push(Song.toJson(song));
+    }
+
+    let worldInfo = {
+        room: {
+            url: currentRoom.url,
+            users: {},
+            exit: "default",
+            songs: room_songs,
+            clients: []
+        },
+        user: JSON.stringify(userInfo)
+    }*/
+
+    let worldInfo = {
+        rooms: roomsDict,
+        user: JSON.stringify(userInfo)
+    }
+    //console.log("myWorldInfo " + JSON.stringify(worldInfo));
+
+    return worldInfo;
+}
+
+
+
 //----------- Export the Schema -----------
 module.exports = mongoose.model('Globals', GlobalsSchema);

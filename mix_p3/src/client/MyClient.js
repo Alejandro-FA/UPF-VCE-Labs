@@ -52,10 +52,21 @@ class MyClient
 
         //Configure the onclose callback
         let that = this
-        this.socket.onclose = function () {
+        this.socket.onclose = async function () {
+
+            
+            
+            //RAQUEL: SEND MESSAGE LOGOUT PER GUARDAR ÚLTIMA POS USER (NO VA CREO :()
+            //let myuser = WORLD.users[that.user_name]
+            //console.log("bebe " + myuser.position + " " + myuser.target);
+            //await sendSaveUserDataMessage(that.room.name, user_name, myuser);
+            /*let msg_onclose = {
+                type: "SAVE_USER_DATA",
+                content: WORLD.users[this.user_name]
+            }*/
 
             console.log("Socket closed")
-            if(that.socket !== this){
+            if(that.socket !== this){ //RAQUEL: ESTO QUÉ HACE?
                 return
             }
 
@@ -145,7 +156,10 @@ class MyClient
 
                 let user_name = MYCHAT.user_name
                 this.room.name = message.name
-                WORLD = new MyWorld(this.room.name, user_name);
+                //WORLD = new MyWorld(this.room.name, user_name);
+                let world_info = message.content;
+                console.log("Aqui stoy")
+                WORLD = new MyWorld(this.room.name, user_name, world_info); //RAQUEL TO DO
 
                 //Initiate the rendering of the World - TODO: change so that it uses the info queried from the database
                 let userInfo = message.userInfo

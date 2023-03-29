@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new Schema ({
-    //Register info
+    //Register info (PERMANENT! NOT CHANGABLE)
     username: {type: String, required: true},
     password: {type: String, required: true},
     date:  {type: Date, default: Date.now},
@@ -12,7 +12,6 @@ const UserSchema = new Schema ({
     character: {type: String, default: "girl"},
     room: {type: String, default: "Spanish"},
     position: {type: Array, default: [0, 0, 0]},
-    //scaling: {type: mongoose.Types.Decimal128, default: 0.4},
     scaling: {type: Number, default: 0.4},
     target: {type: Array, default: [0, 0, 0]},
     anim: {type: String, default: "girl_idle"}
@@ -44,6 +43,14 @@ UserSchema.methods.getUserInfo = function() {
         anim: this.anim,
     }
     return user;
+}
+
+UserSchema.methods.saveUserData = function (userInfo) {
+    this.position = userInfo.position;
+    this.target = userInfo.target;
+    this.character = userInfo.character;
+    this.scaling = userInfo.scaling;
+    this.anim = userInfo.anim;
 }
 
 

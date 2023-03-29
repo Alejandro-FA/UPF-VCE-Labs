@@ -1,13 +1,13 @@
 class User {
-    constructor(character, position, scaling, target, anim, room="", username ="") {
+    constructor(character, position, scaling, target, anim) {
         this.character = character;
         this.position = position;
         this.scaling = scaling;
         this.target = target;
         this.anim = anim;
 
-        this.username = username;
-        this.room = room;
+        //this.username = username;
+        //this.room = room;
     }
 
     /**
@@ -16,7 +16,8 @@ class User {
      * @returns {User}
      */
     static fromJson(object) {
-        let user = new User(object.character, object.position, object.scaling, object.target, object.anim, object.room, object.username);
+        //let user = new User(object.character, object.position, object.scaling, object.target, object.anim, object.room, object.username);
+        let user = new User(object.character, object.position, object.scaling, object.target, object.anim);
         console.log("FROM JSON: " + user);
         return user;
     }

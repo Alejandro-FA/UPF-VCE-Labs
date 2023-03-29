@@ -232,3 +232,15 @@ function parseSingMessage(msg) {
 
     });
 }
+
+
+//RAQUEL FUNCTION LOGOUT_SAVE_USER_DATA
+function sendSaveUserDataMessage(room_name, user_name, userInfo) {
+    let msg = {
+        room: room_name,
+        type: "SAVE_USER_DATA",
+        username: user_name,
+        content: userInfo
+    }
+    MYCHAT.server.sendMessage(msg)
+}
