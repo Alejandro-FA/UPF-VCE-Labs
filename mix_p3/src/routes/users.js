@@ -26,7 +26,7 @@ router.get('/users/signup', (req, res) => {
 //para recibir datos que el user ingrese
 router.post('/users/signin',
     passport.authenticate('local', {
-        successRedirect: '/canvas',
+        successRedirect: '/sing',
         failureRedirect: 'signin',
         failureFlash: true
     })
