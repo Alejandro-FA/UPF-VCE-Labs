@@ -10,7 +10,6 @@ const passport = require('passport');
 
 //User authentication (if has an account)
 router.get('/users/signin', (req, res) => {
-    //res.send(req.flash());
     res.render('users/signin');
 });
 

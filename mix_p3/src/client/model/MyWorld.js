@@ -2,8 +2,8 @@ const SCENE_NODES = {};
 const WALK_AREAS = {"Spanish": SpanishWalkArea, "Japanese": JapaneseWalkArea}
 
 class MyWorld {
-    //constructor(room, username) {
-    constructor(room, username, worldInfo) { //RAQUEL TO DO
+
+    constructor(room, username, worldInfo) {
         this.user_avatar = null
         this.username = username
         this.room_name = room
@@ -15,7 +15,6 @@ class MyWorld {
         this.users = null //Users dictionary
 
         //Charge worldInfo data from server
-        //RAQUEL: qué pasa con los users ya conectados???
         this.world = worldInfo.rooms;
         this.room = Room.fromJson(worldInfo.rooms[room]);
         this.users = this.room.users
@@ -56,8 +55,6 @@ class MyWorld {
             //Face the wanted direction
             delta[0] = -delta[0]
             character.orientTo(delta, false, [0, 1, 0], true, false)
-
-
         }
     }
 
@@ -107,7 +104,6 @@ class MyWorld {
             if(!this.atTarget(name)) {
                 this.moveCharacter(name, elapsed_time);
                 user.position = SCENE_NODES[name].position
-                //user.pos[0] = lerp( user.pos[0], user.target[0], elapsed_time );
             }
             let t = getTime();
             let time_factor = 1;
@@ -164,7 +160,6 @@ class MyWorld {
     }
     /**
      * Changes all the necessary world data
-     * TODO: Adapt it to 3d
      * @param room_name
      */
     changeRoom(room_name) {
@@ -202,14 +197,12 @@ class MyWorld {
         }
 
         //Change the current room name
-
         this.room_name = room_name
 
         //Load the new collisions
         this.currentWalkArea = WALK_AREAS[room_name]
 
         //Reset the position and target of the user
-
         myuser.position = SCENE_NODES[this.username].position = myuser.target = [0, 0, 0]
 
         //Add the user to the new room
@@ -344,7 +337,6 @@ class MyWorld {
 
         this.setUserSceneNode(username, character_pivot);
         this.setUserTarget(username, position);
-        console.log("RAQUEEEL " + position); //RAQUEL: ESTO ESTÁ OK!
         this.setUserAnim(username, `${character_name}_idle`)
         this.setUserSkin(username, character_name)
 
@@ -353,7 +345,7 @@ class MyWorld {
         //Create a selector for the character
         if(isThisCharacter) {
             let character_selector = new RD.SceneNode({
-                position: [0, 0, 0], //RAQUEL
+                position: [0, 0, 0],
                 mesh: "cube",
                 material: `${character_name}`,
                 scaling: [10, 80, 10],

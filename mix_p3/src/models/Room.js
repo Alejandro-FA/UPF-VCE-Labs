@@ -6,22 +6,13 @@ const Song = require('./Song');
 const RoomSchema = new Schema ({
     type: {type: String, default: "ROOM"},
     name: {type: String, required: true, default: "roomName"},
-    //exit: {type: String, required: true},
     clients: [{type: Object, required: true}],
     length: {type: Number, required: false, default: 0},
     url: {type: String, required: true, default: "url"},
     songs: [{type: mongoose.ObjectId, ref: 'Song', required: false}],
     users: [{type: mongoose.ObjectId, ref: 'User', required: false}]
-
-    //Problema con users: NO se pueden guardar diccinarios en mongoose!!
-    //users: {{type: mongoose.ObjectId, ref: 'User', required: false}}
 });
 
-//const Room = mongoose.model('Room', RoomSchema);
-
-//----------- Methods -----------
-
-//RoomSchema.methods.getRoom = function()
 
 
 
@@ -44,9 +35,7 @@ RoomSchema.statics.fromJson = function(object) {
 
     //Creamos el objeto room con los datos
     let room = {
-        //type: "ROOM",
         name: object.roomName,
-        //exit: object.exit,
         clients: object.clients,
         length: 0,
         url: object.url,

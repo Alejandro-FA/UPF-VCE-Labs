@@ -9,10 +9,6 @@ const SongSchema = new Schema ({
 });
 
 
-//----------- Methods -----------
-
-//SongSchema.methods.getSong = function()
-
 
 //----------- Statics -----------
 

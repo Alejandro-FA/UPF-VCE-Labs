@@ -196,7 +196,6 @@ function hideCharacterChooser() {
 
 /**
  * Show the song choosing interface
- * TODO: Adapt to the needed song structure
  */
 function showSongChooser() {
 	let body = document.querySelector("main");

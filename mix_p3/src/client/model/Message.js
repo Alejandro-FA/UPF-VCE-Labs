@@ -19,8 +19,7 @@ function sendMoveMessage(room, username, myuser, userId) {
         content: myuser,
         userID: MYCHAT.server.user_id
     }
-    console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + myuser.target + " " + myuser.position);
-    console.log(JSON.stringify(myuser));
+
     MYCHAT.server.sendMessage(msg)
 }
 
@@ -300,7 +299,8 @@ function parseSingMessage(msg) {
 }
 
 
-//RAQUEL FUNCTION LOGOUT_SAVE_USER_DATA
+//Function to inform the server to save user data because of disconnection
+//INFO: NO VA
 function sendSaveUserDataMessage(room_name, user_name, userInfo) {
     let msg = {
         room: room_name,

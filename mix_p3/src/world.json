@@ -1,13 +1,14 @@
 {
-    "Spanish": {
+    "rooms": [{
+        "roomName": "Spanish",
         "url": "view/data/Room Spain.glb",
         "users": {},
         "exit": "default",
         "songs": [
             {
-                "title": "La Flaca",
-                "artist": "Jarabe De Palo",
-                "url": "view/data/music/La Flaca.mp3"
+            "title": "La Flaca",
+            "artist": "Jarabe De Palo",
+            "url": "view/data/music/La Flaca.mp3"
             },
             {
                 "title": "Zapatillas",
@@ -23,7 +24,8 @@
         "clients": []
     },
 
-    "Japanese": {
+    {
+        "roomName": "Japanese",
         "url": "view/data/Room Japanese.glb",
         "users": {},
         "exit": "spain",
@@ -33,5 +35,5 @@
             "url": "view/data/music/Gagnam Style.mp3"
         }],
         "clients": []
-    }
+    }]
 }

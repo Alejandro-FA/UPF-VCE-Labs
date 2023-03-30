@@ -5,9 +5,6 @@ class User {
         this.scaling = scaling;
         this.target = target;
         this.anim = anim;
-
-        //this.username = username;
-        //this.room = room;
     }
 
     /**
@@ -16,9 +13,7 @@ class User {
      * @returns {User}
      */
     static fromJson(object) {
-        //let user = new User(object.character, object.position, object.scaling, object.target, object.anim, object.room, object.username);
         let user = new User(object.character, object.position, object.scaling, object.target, object.anim);
-        console.log("FROM JSON: " + user);
         return user;
     }
 

@@ -2,8 +2,6 @@ class Room {
     //Constructor
     constructor(name="", url="", usersDict={}, songsList=[], exit="") {
         this.name = name;
-        //this.clients = [...clientsList];
-        //this.length = this.clients.length;
         this.url = url;
         this.songs = [...songsList];
         this.users = {};
@@ -13,13 +11,6 @@ class Room {
             let user = usersDict[username];
             this.users[username] = user;
         }
-
-        /*for (let i = 0; i < clientsList.length; i++) {
-            this.clients.push(clientsList[i]);
-        }
-        for (let i = 0; i < songsList.length; i++) {
-            this.songs.push(songsList[i]);
-        }*/
     }
 
     /**
@@ -28,7 +19,7 @@ class Room {
      * @returns {Room}
      */
     static fromJson(object) {
-        let name = object.name || ""; //RAQUEL: undefined por ahora
+        let name = object.name || "";
         let url = object.url;
         let exit = object.exit;
 

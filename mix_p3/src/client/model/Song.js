@@ -61,8 +61,6 @@ class Song {
     /**
      * Play a Song and connect via Peer.js to the other clients to send the audio stream
      * @param username
-     * TODO: Use peer.js
-     * TODO: Think how we will do if some user connects in the middle of a song
      */
     play(username) {
         //Check if some song is already playing

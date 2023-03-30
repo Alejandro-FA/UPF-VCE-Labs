@@ -56,7 +56,7 @@ class MyClient
 
             
             
-            //RAQUEL: SEND MESSAGE LOGOUT PER GUARDAR ÚLTIMA POS USER (NO VA CREO :()
+            //INFO: NO VA
             let myuser = WORLD.users[that.user_name]
             let msg_onclose = {
                 room: that.room.name,
@@ -65,16 +65,10 @@ class MyClient
                 content: myuser
             }
             that.socket.send(msg_onclose);
-            //console.log("bebe " + myuser.position + " " + myuser.target);
-            //await sendSaveUserDataMessage(that.room.name, user_name, myuser);
-            /*let msg_onclose = {
-                type: "SAVE_USER_DATA",
-                content: WORLD.users[this.user_name]
-            }*/
 
 
             console.log("Socket closed")
-            if(that.socket !== this){ //RAQUEL: ESTO QUÉ HACE?
+            if(that.socket !== this){
                 return
             }
 
@@ -156,14 +150,13 @@ class MyClient
 
                 let user_name = MYCHAT.user_name
                 this.room.name = message.name
-                //WORLD = new MyWorld(this.room.name, user_name);
+                
+                //Charge world info
                 let world_info = message.content;
-                console.log("Aqui stoy")
-                WORLD = new MyWorld(this.room.name, user_name, world_info); //RAQUEL TO DO
+                WORLD = new MyWorld(this.room.name, user_name, world_info);
 
                 //Initiate the rendering of the World - TODO: change so that it uses the info queried from the database
                 let userInfo = message.userInfo
-                //init(user_name, "view/data/Room Spain.gltf", "girl", [-40, 0, 0]);
                 init(user_name, message.url, userInfo.character, userInfo.position);
                 break;
 

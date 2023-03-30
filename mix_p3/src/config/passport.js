@@ -28,15 +28,3 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(function(user, done) { 
     done(null, user); 
 });
-
-
-//Errores porque findById NO acepta callbacks y esto es un lío tremendo
-/*passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async function (id, done) {
-    await User.findById(id, (err, user) => {
-        done(err, user);
-    });
-});*/

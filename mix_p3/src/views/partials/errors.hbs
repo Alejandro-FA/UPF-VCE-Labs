@@ -5,6 +5,7 @@
 </div>
 {{/if}}
 
+
 {{#if error_msg}}
 <div class="alert alert-danger alert-dismissible fade show" id="error_msg"role="alert">
   {{error_msg}}
@@ -12,12 +13,14 @@
 </div>
 {{/if}}
 
+
 {{#if success_msg}}
 <div class="alert alert-success alert-dismissible fade show" id="success_msg" role="alert">
   {{success_msg}}
   <button id= type="button" class="btn-close" onclick='document.getElementById("success_msg").setAttribute("hidden", true)' aria-label="Close"></button>
 </div>
 {{/if}}
+
 
 {{#each errors}}
 <div class="alert alert-warning alert-dismissible fade show" id={{id}} role="alert">

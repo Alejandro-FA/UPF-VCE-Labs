@@ -4,10 +4,11 @@ const User = require('./User');
 const Song = require('./Song');
 const Room = require('./Room');
 
+
 const GlobalsSchema = new Schema ({
     rooms: [{type: mongoose.ObjectId, ref: 'Room', required: false}],
     users: [{type: mongoose.ObjectId, ref: 'User', required: false}],
-    clients: [{type: Object, required: false}], //clients == usernameToClient
+    clients: [{type: Object, required: false}],
     clients_obj: [{type: Object, required: false}],
     lastID: {type: Number, required: false, default: 1},
 })
@@ -73,16 +74,7 @@ GlobalsSchema.methods.findClientObjectByUsername = function(username) {
     return null;
 }
 
-/*GlobalsSchema.methods.saveUserData = async function(username, userInfo) {
-    let user = await User.findOne({username: username});
-    let uu = JSON.parse(User.fromJson(userInfo));
-    console.log("UU " + uu);
-    user.room = uu.room;
-    user.position = userInfo.position;
-    user.target = user.position;
-    user.character = userInfo.character;
-    user.scaling = userInfo.scaling;
-}*/
+
 
 GlobalsSchema.methods.createNewRoom = function(roomName) {
     let room = new Room();
@@ -105,15 +97,14 @@ GlobalsSchema.methods.generateWorldInfo = function (userInfo) {
 
     let roomsDict = {};
     for(let i = 0; i< this.rooms.length; i++) {
-        //console.log(JSON.stringify(room));
-        let room = this.rooms[i]//Room.toJson(rooms[i]);
+        let room = this.rooms[i]
         
         let room_songs = [];
         for(let j = 0; j < room.songs.length; j++) {
             room_songs.push(Song.toJson(room.songs[j]));
         }
 
-        //Send room_users RAQUEL: NO SÉ SI ESTO LO USA EL CLIENT SIDE
+        //Send room_users
         let room_users = {};
         for( let k = 0; k < room.users.length; k++) {
             room_users[room.users[i].username] = room.users[i];
@@ -127,27 +118,11 @@ GlobalsSchema.methods.generateWorldInfo = function (userInfo) {
             clients: []
         }
     }
-    /*let room_songs = [];
-    for(let song in currentRoom.songs) {
-        room_songs.push(Song.toJson(song));
-    }
-
-    let worldInfo = {
-        room: {
-            url: currentRoom.url,
-            users: {},
-            exit: "default",
-            songs: room_songs,
-            clients: []
-        },
-        user: JSON.stringify(userInfo)
-    }*/
 
     let worldInfo = {
         rooms: roomsDict,
         user: JSON.stringify(userInfo)
     }
-    //console.log("myWorldInfo " + JSON.stringify(worldInfo));
 
     return worldInfo;
 }

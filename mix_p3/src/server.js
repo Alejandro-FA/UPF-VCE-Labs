@@ -45,10 +45,10 @@ const GLOBALS = new Globals();
 
 
 
-//--------------SAVE WORLD.JSON DATA INTO MONGODB--------------
+//--------------SAVE WORLD.JSON DATA INTO MONGODB / THE SERVER--------------
 
 //Get info from jsonFile
-const jsonFile = JSON.parse(fs.readFileSync("./src/worldCopy.json", "utf8"))
+const jsonFile = JSON.parse(fs.readFileSync("./src/world.json", "utf8"))
 GLOBALS.chargeWorldJson(jsonFile);
 
 
@@ -71,7 +71,6 @@ async function on_connection(req) {
     let user = await User.findOne({username: user_name});
     GLOBALS.users.push(user);
     let userInfo = user.getUserInfo();
-    console.log("GETUSERINFO " + JSON.stringify(userInfo));
     
     ws.room = user.room;
     ws.username = user_name;
@@ -80,7 +79,7 @@ async function on_connection(req) {
 
     //Add the new client
     if(!currentRoom){
-        console.log("unkown room name " + ws.room);
+        //In case of any break, Spanish room is the secure one
         ws.room = "Spanish"; //Default room
         currentRoom = GLOBALS.findRoomByName(ws.room);
     }
@@ -109,11 +108,6 @@ async function on_connection(req) {
     }
 
     sendToRoom(ws.room, JSON.stringify(room), ws.id)
-    //console.log("ORIGINAL: " + JSON.stringify(room));
-
-    //RAQUEL: Mongo PRUBEAS msg room
-    /*console.log("NOT ORIGINAL " + JSON.stringify(Room.toJson(currentRoom)));
-    //sendToRoom(ws.room, JSON.stringify(Room.toJson(rooms[ws.room])), ws.id)*/
 
 
     //Tell everyone that a user has connected
@@ -122,7 +116,6 @@ async function on_connection(req) {
         username: user_name,
         type: "LOGIN",
         content: userInfo,
-        //content: user, //RAQUEL: MONGODB aun por testar!
         date: new Date()
     }
 
@@ -142,17 +135,12 @@ async function on_connection(req) {
         }
 
         //Save user data
-        //console.log("USERNAME " + JSON.stringify(msg));
         let user = GLOBALS.usernameToUser(ws.username);
         if(!user){
-            console.log("NOT USER");
             return;
         }
         user.target = user.position;
         await user.save().then((data)=>{}).catch((error)=>{});
-        console.log("SAVED USER " + JSON.stringify(user));
-        //GLOBALS.saveUserData(room.username, room); //userInfo == user object
-        //console.log(JSON.stringify(userInfo));
 
         //Delete client from... (using index)
         room.clients.splice(room.clients.indexOf(ws), 1) //Room.clients array
@@ -232,7 +220,7 @@ function sendToRoom(room_name, msg, target) {
         if(!client.connected){
             continue;
         }
-        console.log("SEND TO ROOM: " + msg)
+       
         client.send(msg)
     }
 }
@@ -247,7 +235,7 @@ function sendToRoom(room_name, msg, target) {
     //If user wants to change the room
     if (msg.type === "CHANGE-ROOM") {
         let username = msg.user
-        let ws = GLOBALS.usernameToClient(username); //usernameToClient[username] 
+        let ws = GLOBALS.usernameToClient(username);
         
         //Delete user from past room
         let room = GLOBALS.findRoomByName(ws.room);
@@ -276,7 +264,6 @@ function sendToRoom(room_name, msg, target) {
             username: username,
             type: "LOGIN",
             content: userInfo,
-            //content: user, //RAQUEL: MONGODB aun por testar!
             date: new Date()
         }
 
@@ -286,7 +273,6 @@ function sendToRoom(room_name, msg, target) {
         GLOBALS.findRoomByName(ws.room).clients.push(ws);
 
         //update user data with NEW room
-        //RAQUEL: CUAL ES LA DEFAULT POSITION DE LA ROOM AL ENTRAR??
         GLOBALS.usernameToUser(msg.user).room = ws.room;
     }
 
@@ -307,22 +293,17 @@ function sendToRoom(room_name, msg, target) {
             let userInfo = msg.content;
             user.room = msg.room;
             user.saveUserData(userInfo)
-
-            console.log("INSIDE MOVE " + JSON.stringify(user));
-        } else {
-            console.log("NOT USER HERE!");
         }
     }
 
     //RAQUEL: SAVE_USER_DATA NO LLEGA NUNCA :(
     if (msg.type === "SAVE_USER_DATA") {
-        console.log("SAVE USER DATA PLEASEEEEEEEEE");
         let user = GLOBALS.usernameToUser(msg.username);
         if(user) {
             let userInfo = msg.content;
             //Set position == target
             userInfo.position = userInfo.target;
-            console.log("log " + userInfo.position + " " + userInfo.target);
+
             //Save user room
             user.room = msg.room;
 
@@ -331,7 +312,6 @@ function sendToRoom(room_name, msg, target) {
         }
     }
 
-    console.log("TYPE " + msg.type);
     sendToRoom(msg.room, JSON.stringify(msg), msg.targets)
 }
 

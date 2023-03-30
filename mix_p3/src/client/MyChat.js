@@ -3,11 +3,8 @@ const MYCHAT = {
 
     //Current instance of MyClient
     server: undefined,
-
     currentRoom: "Spanish",
-
     user_name: "anonymous",
-
     password: "undefined",
 
     //Initial code to be run when loading the Script
