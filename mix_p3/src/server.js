@@ -241,7 +241,7 @@ function sendToRoom(room_name, msg, target) {
  * Message received
  * @param message
  */
-function on_message_received(message) {
+ function on_message_received(message) {
     let msg = JSON.parse(message.utf8Data)
 
     //If user wants to change the room
@@ -254,8 +254,33 @@ function on_message_received(message) {
         let index = room.clients.indexOf(ws)
         room.clients.splice(index, 1)
 
+        //Send logout message to the room it comes from
+        let message = {
+            userID: ws.id,
+            username: username,
+            type: "LOGOUT",
+            content: "",
+            date: new Date()
+        }
+
+        sendToRoom(ws.room, JSON.stringify(message));
+
         //Get new room name
         ws.room = msg.room
+
+        //Send login message to the new room
+        let user = GLOBALS.usernameToUser(username)
+        let userInfo = user.getUserInfo();
+        message = {
+            userID: ws.id,
+            username: username,
+            type: "LOGIN",
+            content: userInfo,
+            //content: user, //RAQUEL: MONGODB aun por testar!
+            date: new Date()
+        }
+
+        sendToRoom(ws.room, JSON.stringify(message))
 
         //Add user to the new room
         GLOBALS.findRoomByName(ws.room).clients.push(ws);

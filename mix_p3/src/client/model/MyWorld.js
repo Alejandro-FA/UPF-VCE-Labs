@@ -188,11 +188,18 @@ class MyWorld {
         //Enter the new room
         this.room = Room.fromJson(this.world[room_name])
 
-
         let node = scene.root.findNodeByName("room")
 
         node.removeAllChildren()
         node.loadGLTF(this.room.url)
+
+        for (const name in SCENE_NODES) {
+            if(name !== this.username) {
+                let node = SCENE_NODES[name]
+                node.remove()
+                delete SCENE_NODES[name]
+            }
+        }
 
         //Change the current room name
 
@@ -290,6 +297,11 @@ class MyWorld {
             case "DANCE":
                 //A user is dancing
                 parseDanceMessage(info)
+                break;
+
+            case "CHANGE-ROOM":
+                //A user is changing rooms
+                parseChangeRoomMessage(info)
                 break;
 
             default:

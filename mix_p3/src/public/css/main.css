@@ -132,6 +132,7 @@ nav {
     right: 0;
     bottom: 0;
     width: 40vw;
+    opacity: 80%;
 }
 
 .mychat .message-container{
@@ -141,18 +142,27 @@ nav {
     align-items: center;
     padding: 5px;
     opacity: 100%;
+    border-radius: 5px;
+    margin: 10px;
+    box-shadow: #414051 2px 3px 10px;
 }
 
 .mychat .message-container.me {
     margin-left: auto;
     margin-right: 20px;
     justify-content: flex-end;
+    color: #fff;
+    background: #0d6efd;
+    border-color: #0d6efd;
 }
 
 .mychat .message-container.it {
     margin-right: auto;
     margin-left: 20px;
     justify-content: flex-start;
+    color: #0d6efd;
+    background: #fff;
+    border: 2px solid #0d6efd;
 }
 
 .mychat .sender{
@@ -175,13 +185,10 @@ nav {
 .mychat .message{
     display: block;
     font-family: "Montserrat", sans-serif;
-    color: black;
 }
 
 .mychat .message-space {
     flex: 14;
-    background: lightgray;
-    opacity: 50%;
     overflow: scroll;
 }
 

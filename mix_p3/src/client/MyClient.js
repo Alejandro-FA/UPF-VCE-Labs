@@ -167,6 +167,14 @@ class MyClient
                 init(user_name, message.url, userInfo.character, userInfo.position);
                 break;
 
+            case "CHANGE-ROOM":
+                if(message.userID !== this.user_id){
+                    if(this.on_world_info){
+                        this.on_world_info(JSON.stringify(message))
+                    }
+                }
+                break;
+
             case "MOVE": 
                 if(message.userID !== this.user_id){
                     if(this.on_world_info){

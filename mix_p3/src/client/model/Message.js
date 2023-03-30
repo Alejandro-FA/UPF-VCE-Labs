@@ -172,7 +172,7 @@ function parseLoginMessage(msg) {
     }
 
     WORLD.room.users[msg.username] = WORLD.users[msg.username] = msg.content
-    WORLD.createCharacter(msg.content.character, msg.username, msg.content.position, msg.content.scaling)
+    WORLD.createCharacter(msg.content.character, msg.username, msg.content.position, character_scalings[msg.content.character])
 }
 
 
@@ -189,6 +189,22 @@ function parseLogoutMessage(msg) {
     delete SCENE_NODES[msg.username]
     delete WORLD.users[msg.username]
     delete WORLD.room.users[msg.username]
+}
+
+/**
+ * Send a ChangeRoom message to all the room
+ * @param room
+ * @param username
+ * @param userId
+ */
+function sendChangeRoomMessage(room, username, userId) {
+    let msg = {
+        room: room,
+        type: "CHANGE-ROOM",
+        user: username,
+        userID: userId
+    }
+    MYCHAT.server.sendMessage(msg);
 }
 
 /**

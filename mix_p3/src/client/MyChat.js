@@ -118,18 +118,16 @@ const MYCHAT = {
     //Returns a function that changes to the chat which ID is passed
     changeChat: function (chatName) {
 
-        this.currentRoom = chatName;
+        this.server.room.name = this.currentRoom = chatName;
 
         let main = document.querySelector(".mychat .message-space");
         main.innerHTML = "";
 
-        let msg = {
-            room: chatName,
-            type: "CHANGE-ROOM",
-            user: this.user_name,
-            userID: this.server.user_id
-        }
-        this.server.sendMessage(msg);
+        this.systemMessage(
+            `Entered the ${this.currentRoom} room`
+        );
+
+        sendChangeRoomMessage(chatName, this.user_name, this.server.user_id)
     },
 
     //Send a system message
@@ -139,7 +137,8 @@ const MYCHAT = {
 
         elem.classList.add("message");
 
-        elem.classList.add("system");
+        elem.classList.add("card-header");
+        elem.classList.add("text-center");
         elem.innerHTML = message;
 
         chat.appendChild(elem);
@@ -205,20 +204,5 @@ const MYCHAT = {
         console.log("Couldn't connect to the server");
     },
 
-    /**
-     * Method that shows the chat
-     */
-    show: function () {
-        let chat = document.querySelector(".mychat");
-        chat.style.display = "flex"
-    },
-
-    /**
-     * Method that hides the chat
-     */
-    hide: function () {
-        let chat = document.querySelector(".mychat");
-        chat.style.display = "none"
-    },
 
 };
