@@ -65,7 +65,7 @@ function configureInputs(context, character) {
 function floor_clicked(e, ray) {
 	if( ray.testPlane( RD.ZERO, RD.UP ) ) //collision
 	{
-		console.log("floor position clicked", ray.collision_point);
+		//console.log("floor position clicked", ray.collision_point);
 
 		//Check if the click is on the canvas
 		if (e.target.nodeName === "CANVAS") {
