@@ -80,7 +80,7 @@ class Song {
         audioElement.addEventListener("ended", () => {
             console.log("Song ended");
             SONG_PLAYING = false;
-            freeze = false;
+            freeze[username] = false;
             peer.destroy();
             WORLD.teleportUser(username, vec3.fromValues(0, 0, 0))
         });
@@ -118,7 +118,7 @@ class Song {
         if(!SONG_PLAYING)
             sendSongMessage(WORLD.username, WORLD.room_name, this.title, MYCHAT.server.user_id);
 
-        sendSingMessage(WORLD.room_name, MYCHAT.server.user_id, peerId);
+        sendSingMessage(WORLD.room_name, WORLD.username, MYCHAT.server.user_id, peerId);
 
         this.play(WORLD.username)
     }

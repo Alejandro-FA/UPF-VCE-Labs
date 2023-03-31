@@ -1,5 +1,5 @@
 let fastClick = false;
-let freeze = false
+let freeze = {}
 let dance = {}
 
 /**
@@ -10,7 +10,7 @@ let dance = {}
 function configureInputs(context, character) {
 	context.onmouseup = function(e)
 	{
-		if(e.click_time < 200 && !freeze) //fast click
+		if(e.click_time < 200 && !freeze[WORLD.username]) //fast click
 		{
 			//compute collision with floor plane
 			let ray = camera.getRay(e.canvasx, e.canvasy);
@@ -246,7 +246,7 @@ function showSongChooser() {
 			song.sing()
 
 			WORLD.teleportUser(WORLD.username, vec3.fromValues(-54, 0, 195), vec3.fromValues(0.001, 0,-1))
-			freeze = true
+			freeze[WORLD.username] = true
 			hideSongChooser()
 
 		})

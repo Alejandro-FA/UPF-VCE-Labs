@@ -237,7 +237,7 @@ class MyWorld {
             user.anim = `${sceneNode.name}_dance`
         }
 
-        if(freeze) {
+        if(freeze[username]) {
             user.anim = `${sceneNode.name}_talk`
         }
         return true

@@ -166,11 +166,11 @@ function parseWorldMessage(msg) {
  * @param msg {{ userID, username, type, content, date}}
  */
 function parseLoginMessage(msg) {
-    if (MYCHAT.server.user_id === Number(Object.keys(MYCHAT.server.clients)[0])) {
+    if (WORLD.username === Object.keys(WORLD.users)[0]) {
         sendWorldMessage(WORLD.room_name, WORLD.username, WORLD.room.toJson(), MYCHAT.server.user_id)
     }
 
-    WORLD.room.users[msg.username] = WORLD.users[msg.username] = msg.content
+    WORLD.room.users[msg.username] = WORLD.users[msg.username] = User.fromJson(msg.content)
     WORLD.createCharacter(msg.content.character, msg.username, msg.content.position, character_scalings[msg.content.character])
 }
 
@@ -241,12 +241,14 @@ function parseSongMessage(msg) {
 /**
  * Send a Sing message to all the room that indicates that a user is singing
  * @param room_name
+ * @param username
  * @param userId
  * @param peerId
  */
-function sendSingMessage(room_name, userId, peerId) {
+function sendSingMessage(room_name, username, userId, peerId) {
     let msg = {
         room: room_name,
+        user: username,
         type: "SING",
         userID: userId,
         peerId: peerId,
@@ -288,6 +290,8 @@ function parseSingMessage(msg) {
                 false
             );
 
+            WORLD.teleportUser(msg.user, vec3.fromValues(-54, 0, 195), vec3.fromValues(0.001, 0,-1))
+            freeze[msg.user] = true
             track.connect(gainNode).connect(audioContext.destination);
             audio.srcObject = stream;
             audio.play()
